@@ -113,8 +113,14 @@ if ! shopt -oq posix; then
   fi
 fi
 
-source /etc/.git-prompt.sh
+# ----
 
-PS1="\[\e[30;43m\]☁\[\e[m\]\[\e[30;43m\] \[\e[m\]\[\e[30;43m\]\u\[\e[m\]\[\e[30;43m\]:\[\e[m\]\[\e[30;43m\]\W\[\e[m\]\[\e[30;43m\] \[\e[m\]\[\e[30;43m\]\\$\[\e[m\]\[\e[30;43m\]\[\e[m\]\[\e[30;43m\]$(__git_ps1)\[\e[m\] "
+black_on_yellow="\[\e[30;43m\]"
+reset="\[\e[m\]"
+PS1="$black_on_yellow☁  \u:\W $reset "
 
-export NODE_PATH="/usr/lib/node_modules"
+# This loads Node Version Manager.
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+
+# export NODE_PATH="/usr/lib/node_modules"
