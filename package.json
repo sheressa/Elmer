@@ -5,6 +5,10 @@
   "author": "CTL",
   "homepage": "https://github.com/CrisisTextLine/Elmer",
   "license": "MIT",
+  "repository": "CrisisTextLine/Elmer",
+  "bugs": {
+    "url": "https://github.com/CrisisTextLine/Elmer/issues"
+  },
   "scripts": {},
   "devDependencies": {
     "adonis-cli": "^1.0.2"
