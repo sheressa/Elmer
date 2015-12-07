@@ -5,7 +5,7 @@ host_port = 8008
 
 unless Vagrant.has_plugin?("vagrant-bindfs")
   system "vagrant plugin install vagrant-bindfs"
-  raise "The BindFS Vagrant plugin is required for OSX use and was installed.  Please your the command again."
+  raise "The BindFS Vagrant plugin is required for OSX use and was installed.  Please run your the command again."
 end
 
 Vagrant.configure("2") do |config|
