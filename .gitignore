@@ -1,3 +1,6 @@
+.bash_history
+
+
 # ------------------------------------------------------------------------------
 #  https://github.com/github/gitignore/blob/master/Global/OSX.gitignore
 # ------------------------------------------------------------------------------
@@ -7,7 +10,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*

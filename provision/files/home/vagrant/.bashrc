@@ -113,14 +113,4 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# ----
-
-black_on_yellow="\[\e[30;43m\]"
-reset="\[\e[m\]"
-PS1="$black_on_yellow☁  \u:\W $reset "
-
-# This loads Node Version Manager.
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
-
-# export NODE_PATH="/usr/lib/node_modules"
+source /home/vagrant/.extra

@@ -1,0 +1,12 @@
+alias wd="sudo su -s /bin/bash www-data"
+
+# Set our prompt.
+black_on_yellow="\[\e[30;43m\]"
+reset="\[\e[m\]"
+PS1="$black_on_yellow☁  \u:\W $reset "
+
+# Load the Node Version Manager.
+export NVM_DIR="/home/vagrant/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+
+export PATH="./node_modules/.bin:$PATH"

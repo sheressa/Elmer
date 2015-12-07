@@ -1,0 +1,12 @@
+{
+  "name": "Elmer",
+  "version": "0.0.0",
+  "description": "",
+  "author": "CTL",
+  "homepage": "https://github.com/CrisisTextLine/Elmer",
+  "license": "MIT",
+  "scripts": {
+  },
+  "devDependencies": {
+  }
+}
