@@ -1,6 +1,7 @@
 # Change these if you need to.
 synced_folder = "~/Sites/Elmer"
 ip = "192.168.8.8"
+host_port = 8008
 
 unless Vagrant.has_plugin?("vagrant-bindfs")
   system "vagrant plugin install vagrant-bindfs"
@@ -12,7 +13,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/trusty64"
   config.vm.box_version = "20151201.0.0"
 
-  config.vm.network :forwarded_port, guest: 80, host: 8080
+  config.vm.network :forwarded_port, guest: 80, host: host_port
   config.vm.network :private_network, ip: ip
 
   config.vm.hostname = "elmer.local"
