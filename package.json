@@ -5,8 +5,8 @@
   "author": "CTL",
   "homepage": "https://github.com/CrisisTextLine/Elmer",
   "license": "MIT",
-  "scripts": {
-  },
+  "scripts": {},
   "devDependencies": {
+    "adonis-cli": "^1.0.2"
   }
 }
