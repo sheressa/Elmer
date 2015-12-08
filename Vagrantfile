@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--memory", "2048"]
   end
 
-  config.vm.provision :shell, :path => "provision/provision.sh", privileged: false, args: 'root'
+  config.vm.provision :shell, :path => "provision/provision.sh", privileged: false
 
   if (/darwin/ =~ RUBY_PLATFORM)
     # On OSX, remount using bindfs to force www-data ownership:
