@@ -1,5 +1,5 @@
 # Change these if you need to.
-synced_folder = "~/Sites/Elmer"
+synced_folder = "~/Sites/Elmer/www"
 ip = "192.168.8.8"
 host_port = 8008
 
