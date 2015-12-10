@@ -1,0 +1,45 @@
+/**
+ * Css styles for adonis splash page , you are free to delete it
+ * and get started with fresh installation.
+ * Copyright(c) - Harminder Virk
+ * MIT Licensed
+*/
+
+ body{
+ 	font-family: 'Source Sans Pro', sans-serif;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+   font-weight: lighter;
+   background: #ffffff;
+ }
+
+ *{
+ 	padding: 0;
+ 	margin: 0;
+ }
+
+ h1{
+ 	font-family: 'Source Sans Pro', sans-serif;
+   font-weight: lighter;
+   margin-bottom: 10px;
+   font-size: 92px;
+   color: #666666;
+ }
+
+ section{
+ 	display: table;
+ 	height: 100vh;
+ 	width: 100%;
+ }
+
+ .__wrapper{
+ 	vertical-align: middle;
+ 	display: table-cell;
+ 	text-align: center;
+ }
+
+ .__wrapper p{
+ 	letter-spacing: 2.5px;
+ 	font-size: 27px;
+ 	color: #555555;
+ }
