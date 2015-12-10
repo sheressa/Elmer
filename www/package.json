@@ -18,7 +18,8 @@
     "adonis-validation-provider": "^1.0.1",
     "formidable": "^1.0.17",
     "ouch": "^0.2.0-beta",
-    "raw-body": "^2.1.2"
+    "raw-body": "^2.1.2",
+    "request": "^2.67.0"
   },
   "autoload": {
     "App": "./app"
