@@ -1,0 +1,9 @@
+var config = {};
+
+config.wheniwork = {
+    api_key: 'TODO',
+    username: 'TODO',
+    password: 'TODO'
+};
+
+module.exports = config;

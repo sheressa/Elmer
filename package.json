@@ -1,17 +1,20 @@
 {
-  "name": "Elmer",
-  "version": "0.0.0",
-  "description": "",
-  "author": "CTL",
-  "homepage": "https://github.com/CrisisTextLine/Elmer",
-  "license": "MIT",
-  "repository": "CrisisTextLine/Elmer",
-  "bugs": {
-    "url": "https://github.com/CrisisTextLine/Elmer/issues"
+  "name": "application-name",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "nodejs ./bin/www"
   },
-  "scripts": {},
-  "devDependencies": {
-    "adonis-cli": "^1.0.2",
-    "ava": "^0.7.0"
+  "dependencies": {
+    "body-parser": "~1.0.0",
+    "cookie-parser": "~1.0.1",
+    "cron": "^1.1.0",
+    "debug": "~0.7.4",
+    "express": "~4.0.0",
+    "jade": "~1.3.0",
+    "morgan": "~1.0.0",
+    "require-all": "^2.0.0",
+    "static-favicon": "~1.0.0",
+    "wheniwork-unofficial": "^0.1.1"
   }
 }
