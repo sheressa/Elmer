@@ -2,7 +2,7 @@ var CronJob = require('cron').CronJob;
 var WhenIWork = require('./base');
 var moment = require('moment');
 
-new CronJob('* * * * * *', function () {
+new CronJob('0 0 * * * *', function () {
     getShifts();
 }, null, true);
 
