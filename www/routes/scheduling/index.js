@@ -42,16 +42,13 @@ router.get('/cancel-shift', function(req, res) {
                 };
 
                 api.get('shifts', q, function (shifts) {
-                    var del = {ids: []};
                     for (var i in shifts.shifts) {
-                        del.ids.push(shifts.shifts[i].id);
+                        api.update('shifts/'+shifts.shifts[i].id, {user_id: 0});
                     }
-                    api.delete('shifts', del, function (resp) {
-                        var api2 = new WhenIWork(global.config.wheniwork.api_key, email, global.config.wheniwork.default_password);
+                    var api2 = new WhenIWork(global.config.wheniwork.api_key, email, global.config.wheniwork.default_password);
 
-                        api2.post('users/autologin', function (data) {
-                            res.render('scheduling/cancelShift', { token: data.hash });
-                        });
+                    api2.post('users/autologin', function (data) {
+                        res.render('scheduling/cancelShift', { token: data.hash });
                     });
                 });
                 
