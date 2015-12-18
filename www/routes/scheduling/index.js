@@ -38,7 +38,7 @@ router.get('/cancel-shift', function(req, res) {
                     start: moment().format('YYYY-MM-DD 00:00:00'),
                     end: moment([2050]).format('YYYY-MM-DD HH:mm:ss'),
                     unpublished: true,
-                    location_id: 959290
+                    location_id: '959290,959293,959296,959299,959302'
                 };
 
                 api.get('shifts', q, function (shifts) {
