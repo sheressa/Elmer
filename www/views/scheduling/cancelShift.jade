@@ -1,0 +1,7 @@
+extends ../layout
+
+block content
+    h1 Your shift has been permanently cancelled.
+    form(action="https://app.wheniwork.com/scheduler", method="get")
+        input(type="submit", value="Continue on to schedule a new shift")
+        input(type="hidden", name="al", value="#{token}")

@@ -100,3 +100,8 @@ node_modules
 
 # Customizations
 config.js
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

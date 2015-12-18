@@ -1,9 +1,12 @@
 var config = {};
 
+config.secret_key = 'SuperSecretKey';
+
 config.wheniwork = {
     api_key: 'TODO',
     username: 'TODO',
-    password: 'TODO'
+    password: 'TODO',
+    default_password: 'TODO'
 };
 
 module.exports = config;
