@@ -3,7 +3,7 @@
 # Change these if you need to.
 BOX_FOLDER="/vagrant/provision/files"
 NVM_VERSION="v0.29.0"
-NODE_VERSION="5.1.1"
+NODE_VERSION="5.3.0"
 
 # We can have our own files loaded into the Vagrant box.
 if [ -d $BOX_FOLDER ]; then
