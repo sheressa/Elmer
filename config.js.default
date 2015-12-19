@@ -9,4 +9,8 @@ config.wheniwork = {
     default_password: 'TODO'
 };
 
+config.mandrill = {
+    api_key: 'TODO'
+};
+
 module.exports = config;
