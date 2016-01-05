@@ -1,9 +1,9 @@
 alias wd="sudo su -s /bin/bash www-data"
 
 # Set our prompt.
-black_on_yellow="\[\e[30;43m\]"
-reset="\[\e[m\]"
-PS1="$black_on_yellow☁  \u:\W $reset "
+BLACK_ON_YELLOW="\[\e[30;43m\]"
+RESET="\[\e[m\]"
+PS1="$BLACK_ON_YELLOW☁  \u:\W $RESET "
 
 # Load the Node Version Manager.
 export NVM_DIR="/home/vagrant/.nvm"
