@@ -1,8 +1,9 @@
-var express = require('express');
+var express   = require.main.require('express');
+var WhenIWork = require.main.require('wheniwork-unofficial');
+var moment    = require.main.require('moment');
+var sha1      = require.main.require('sha1');
+
 var router = express.Router();
-var WhenIWork = require('wheniwork-unofficial');
-var moment = require('moment');
-var sha1 = require('sha1');
 
 var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
 
@@ -28,7 +29,7 @@ router.get('/cancel-shift', function(req, res) {
     }
 
     var email = req.query.email;
-    
+
     api.get('users', function (users) {
         users = users.users;
         for (var i in users) {
@@ -51,7 +52,7 @@ router.get('/cancel-shift', function(req, res) {
                         res.render('scheduling/cancelShift', { token: data.hash });
                     });
                 });
-                
+
                 break;
             }
         }
