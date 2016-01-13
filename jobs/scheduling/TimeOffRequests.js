@@ -15,7 +15,7 @@ handleTimeOffRequests();
 function handleTimeOffRequests() {
     //Using moment.js to format time as WIW expects
     var startDateToRetrieveRequests = moment().format('YYYY-MM-DD HH:mm:ss');
-    var endDateToRetrieveRequests = moment().add(1, 'months').format('YYYY-MM-DD HH:mm:ss');
+    var endDateToRetrieveRequests = moment().add(6, 'months').format('YYYY-MM-DD HH:mm:ss');
     var timeOffSearchParams = {
         "start": startDateToRetrieveRequests,
         "end": endDateToRetrieveRequests,
@@ -27,8 +27,7 @@ function handleTimeOffRequests() {
 
         //Filter requests to pending requests only
         var newRequests = allRequests.filter(function(request) {
-            //THIS MUST BE CHANGED TO === 0 IN PROD
-            return request.status !== 2;
+            return request.status !== 0;
         });
 
         //For each pending request, look for any shifts that fall within the time off request
