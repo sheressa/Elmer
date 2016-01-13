@@ -18,8 +18,13 @@ const CHAIN_BUFFER_DAYS = 1;
 const YEARS_TO_RECUR_SHIFT = 5;
 const WEEKS_TO_SEARCH_FOR_RECURRED_SHIFTS = 2;
 const WEEKS_TO_PUBLISH_RECURRED_SHIFTS = 4;
-// @TODO: we'll later want to filter for more than one location
-const LOCATION_ID = 990385;
+
+if (process.env.NODE_ENV == 'production') {
+    const LOCATION_ID = config.wheniwork.regular_shifts_location_id;
+}
+else {
+    const LOCATION_ID = config.wheniwork.test_location_id;
+}
 
 function recurNewlyCreatedShifts() {
     var batchPostRequestBody = [];

@@ -3,8 +3,12 @@ var WhenIWork = require('./base');
 var moment = require('moment');
 var fs = require('fs');
 
-//TODO:  Below is Test Location ID, eventually we want to look at New Graduates and Regular locations
-const LOCATION_ID = 990385;
+if (process.env.NODE_ENV == 'production') {
+    const LOCATION_ID = config.wheniwork.regular_shifts_location_id;
+}
+else {
+    const LOCATION_ID = config.wheniwork.test_location_id;
+}
 
 new CronJob('0 0 11,23 * * *', function () {
     handleTimeOffRequests();
