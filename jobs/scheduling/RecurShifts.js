@@ -1,5 +1,3 @@
-// global.config = require('./../../config');
-
 var CronJob = require('cron').CronJob;
 var WhenIWork = require('./base');
 var moment = require('moment');
@@ -51,9 +49,14 @@ function recurNewlyCreatedShifts() {
             shift.notes = '{"original_owner":' + shift.user_id + ', "parent_shift":' + shift.id + '}';
             var endDate = moment(shift.start_time).add(MAX_SHIFTS_IN_CHAIN - 1, 'weeks').format('L');
 
-            // WhenIWork uses the end of the shift to determine which day it falls on, therefore shifts ending at midnight
-            // are an edge case that we need to control for an extend the length of the chain to prevent a "skipped week" when recurring
-            if (moment(shift.end_time).format('H') === '0') {
+            /**
+                WhenIWork uses the end of the shift to determine which day it falls on, therefore shifts ending at midnight
+                are an edge case that we need to control for an extend the length of the chain to prevent a "skipped week" when recurring. 
+
+                Additionally, WhenIWork's API will skip the final recurrence of a shift in a chain if it ends on 10pm. 
+                (Tested with shifts which recur between 8-10pm.) Hence, we're also extending the end_time for that case.
+            **/ 
+            if (moment(shift.end_time).format('H') === '0' || moment(shift.end_time).format('H') === '22') {
                 endDate = moment(endDate).add(1, 'days').format('L');
             }
 
