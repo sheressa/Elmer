@@ -66,20 +66,22 @@ function validate(email, hash) {
 }
 
 function checkUser(email, first, last, callback) {
+    var altEmail = email.replace(/\W+/g, '');
+    altEmail = 'admin+'+altEmail+'@crisistextline.org';
+
     api.get('users', function (users) {
         users = users.users;
         for (var i in users) {
-            if (users[i].email == email) {
+            if (users[i].email == email || users[i].email == altEmail) {
                 callback(users[i]);
                 return;
             }
         }
 
         // At this point, we didn't find the user so let's create it.
-        var tempEmail = 'admin+wiw'+new Date().getTime() + '@crisistextline.org';
         var newUser = {
             role: 3,
-            email: tempEmail,
+            email: altEmail,
             first_name: first,
             last_name: last,
             activated: true,
@@ -88,7 +90,7 @@ function checkUser(email, first, last, callback) {
         };
 
         api.post('users', newUser, function (data) {
-            var api2 = new WhenIWork(global.config.wheniwork.api_key, tempEmail, global.config.wheniwork.default_password);
+            var api2 = new WhenIWork(global.config.wheniwork.api_key, altEmail, global.config.wheniwork.default_password);
 
             var alert = {sms: false, email: false};
             var alerts = ['timeoff', 'swaps', 'schedule', 'reminders', 'availability', 'new_employee', 'attendance'];
@@ -100,7 +102,6 @@ function checkUser(email, first, last, callback) {
 
             api2.post('users/alerts', postBody, function () {});
 
-            console.log(email);
             api2.post('users/profile', {email: email}, function (profile) {
                 callback(profile);
             });
@@ -109,3 +110,4 @@ function checkUser(email, first, last, callback) {
 }
 
 module.exports = router;
+
