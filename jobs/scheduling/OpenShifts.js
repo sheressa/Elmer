@@ -21,7 +21,6 @@ new CronJob(global.config.time_interval.open_shifts, function () {
 
 function openShifts() {
     var current_hour = moment().minute(0).second(0);
-    var next_time = current_hour.clone().add(7, 'days');
 
     // Example time filter: 1:59:00 pm - 2:01:00 pm
     var filter = {
