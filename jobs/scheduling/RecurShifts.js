@@ -15,6 +15,7 @@ function recurNewlyCreatedShifts() {
     // Only searching for newly created shifts one day prior and two weeks out since counselors
     // only can create a new shift in the next week. 
     var startDateToRetrieveShifts = moment().add(-1, 'days').format('YYYY-MM-DD HH:mm:ss');
+    var endDateToRetrieveShifts = moment().add(global.config.time_interval.weeks_to_search_for_recurred_shifts, 'weeks').format('YYYY-MM-DD HH:mm:ss');
     var postData = {
                         "include_open": false, 
                         "location_id": global.config.locationID.regular_shifts, 
