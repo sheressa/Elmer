@@ -65,7 +65,7 @@ function recurNewlyCreatedShifts() {
                 all the recurring shifts), we are giving each shift a `parent_shift` property in the notes
                 section. This property points to the original shift created by the user. 
             **/
-            console.log('*************start time: ', workingShift.start_time, ' until: ', workingShift.chain.until, '\n');
+            //console.log('*************start time: ', workingShift.start_time, ' until: ', workingShift.chain.until, '\n');
             for (var i = 0; i < global.config.time_interval.years_to_recur_shift - 1; i++) {
                 var newShift = {
                                     "method": "post", 
@@ -83,14 +83,14 @@ function recurNewlyCreatedShifts() {
 
                 batchPostRequestBody.push(newShift);
                 workingShift = newShift.params;
-                console.log('*************start time: ', workingShift.start_time, ' until: ', workingShift.chain.until, '\n');
+                //console.log('*************start time: ', workingShift.start_time, ' until: ', workingShift.chain.until, '\n');
             }
         })
 
-        console.log('BATCH POST REQUEST BODY:\n', JSON.stringify(batchPostRequestBody));
+        //console.log('BATCH POST REQUEST BODY:\n', JSON.stringify(batchPostRequestBody));
 
         WhenIWork.post('batch', batchPostRequestBody, function(response) { 
-            console.log('response from batch-creating a shift: \n', response); 
+            //console.log('response from batch-creating a shift: \n', response); 
             // After batch of shifts is created, we want to publish all shifts. (Note that passing in the `published` param
             // in the requests that are batched doesn't actually publish them; we need to make a separate request to another route.)
             
@@ -114,7 +114,7 @@ function recurNewlyCreatedShifts() {
 
                     // Getting all shifts created in the timeframe defined above in 'postData' that are unpublished. 
                     WhenIWork.get('shifts', postData, function(response) {
-                        console.log('number of shifts retrieved within getAndPublishShifts: ', response.shifts.length);
+                        //console.log('number of shifts retrieved within getAndPublishShifts: ', response.shifts.length);
 
                         var unpublishedShifts = response.shifts.filter(function(shift) {
                             return shift.notes && !shift.published;
@@ -135,7 +135,7 @@ function recurNewlyCreatedShifts() {
                     var unpublishedShiftIDs = unpublishedShiftIDs;
                     var callback = callback;
 
-                    console.log('*** arguments to task function: ', arguments);
+                    //console.log('*** arguments to task function: ', arguments);
 
                     startDate = moment(startDate).add(1, 'days').format('YYYY-MM-DD HH:mm:ss');
                     endDate = moment(endDate).add(1, 'days').format('YYYY-MM-DD HH:mm:ss');
@@ -149,8 +149,8 @@ function recurNewlyCreatedShifts() {
                                     };
 
                     WhenIWork.get('shifts', postData, function(response) {
-                        console.log('response from GET-ing unpublished shift: \n', response);
-                        console.log('number of shifts retrieved within getAndPublishShifts: ', response.shifts.length);
+                        //console.log('response from GET-ing unpublished shift: \n', response);
+                        //console.log('number of shifts retrieved within getAndPublishShifts: ', response.shifts.length);
 
                         var unpublishedShifts = response.shifts.filter(function(shift) {
                             return shift.notes && !shift.published;
@@ -177,14 +177,14 @@ function recurNewlyCreatedShifts() {
 
             async.waterfall(requestTaskArray, function(err, startDate, endDate, unpublishedShiftIDs) {
 
-                console.log('final arguments to waterfall: ', arguments);
+                //console.log('final arguments to waterfall: ', arguments);
 
                 var publishPayload = {
                     'ids': unpublishedShiftIDs
                 }
 
                 WhenIWork.post('shifts/publish/', publishPayload, function(response) {
-                    console.log('Publish shift API call response: ', response);
+                    //console.log('Publish shift API call response: ', response);
                 })
             })
         });

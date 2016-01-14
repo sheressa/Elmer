@@ -15,10 +15,16 @@ router.get('/login', function (req, res) {
     var email = req.query.email;
 
     checkUser(req.query.email, req.query.fn, req.query.ln, function (user) {
-        var api2 = new WhenIWork(global.config.wheniwork.api_key, email, global.config.wheniwork.default_password);
+        var api2 = new WhenIWork(global.config.wheniwork.api_key, email, global.config.wheniwork.default_password, function (resp) {
+            res.redirect('https://app.wheniwork.com/login/?redirect=myschedule');
+        });
 
         api2.post('users/autologin', function (data) {
-            res.redirect('https://app.wheniwork.com/myschedule?al=' + data.hash);
+            if (typeof data.error !== 'undefined') {
+                res.redirect('https://app.wheniwork.com');
+            } else {
+                res.redirect('https://app.wheniwork.com/myschedule?al=' + data.hash);
+            }
         });
     });
 });

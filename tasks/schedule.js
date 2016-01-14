@@ -56,3 +56,33 @@ module.exports.dumpSchedules = function () {
     });
 };
 
+module.exports.clearProd = function() {
+    console.log('This function must first be enabled before it will run.');
+    return false;
+    for (var year = -1; year < 50; year++) {
+        var start_time = moment().add(year, 'year').format(wiw_date_format);
+        var end_time = moment().add(year+1, 'year').format(wiw_date_format);
+
+        var query = {
+            start: start_time,
+            end: end_time,
+            location_id: global.config.locationID.test,
+            unpublished: true,
+            include_allopen: true
+        };
+
+        api.get('shifts', query, function (data) {
+            var shifts_to_delete = [];
+            for (var i in data.shifts) {
+                shifts_to_delete.push(data.shifts[i].id);
+            }
+
+            var subsections = Math.ceil(shifts_to_delete.length / 500);
+            for (var i = 0; i < subsections; i++) {
+                api.delete('shifts', {ids: shifts_to_delete.slice(i*500, (i*500) + 500).join(',')}, function (resp) {
+                    console.log(resp);
+                });
+            }
+        });
+    }
+};
