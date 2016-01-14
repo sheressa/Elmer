@@ -1,5 +1,9 @@
 global.config = require('./config');
 
+if (process.env.NODE_ENV !== 'production') {
+	global.config.locationID.regular_shifts = global.config.locationID.test;
+}
+
 var debug = require('debug')('my-application');
 var app = require('./www/app');
 var jobs = require('require-all')(__dirname + '/jobs');

@@ -4,19 +4,6 @@ var moment = require('moment');
 var fs = require('fs');
 var async = require('async');
 
-const MAX_SHIFTS_IN_CHAIN = global.config.time_interval.max_shifts_in_chain;
-const CHAIN_BUFFER_DAYS = global.config.time_interval.chain_buffer_days;
-const YEARS_TO_RECUR_SHIFT = global.config.time_interval.years_to_recur_shift;
-const WEEKS_TO_SEARCH_FOR_RECURRED_SHIFTS = global.config.time_interval.weeks_to_search_for_recurred_shifts;
-const WEEKS_TO_PUBLISH_RECURRED_SHIFTS = global.config.time_interval.weeks_to_publish_recurred_shifts;
-
-if (process.env.NODE_ENV == 'production') {
-    const LOCATION_ID = global.config.locationID.regular_shifts;
-}
-else {
-    const LOCATION_ID = global.config.locationID.test;
-}
-
 new CronJob(global.config.time_interval.recur_and_publish_shifts_cron_job_string, function () {
     recurNewlyCreatedShifts();
 }, null, true);
@@ -28,10 +15,9 @@ function recurNewlyCreatedShifts() {
     // Only searching for newly created shifts one day prior and two weeks out since counselors
     // only can create a new shift in the next week. 
     var startDateToRetrieveShifts = moment().add(-1, 'days').format('YYYY-MM-DD HH:mm:ss');
-    var endDateToRetrieveShifts = moment().add(WEEKS_TO_SEARCH_FOR_RECURRED_SHIFTS, 'weeks').format('YYYY-MM-DD HH:mm:ss');
     var postData = {
                         "include_open": false, 
-                        "location_id": LOCATION_ID, 
+                        "location_id": global.config.locationID.regular_shifts, 
                         "start": startDateToRetrieveShifts, 
                         "end": endDateToRetrieveShifts
                     };
@@ -49,7 +35,7 @@ function recurNewlyCreatedShifts() {
         **/
         newShifts.forEach(function(shift) {
             shift.notes = '{"original_owner":' + shift.user_id + ', "parent_shift":' + shift.id + '}';
-            var endDate = moment(shift.start_time).add(MAX_SHIFTS_IN_CHAIN - 1, 'weeks').format('L');
+            var endDate = moment(shift.start_time).add(global.config.time_interval.max_shifts_in_chain - 1, 'weeks').format('L');
 
             /**
                 WhenIWork uses the end of the shift to determine which day it falls on, therefore shifts ending at midnight
@@ -59,7 +45,7 @@ function recurNewlyCreatedShifts() {
                 (Tested with shifts which recur between 8-10pm.) Hence, we're also extending the end_time for that case.
             **/ 
             if (moment(shift.end_time).format('H') === '0' || moment(shift.end_time).format('H') === '22') {
-                endDate = moment(endDate).add(CHAIN_BUFFER_DAYS, 'days').format('L');
+                endDate = moment(endDate).add(global.config.time_interval.chain_buffer_days, 'days').format('L');
             }
 
             shift.chain = {"week":"1","until":endDate};
@@ -79,16 +65,16 @@ function recurNewlyCreatedShifts() {
                 section. This property points to the original shift created by the user. 
             **/
             console.log('*************start time: ', workingShift.start_time, ' until: ', workingShift.chain.until, '\n');
-            for (var i = 0; i < YEARS_TO_RECUR_SHIFT - 1; i++) {
+            for (var i = 0; i < global.config.time_interval.years_to_recur_shift - 1; i++) {
                 var newShift = {
                                     "method": "post", 
                                     "url": "/2/shifts", 
                                     "params":   {
-                                                    "start_time": moment(workingShift.start_time).add(MAX_SHIFTS_IN_CHAIN, 'weeks').format('ddd, DD MMM YYYY HH:mm:ss ZZ'), 
-                                                    "end_time": moment(workingShift.end_time).add(MAX_SHIFTS_IN_CHAIN, 'weeks').format('ddd, DD MMM YYYY HH:mm:ss ZZ'),
+                                                    "start_time": moment(workingShift.start_time).add(global.config.time_interval.max_shifts_in_chain, 'weeks').format('ddd, DD MMM YYYY HH:mm:ss ZZ'), 
+                                                    "end_time": moment(workingShift.end_time).add(global.config.time_interval.max_shifts_in_chain, 'weeks').format('ddd, DD MMM YYYY HH:mm:ss ZZ'),
                                                     "notes": workingShift.notes,
                                                     "acknowledged": workingShift.acknowledged,
-                                                    "chain": {"week": "1", "until": moment(workingShift.chain.until).add(MAX_SHIFTS_IN_CHAIN, 'weeks').format('L')},
+                                                    "chain": {"week": "1", "until": moment(workingShift.chain.until).add(global.config.time_interval.max_shifts_in_chain, 'weeks').format('L')},
                                                     "location_id": workingShift.location_id,
                                                     "user_id": workingShift.user_id
                                                 }
@@ -110,7 +96,7 @@ function recurNewlyCreatedShifts() {
             var startDateToRetrieveUnpublishedShifts = moment().add(-12, 'hours').format('YYYY-MM-DD HH:mm:ss');
             var endDateToRetrieveUnpublishedShifts = moment().add(12, 'hours').format('YYYY-MM-DD HH:mm:ss');
             var requestTaskArray = [];
-            for (var i = 0; i < WEEKS_TO_PUBLISH_RECURRED_SHIFTS * 7; i++) {
+            for (var i = 0; i < global.config.time_interval.weeks_to_publish_recurred_shifts * 7; i++) {
                 var firstTask = function(callback) {
                     var unpublishedShiftIDs = [];
                     var callback = callback;
@@ -119,7 +105,7 @@ function recurNewlyCreatedShifts() {
                     // throw in a flag `“unpublished": true` in order to include unpublished shifts in our search results. 
                     var postData = {
                                         "include_open": false, 
-                                        "location_id": LOCATION_ID, 
+                                        "location_id": global.config.locationID.regular_shifts, 
                                         "start": startDateToRetrieveUnpublishedShifts, 
                                         "end": endDateToRetrieveUnpublishedShifts,
                                         "unpublished": true
@@ -155,7 +141,7 @@ function recurNewlyCreatedShifts() {
 
                     var postData = {
                                         "include_open": false, 
-                                        "location_id": LOCATION_ID, 
+                                        "location_id": global.config.locationID.regular_shifts, 
                                         "start": startDate, 
                                         "end": endDate,
                                         "unpublished": true
