@@ -6,10 +6,11 @@ var fs = require('fs');
 var mandrill = require('mandrill-api/mandrill');
 var mandrill_client = new mandrill.Mandrill(global.config.mandrill.api_key);
 
-var interval = 20;
 var date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 
-new CronJob('0 */'+interval+' * * * *', function () {
+const DAYS_TO_SEARCH_FOR_NEW_USERS_WHO_HAVE_SCHEDULED_THEIR_FIRST_SHIFT = global.config.days_to_search_for_new_users_who_have_scheduled_their_first_shift;
+
+new CronJob(global.config.time_interval.notify_first_shift_cron_job_string, function () {
     checkNewShifts();
 }, null, true);
 
@@ -25,11 +26,11 @@ function checkNewShifts() {
             var u = users.users[i];
             var created = moment(u.created_at, date_format);
 
-            if (u.notes.indexOf('first_shift_notified') < 0 && now.diff(created, 'days') < 7) {
+            if (u.notes.indexOf('first_shift_notified') < 0 && now.diff(created, 'days') < DAYS_TO_SEARCH_FOR_NEW_USERS_WHO_HAVE_SCHEDULED_THEIR_FIRST_SHIFT) {
                 var q = {
                     user_id: u.id,
                     start: moment().format(date_format),
-                    end: moment().add(7, 'days').format(date_format)
+                    end: moment().add(DAYS_TO_SEARCH_FOR_NEW_USERS_WHO_HAVE_SCHEDULED_THEIR_FIRST_SHIFT, 'days').format(date_format)
                 };
 
                 WhenIWork.get('shifts', q, function (shifts) {

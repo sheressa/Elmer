@@ -3,10 +3,16 @@ var WhenIWork = require('./base');
 var moment = require('moment');
 var fs = require('fs');
 
-//TODO:  Below is Test Location ID, eventually we want to look at New Graduates and Regular locations
-const LOCATION_ID = 990385;
+const MONTHS_TO_SEARCH_FOR_TIME_OFF_REQUESTS = global.config.months_to_search_for_time_off_requests;
 
-new CronJob('0 0 11,23 * * *', function () {
+if (process.env.NODE_ENV == 'production') {
+    const LOCATION_ID = global.config.locationID.regular_shifts;
+}
+else {
+    const LOCATION_ID = global.config.locationID.test;
+}
+
+new CronJob(global.config.time_interval.time_off_requests_cron_job_string, function () {
     handleTimeOffRequests();
 }, null, true);
 
@@ -15,7 +21,7 @@ handleTimeOffRequests();
 function handleTimeOffRequests() {
     //Using moment.js to format time as WIW expects
     var startDateToRetrieveRequests = moment().format('YYYY-MM-DD HH:mm:ss');
-    var endDateToRetrieveRequests = moment().add(1, 'months').format('YYYY-MM-DD HH:mm:ss');
+    var endDateToRetrieveRequests = moment().add(MONTHS_TO_SEARCH_FOR_TIME_OFF_REQUESTS, 'months').format('YYYY-MM-DD HH:mm:ss');
     var timeOffSearchParams = {
         "start": startDateToRetrieveRequests,
         "end": endDateToRetrieveRequests,
@@ -27,8 +33,7 @@ function handleTimeOffRequests() {
 
         //Filter requests to pending requests only
         var newRequests = allRequests.filter(function(request) {
-            //THIS MUST BE CHANGED TO === 0 IN PROD
-            return request.status !== 2;
+            return request.status !== 0;
         });
 
         //For each pending request, look for any shifts that fall within the time off request
@@ -42,6 +47,7 @@ function handleTimeOffRequests() {
             };
 
             WhenIWork.get('shifts', shiftSearchParams, function(response) {
+                // Status code `2` represents approved requests. 
                 var timeOffApprovalRequest = {
                     "method": "put",
                     "url": "/2/requests/" + request.id,

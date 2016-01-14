@@ -3,6 +3,13 @@ var WhenIWork = require.main.require('wheniwork-unofficial');
 var moment    = require.main.require('moment');
 var sha1      = require.main.require('sha1');
 
+if (process.env.NODE_ENV == 'production') {
+    const LOCATION_ID = global.config.locationID.regular_shifts;
+}
+else {
+    const LOCATION_ID = global.config.locationID.test;
+}
+
 var router = express.Router();
 
 var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
@@ -39,7 +46,7 @@ router.get('/cancel-shift', function(req, res) {
                     start: moment().format('YYYY-MM-DD 00:00:00'),
                     end: moment([2050]).format('YYYY-MM-DD HH:mm:ss'),
                     unpublished: true,
-                    location_id: '959290,959293,959296,959299,959302'
+                    location_id: LOCATION_ID
                 };
 
                 api.get('shifts', q, function (shifts) {
@@ -85,7 +92,7 @@ function checkUser(email, first, last, callback) {
             first_name: first,
             last_name: last,
             activated: true,
-            locations: [959290],
+            locations: [LOCATION_ID],
             password: global.config.wheniwork.default_password
         };
 
