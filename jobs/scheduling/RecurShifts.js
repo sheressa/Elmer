@@ -4,27 +4,24 @@ var moment = require('moment');
 var fs = require('fs');
 var async = require('async');
 
-const CRON_JOB_INTERVAL = 20;
-// The number of shifts, spaced by a week, in the chain.
-const MAX_SHIFTS_IN_CHAIN = 52;
-/***
-    The chain.until param passed in order to create a chain is inclusive of that day. 
-    But if the scheduled shift ends on midnight or after midnight, that shift is not included in that day. 
-    So an “until” statement that falls on a day will not include those shifts beginning on that day but ending on midnight or later. 
-    The CHAIN_BUFFER_DAYS constant will make sure that the chain_until parameter includes shifts ending on a
-    new day, or for edge cases like leap years.
-***/ 
-const CHAIN_BUFFER_DAYS = 1;
-const YEARS_TO_RECUR_SHIFT = 5;
-const WEEKS_TO_SEARCH_FOR_RECURRED_SHIFTS = 2;
-const WEEKS_TO_PUBLISH_RECURRED_SHIFTS = 4;
+const MAX_SHIFTS_IN_CHAIN = global.config.time_interval.max_shifts_in_chain;
+const CHAIN_BUFFER_DAYS = global.config.time_interval.chain_buffer_days;
+const YEARS_TO_RECUR_SHIFT = global.config.time_interval.years_to_recur_shift;
+const WEEKS_TO_SEARCH_FOR_RECURRED_SHIFTS = global.config.time_interval.weeks_to_search_for_recurred_shifts;
+const WEEKS_TO_PUBLISH_RECURRED_SHIFTS = global.config.time_interval.weeks_to_publish_recurred_shifts;
 
 if (process.env.NODE_ENV == 'production') {
-    const LOCATION_ID = config.wheniwork.regular_shifts_location_id;
+    const LOCATION_ID = global.config.locationID.regular_shifts;
 }
 else {
-    const LOCATION_ID = config.wheniwork.test_location_id;
+    const LOCATION_ID = global.config.locationID.test;
 }
+
+new CronJob(global.config.time_interval.recur_and_publish_shifts_cron_job_string, function () {
+    recurNewlyCreatedShifts();
+}, null, true);
+
+recurNewlyCreatedShifts();
 
 function recurNewlyCreatedShifts() {
     var batchPostRequestBody = [];
@@ -62,7 +59,7 @@ function recurNewlyCreatedShifts() {
                 (Tested with shifts which recur between 8-10pm.) Hence, we're also extending the end_time for that case.
             **/ 
             if (moment(shift.end_time).format('H') === '0' || moment(shift.end_time).format('H') === '22') {
-                endDate = moment(endDate).add(1, 'days').format('L');
+                endDate = moment(endDate).add(CHAIN_BUFFER_DAYS, 'days').format('L');
             }
 
             shift.chain = {"week":"1","until":endDate};

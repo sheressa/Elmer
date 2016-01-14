@@ -3,14 +3,16 @@ var WhenIWork = require('./base');
 var moment = require('moment');
 var fs = require('fs');
 
+const MONTHS_TO_SEARCH_FOR_TIME_OFF_REQUESTS = global.config.months_to_search_for_time_off_requests;
+
 if (process.env.NODE_ENV == 'production') {
-    const LOCATION_ID = config.wheniwork.regular_shifts_location_id;
+    const LOCATION_ID = global.config.locationID.regular_shifts;
 }
 else {
-    const LOCATION_ID = config.wheniwork.test_location_id;
+    const LOCATION_ID = global.config.locationID.test;
 }
 
-new CronJob('0 0 11,23 * * *', function () {
+new CronJob(global.config.time_interval.time_off_requests_cron_job_string, function () {
     handleTimeOffRequests();
 }, null, true);
 
@@ -19,7 +21,7 @@ handleTimeOffRequests();
 function handleTimeOffRequests() {
     //Using moment.js to format time as WIW expects
     var startDateToRetrieveRequests = moment().format('YYYY-MM-DD HH:mm:ss');
-    var endDateToRetrieveRequests = moment().add(6, 'months').format('YYYY-MM-DD HH:mm:ss');
+    var endDateToRetrieveRequests = moment().add(MONTHS_TO_SEARCH_FOR_TIME_OFF_REQUESTS, 'months').format('YYYY-MM-DD HH:mm:ss');
     var timeOffSearchParams = {
         "start": startDateToRetrieveRequests,
         "end": endDateToRetrieveRequests,
@@ -45,6 +47,7 @@ function handleTimeOffRequests() {
             };
 
             WhenIWork.get('shifts', shiftSearchParams, function(response) {
+                // Status code `2` represents approved requests. 
                 var timeOffApprovalRequest = {
                     "method": "put",
                     "url": "/2/requests/" + request.id,

@@ -4,10 +4,10 @@ var moment    = require.main.require('moment');
 var sha1      = require.main.require('sha1');
 
 if (process.env.NODE_ENV == 'production') {
-    const LOCATION_ID = config.wheniwork.regular_shifts_location_id;
+    const LOCATION_ID = global.config.locationID.regular_shifts;
 }
 else {
-    const LOCATION_ID = config.wheniwork.test_location_id;
+    const LOCATION_ID = global.config.locationID.test;
 }
 
 var router = express.Router();
