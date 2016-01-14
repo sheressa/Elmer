@@ -1,3 +1,3 @@
 # Elmer
 
-`PORT=80 ENV=prod forever start app.js`
+`PORT=80 ENV=production forever start app.js`
