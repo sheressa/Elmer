@@ -16,7 +16,7 @@ checkNewShifts();
 
 function checkNewShifts() {
 
-    WhenIWork.get('users', function (users) {
+    WhenIWork.get('users', {location_id: global.config.locationID.new_graduate}, function (users) {
         var now = moment();
         var template = fs.readFileSync('./email_templates/shift_welcome.txt', {encoding: 'utf-8'});
 
