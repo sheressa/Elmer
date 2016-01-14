@@ -13,7 +13,7 @@ function handleTimeOffRequests() {
     //Using moment.js to format time as WIW expects
     var startDateToRetrieveRequests = moment().format('YYYY-MM-DD HH:mm:ss');
     var endDateToRetrieveRequests = moment()
-        .add(global.config.months_to_search_for_time_off_requests, 'months')
+        .add(global.config.time_interval.months_to_search_for_time_off_requests, 'months')
         .format('YYYY-MM-DD HH:mm:ss');
     var timeOffSearchParams = {
         "start": startDateToRetrieveRequests,
