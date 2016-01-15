@@ -42,7 +42,7 @@ router.get('/cancel-shift', function(req, res) {
             if (users[i].email == email) {
                 var q = {
                     user_id: users[i].id,
-                    start: moment().format('YYYY-MM-DD 00:00:00'),
+                    start: moment().add(-1, 'day').format('YYYY-MM-DD 00:00:00'),
                     end: moment().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'),
                     unpublished: true,
                     location_id: global.config.locationID.regular_shifts
