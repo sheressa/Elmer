@@ -7,6 +7,8 @@ var router = express.Router();
 
 var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
 
+var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
+
 router.get('/login', function (req, res) {
     if (!validate(req.query.email, req.query.token)) {
         res.status(403).send('Access denied.');
@@ -58,7 +60,7 @@ router.get('/cancel-shift', function(req, res) {
                         var shift = shifts.shifts[i];
                         // If the shift starts within a week, it's a shift that needs to be converted to an 
                         // open shift because the open shift job has already run and passed that day. 
-                        if (Math.abs(moment().diff(moment(shift.start_time), 'days')) < global.config.time_interval.days_in_interval_to_repeat_open_shifts) {
+                        if (Math.abs(moment().diff(moment(shift.start_time, wiw_date_format), 'days')) < global.config.time_interval.days_in_interval_to_repeat_open_shifts) {
                             var reassignShiftToOpenAndRemoveNotesRequest = {
                                 "method": 'PUT',
                                 "url": "/2/shifts/" + shift.id,
