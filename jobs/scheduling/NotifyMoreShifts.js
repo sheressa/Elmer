@@ -43,6 +43,7 @@ function processUsers(users) {
         }
     }
 
+    // We're going to notify these people once a day.
     var one_shift_post = {
         ids: only_one,
         subject: 'Thanks for signing up for a shift',
@@ -51,6 +52,7 @@ function processUsers(users) {
 
     WhenIWork.post('send', one_shift_post);
 
+    // Now we're going to notify these people once. So the logic is more complicated.
     if (only_two.length > 0) {
         var req = {
             location_id: global.config.locationID.regular_shifts
@@ -67,6 +69,7 @@ function processUsers(users) {
                 if (only_two.indexOf(''+data.users[i].id) < 0) {
                     continue;
                 }
+
                 user_data = data.users[i].notes;
 
                 if (user_data.indexOf('two_shift_notification') < 0) {
