@@ -1,6 +1,5 @@
 var CronJob = require('cron').CronJob;
 var WhenIWork = require('./base');
-var moment = require('moment');
 var fs = require('fs');
 
 new CronJob('30 5 18 * * *', function () {

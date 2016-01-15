@@ -20,14 +20,12 @@ new CronJob(global.config.time_interval.open_shifts, function () {
 }, null, true);
 
 function openShifts() {
-    var current_hour = moment().minute(0).second(0);
-
     // Example time filter: 1:59:00 pm - 2:01:00 pm
     var filter = {
         // start time = the top of the current hour -1 minute
-        start: current_hour.clone().add(-1, 'minute').format(wiw_date_format),
+        start: '-1 minute',
         // end time = the top of the current hour +1 minute
-        end: current_hour.clone().add(1, 'minute').format(wiw_date_format),
+        end: '+1 minute',
         location_id: global.config.locationID.regular_shifts,
         include_allopen: true // include_onlyopen doesn't work. no idea why
     };
