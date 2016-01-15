@@ -1,7 +1,6 @@
 
 var CronJob = require('cron').CronJob;
 var WhenIWork = require('./base');
-var moment = require('moment');
 
 var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 
@@ -14,8 +13,8 @@ mergeOpenShifts();
 function mergeOpenShifts() {
     var query = {
         include_allopen: true,
-        start: moment().add(-1, 'days').format(wiw_date_format),
-        end: moment().add(7, 'days').format(wiw_date_format),
+        start: '-1 day',
+        end: '+7 days',
         location_id: global.config.locationID.regular_shifts
     };
 
