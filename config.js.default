@@ -51,7 +51,10 @@ config.time_interval = {
     days_to_search_for_new_users_who_have_scheduled_their_first_shift: 7,
 
     // How often do we create new openshifts
-    open_shifts: '0 0 * * * *' // every hour
+    open_shifts: '0 0 * * * *', // every hour
+
+    // How often we repeat open shifts
+    days_in_interval_to_repeat_open_shifts: 7
 }
 
 config.mandrill = {
