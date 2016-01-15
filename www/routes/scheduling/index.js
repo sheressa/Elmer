@@ -85,10 +85,12 @@ router.get('/cancel-shift', function(req, res) {
                         console.log(response);
                     })
 
-                    var api2 = new WhenIWork(global.config.wheniwork.api_key, email, global.config.wheniwork.default_password);
+                    var api2 = new WhenIWork(global.config.wheniwork.api_key, email, global.config.wheniwork.default_password, function (resp) {
+                        res.render('scheduling/cancelShift', { url: 'https://app.wheniwork.com/' });
+                    });
 
                     api2.post('users/autologin', function (data) {
-                        res.render('scheduling/cancelShift', { token: data.hash });
+                        res.render('scheduling/cancelShift', { url: 'https://app.wheniwork.com/myschedule?al=' + data.hash });
                     });
                 });
 
