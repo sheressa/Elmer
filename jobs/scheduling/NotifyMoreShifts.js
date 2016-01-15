@@ -94,7 +94,7 @@ function processUsers(users) {
                     message: fs.readFileSync('./email_templates/two_shifts.txt', {encoding: 'utf-8'})
                 };
 
-                //WhenIWork.post('send', two_shift_post);
+                WhenIWork.post('send', two_shift_post);
             }
         });
     }
