@@ -15,6 +15,8 @@ new CronJob(global.config.time_interval.notify_first_shift_cron_job_string, func
 checkNewShifts();
 
 function checkNewShifts() {
+    // TODO: Re-enable this.
+    return;
 
     WhenIWork.get('users', {location_id: global.config.locationID.new_graduate}, function (users) {
         var now = moment();
