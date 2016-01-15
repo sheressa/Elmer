@@ -25,7 +25,12 @@ router.get('/login', function (req, res) {
             if (typeof data.error !== 'undefined') {
                 res.redirect('https://app.wheniwork.com');
             } else {
-                res.redirect('https://app.wheniwork.com/myschedule?al=' + data.hash);
+                var destination = 'myschedule';
+                if (req.query.destination != undefined && req.query.destination != '') {
+                    destination = req.query.destination;
+                }
+
+                res.redirect('https://app.wheniwork.com/'+destination+'?al=' + data.hash);
             }
         });
     });
