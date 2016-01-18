@@ -1,5 +1,7 @@
 var config = {};
 
+config.root_dir = __dirname;
+
 config.secret_key = 'SuperSecretKey';
 
 config.wheniwork = {
@@ -59,6 +61,11 @@ config.time_interval = {
 
 config.mandrill = {
     api_key: 'TODO'
+};
+
+config.stathat = {
+    enabled: false,
+    email: 'todo'
 };
 
 module.exports = config;
