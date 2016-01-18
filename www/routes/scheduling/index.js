@@ -2,6 +2,7 @@ var express   = require.main.require('express');
 var WhenIWork = require.main.require('wheniwork-unofficial');
 var moment    = require.main.require('moment');
 var sha1      = require.main.require('sha1');
+var stathat   = require(global.config.root_dir + '/lib/stathat');
 
 var router = express.Router();
 
@@ -123,6 +124,8 @@ function checkUser(email, first, last, callback) {
                 return;
             }
         }
+
+        stathat.increment('Scheduling - Accounts Created', 1);
 
         // At this point, we didn't find the user so let's create it.
         var newUser = {
