@@ -4,6 +4,7 @@ var moment = require('moment');
 var fs = require('fs');
 var async = require('async');
 var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
+var stathat = require(global.config.root_dir + '/lib/stathat');
 
 new CronJob(global.config.time_interval.recur_and_publish_shifts_cron_job_string, function () {
     recurNewlyCreatedShifts();
@@ -29,6 +30,7 @@ function recurNewlyCreatedShifts() {
         var newShifts = allShifts.filter(function(shift) {
             return !shift.notes;
         })
+        stathat.count('Scheduling - Shifts Recurred', newShifts.length);
         /**
             Assigning the original creator ID and the parent shift ID 
             to the notes field. When we delete all the shifts in a recurring shift, 

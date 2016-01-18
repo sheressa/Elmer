@@ -1,6 +1,7 @@
 var CronJob = require('cron').CronJob;
 var WhenIWork = require('./base');
 var fs = require('fs');
+var stathat = require(global.config.root_dir + '/lib/stathat');
 
 new CronJob('30 5 18 * * *', function () {
     notifyMoreShifts();
@@ -41,6 +42,9 @@ function processUsers(users) {
             only_two.push(i);
         }
     }
+
+    stathat.log('Scheduling - One Shift', only_one.length);
+    stathat.log('Scheduling - Two Shifts', only_two.length);
 
     // We're going to notify these people once a day.
     var one_shift_post = {
