@@ -30,7 +30,9 @@ function recurNewlyCreatedShifts() {
         var newShifts = allShifts.filter(function(shift) {
             return !shift.notes;
         })
-        stathat.count('Scheduling - Shifts Recurred', newShifts.length);
+
+        stathat.increment('Scheduling - Shifts Recurred', newShifts.length);
+
         /**
             Assigning the original creator ID and the parent shift ID 
             to the notes field. When we delete all the shifts in a recurring shift, 
