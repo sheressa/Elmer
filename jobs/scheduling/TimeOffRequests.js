@@ -3,6 +3,8 @@ var WhenIWork = require('./base');
 var moment = require('moment');
 var fs = require('fs');
 
+var date_format = 'YYYY-MM-DD HH:mm:ss';
+
 new CronJob(global.config.time_interval.time_off_requests_cron_job_string, function () {
     handleTimeOffRequests();
 }, null, true);
@@ -11,10 +13,10 @@ handleTimeOffRequests();
 
 function handleTimeOffRequests() {
     //Using moment.js to format time as WIW expects
-    var startDateToRetrieveRequests = moment().format('YYYY-MM-DD HH:mm:ss');
+    var startDateToRetrieveRequests = moment().format(date_format);
     var endDateToRetrieveRequests = moment()
         .add(global.config.time_interval.months_to_search_for_time_off_requests, 'months')
-        .format('YYYY-MM-DD HH:mm:ss');
+        .format(date_format);
     var timeOffSearchParams = {
         "start": startDateToRetrieveRequests,
         "end": endDateToRetrieveRequests,
@@ -32,8 +34,8 @@ function handleTimeOffRequests() {
         //For each pending request, look for any shifts that fall within the time off request
         newRequests.forEach(function(request) {
             var shiftSearchParams = {
-                "start": moment(request.start_time).format('YYYY-MM-DD HH:mm:ss'),
-                "end": moment(request.end_time).format('YYYY-MM-DD HH:mm:ss'),
+                "start": moment(request.start_time, date_format),
+                "end": moment(request.end_time, date_format),
                 "user_id": request.user_id,
                 "location_id": global.config.locationID.regular_shifts,
                 "unpublished": true
