@@ -1,6 +1,6 @@
 extends ../layout
 
 block content
-    h1 Your shift has been permanently cancelled.
-    form(action="#{url}", method="get")
+    h1 Click on a shift to cancel it
+    form(action="#{url}", method="post")
         input(type="submit", value="Continue on to schedule a new shift")

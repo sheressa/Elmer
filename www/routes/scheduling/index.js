@@ -9,6 +9,139 @@ var router = express.Router();
 var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
 
 var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
+var choose_shift_to_cancel_page_start_date_format = 'dddd h:mm a';
+var choose_shift_to_cancel_page_end_date_format = 'h:mm a z'
+
+router.get('/', function(req, res) {
+    var email = "tong@crisistextline.org"
+    // var email = req.email;
+    // if (!validate(req.query.email, req.query.token)) {
+    //     res.status(403).send('Access denied.');
+    // }
+
+    api.get('users', function (users) {
+        users = users.users;
+        for (var i in users) {
+            if (users[i].email == email) {
+                var userID = users[i].id;
+                var query = {
+                    user_id: userID,
+                    start: moment().add(-1, 'day').format('YYYY-MM-DD 00:00:00'),
+                    end: moment().add(8, 'days').format('YYYY-MM-DD HH:mm:ss'),
+                    location_id: global.config.locationID.regular_shifts
+                };
+
+                api.get('shifts', query, function(response) {
+                    if (!response.shifts || !response.shifts.length) {
+                        var error = "You don't seem to have booked any shifts to delete! If this message is sent in error, contact scheduling@crisistextline.org";
+                        var scheduleShiftsURL = 'https://app.wheniwork.com/login/?redirect=myschedule'
+                        res.render('scheduling/chooseShiftToCancel', { error: error , url: scheduleShiftsURL});
+                        return;
+                    }
+                    var shifts = response.shifts;
+                    
+                    // Remove duplicate shifts returned
+                    var i = shifts.length;
+                    while (i--) {
+                        shifts = shifts.filter(
+                            function(shift, index) {
+                                if (i === index) {
+                                    return true;
+                                }
+                                return !areShiftsDuplicate(shifts[i], shift);
+                            }
+                        )
+                    }
+
+                    // Formatting shift time display to be more user-readable
+                    shifts.forEach(function(shift) {
+                        shift.start_time = moment(shift.start_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_start_date_format);
+                        shift.end_time = moment(shift.end_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_end_date_format);
+                    })
+
+                    // Then, display them in the jade template. 
+                    res.render('scheduling/chooseShiftToCancel', { shifts: shifts, userID: userID, email: email, token: req.query.token});
+                })
+                break;
+            }
+        }
+    })
+})
+
+function areShiftsDuplicate(shiftA, shiftB) {
+    return JSON.parse(shiftA.notes).parent_shift === JSON.parse(shiftB.notes).parent_shift;
+}
+
+// Route which allows individual deletion of shifts
+router.post('/delete-shifts', function(req, res) {
+    // if (!validate(req.body.email, req.body.token)) {
+    //     res.status(403).send('Access denied.');
+    // }
+    console.log(req.body);
+
+    var parentShiftIDsOfShiftsToBeDeleted = [];
+    for (key in req.body) {
+        if (req.body[key] === 'on') {
+            parentShiftIDsOfShiftsToBeDeleted.push(parseInt(key));
+        }
+    }
+    console.log(parentShiftIDsOfShiftsToBeDeleted, '**8parentShiftIDsOfShiftsToBeDeleted**')
+    
+
+    var query = {
+        user_id: req.body.userID,
+        start: moment().add(-1, 'day').format('YYYY-MM-DD 00:00:00'),
+        end: moment().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'),
+        unpublished: true,
+        location_id: global.config.locationID.regular_shifts
+    };
+
+    api.get('shifts', query, function (shifts) {
+        var parentShiftID
+          , shift
+          , batchPayload = []
+          , deletedShiftInformation = {}
+          ;
+
+        shifts.shifts.forEach(function(shift) {
+            parentShiftID = JSON.parse(shift.notes).parent_shift;
+
+            if (parentShiftIDsOfShiftsToBeDeleted.indexOf(parentShiftID) >= 0) {
+                // If the shift starts within a week, it's a shift that needs to be converted to an
+                // open shift because the open shift job has already run and passed that day. 
+                if (Math.abs(moment().diff(moment(shift.start_time, wiw_date_format), 'days')) < global.config.time_interval.days_in_interval_to_repeat_open_shifts) {
+                    var reassignShiftToOpenAndRemoveNotesRequest = {
+                        "method": 'PUT',
+                        "url": "/2/shifts/" + shift.id,
+                        "params": {
+                            user_id: 0, 
+                            notes: ''
+                        }
+                    }
+                    batchPayload.push(reassignShiftToOpenAndRemoveNotesRequest);
+                }
+                // Otherwise, we just delete the shift. 
+                else {
+                    var shiftDeleteRequest = {
+                        "method": "delete",
+                        "url": "/2/shifts/" + shift.id,
+                        "params": {},
+                    };
+                    batchPayload.push(shiftDeleteRequest);
+                }
+
+                if (!deletedShiftInformation[parentShiftID]) {
+                    deletedShiftInformation[parentShiftID] = { start_time: shift.start_time, end_time: shift.end_time };
+                }
+            }
+        })
+
+        api.post('batch', batchPayload, function(response) {
+            console.log('Shifts deleted response: \n', response);
+            res.render('scheduling/someShiftsCancelled', { deletedShiftInformation: deletedShiftInformation });
+        })
+    });
+})
 
 router.get('/login', function (req, res) {
     if (!validate(req.query.email, req.query.token)) {
@@ -37,6 +170,7 @@ router.get('/login', function (req, res) {
     });
 });
 
+// Route to cancel all shifts
 router.get('/cancel-shift', function(req, res) {
     if (!validate(req.query.email, req.query.token)) {
         res.status(403).send('Access denied.');
@@ -49,7 +183,7 @@ router.get('/cancel-shift', function(req, res) {
         for (var i in users) {
             if (users[i].email == email) {
                 var q = {
-                    user_id: users[i].id,
+                    user_id: userID,
                     start: moment().add(-1, 'day').format('YYYY-MM-DD 00:00:00'),
                     end: moment().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'),
                     unpublished: true,
@@ -60,10 +194,13 @@ router.get('/cancel-shift', function(req, res) {
                 // over 50 years. API will break if significantly larger volumes of shifts are attempted
                 // to be deleted. 
                 api.get('shifts', q, function (shifts) {
-                    var batchPayload = [];
+                    var shift
+                      , batchPayload = []
+                      ;
+
                     for (var i in shifts.shifts) {
 
-                        var shift = shifts.shifts[i];
+                        shift = shifts.shifts[i];
                         // If the shift starts within a week, it's a shift that needs to be converted to an 
                         // open shift because the open shift job has already run and passed that day. 
                         if (Math.abs(moment().diff(moment(shift.start_time, wiw_date_format), 'days')) < global.config.time_interval.days_in_interval_to_repeat_open_shifts) {
@@ -92,11 +229,11 @@ router.get('/cancel-shift', function(req, res) {
                     })
 
                     var api2 = new WhenIWork(global.config.wheniwork.api_key, email, global.config.wheniwork.default_password, function (resp) {
-                        res.render('scheduling/cancelShift', { url: 'https://app.wheniwork.com/' });
+                        res.render('scheduling/allShiftsCancelled', { url: 'https://app.wheniwork.com/' });
                     });
 
                     api2.post('users/autologin', function (data) {
-                        res.render('scheduling/cancelShift', { url: 'https://app.wheniwork.com/myschedule?al=' + data.hash });
+                        res.render('scheduling/allShiftsCancelled', { url: 'https://app.wheniwork.com/myschedule?al=' + data.hash });
                     });
                 });
 
