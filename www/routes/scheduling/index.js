@@ -11,18 +11,19 @@ var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork
 var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var choose_shift_to_cancel_page_start_date_format = 'dddd h:mm a';
 var choose_shift_to_cancel_page_end_date_format = 'h:mm a z'
+var schedule_shifts_url = 'https://app.wheniwork.com/login/?redirect=myschedule'
 
 router.get('/', function(req, res) {
-    var email = "tong@crisistextline.org"
-    // var email = req.email;
-    // if (!validate(req.query.email, req.query.token)) {
-    //     res.status(403).send('Access denied.');
-    // }
+    var email = req.email;
+    if (!validate(req.query.email, req.query.token)) {
+        res.status(403).send('Access denied.');
+    }
 
     api.get('users', function (users) {
         users = users.users;
         for (var i in users) {
             if (users[i].email == email) {
+                var userName = users[i].first_name + ' ' + users[i].last_name;
                 var userID = users[i].id;
                 var query = {
                     user_id: userID,
@@ -34,13 +35,23 @@ router.get('/', function(req, res) {
                 api.get('shifts', query, function(response) {
                     if (!response.shifts || !response.shifts.length) {
                         var error = "You don't seem to have booked any shifts to delete! If this message is sent in error, contact scheduling@crisistextline.org";
-                        var scheduleShiftsURL = 'https://app.wheniwork.com/login/?redirect=myschedule'
-                        res.render('scheduling/chooseShiftToCancel', { error: error , url: scheduleShiftsURL});
+                        res.render('scheduling/chooseShiftToCancel', { error: error , url: schedule_shifts_url});
                         return;
                     }
                     var shifts = response.shifts;
-                    
-                    // Remove duplicate shifts returned
+                    /** 
+                        If the user creates a shift and it hasn't been recurred, we're going to direct the user
+                        to refresh. (The rest of deleting recurring shifts relies on using the parent_shift property
+                        stored in the shift.notes param.) 
+                    **/
+                    shifts.forEach(function(shift) {
+                        if (!shift.notes) {
+                            var error = "Please wait 30 seconds, and then refresh and try again.";
+                            res.render('scheduling/chooseShiftToCancel', { error: error , url: schedule_shifts_url});
+                            return;
+                        }
+                    })
+
                     var i = shifts.length;
                     while (i--) {
                         shifts = shifts.filter(
@@ -60,7 +71,7 @@ router.get('/', function(req, res) {
                     })
 
                     // Then, display them in the jade template. 
-                    res.render('scheduling/chooseShiftToCancel', { shifts: shifts, userID: userID, email: email, token: req.query.token});
+                    res.render('scheduling/chooseShiftToCancel', { shifts: shifts, userID: userID, email: email, token: req.query.token, userName: userName });
                 })
                 break;
             }
@@ -74,10 +85,9 @@ function areShiftsDuplicate(shiftA, shiftB) {
 
 // Route which allows individual deletion of shifts
 router.post('/delete-shifts', function(req, res) {
-    // if (!validate(req.body.email, req.body.token)) {
-    //     res.status(403).send('Access denied.');
-    // }
-    console.log(req.body);
+    if (!validate(req.body.email, req.body.token)) {
+        res.status(403).send('Access denied.');
+    }
 
     var parentShiftIDsOfShiftsToBeDeleted = [];
     for (key in req.body) {
@@ -85,9 +95,7 @@ router.post('/delete-shifts', function(req, res) {
             parentShiftIDsOfShiftsToBeDeleted.push(parseInt(key));
         }
     }
-    console.log(parentShiftIDsOfShiftsToBeDeleted, '**8parentShiftIDsOfShiftsToBeDeleted**')
     
-
     var query = {
         user_id: req.body.userID,
         start: moment().add(-1, 'day').format('YYYY-MM-DD 00:00:00'),

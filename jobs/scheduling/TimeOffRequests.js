@@ -5,11 +5,11 @@ var fs = require('fs');
 
 var date_format = 'YYYY-MM-DD HH:mm:ss';
 
-// new CronJob(global.config.time_interval.time_off_requests_cron_job_string, function () {
-//     handleTimeOffRequests();
-// }, null, true);
+new CronJob(global.config.time_interval.time_off_requests_cron_job_string, function () {
+    handleTimeOffRequests();
+}, null, true);
 
-// handleTimeOffRequests();
+handleTimeOffRequests();
 
 function handleTimeOffRequests() {
     //Using moment.js to format time as WIW expects
