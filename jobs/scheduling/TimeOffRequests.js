@@ -42,6 +42,11 @@ function handleTimeOffRequests() {
             };
 
             WhenIWork.get('shifts', shiftSearchParams, function(response) {
+                if (!response.shifts || response.shifts.length === 0) {
+                    console.log('No shifts found that fall within the range of timeoff request.');
+                    return false;
+                }
+
                 // Status code `2` represents approved requests.
                 var timeOffApprovalRequest = {
                     "method": "put",
