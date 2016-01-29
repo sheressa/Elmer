@@ -1,10 +1,12 @@
 extends ../layout
 
 block content
-    h1 The following shifts have been successfully cancelled: 
+    h1 The following shifts have been successfully deleted: 
     ul
       each shift in deletedShiftInformation
         li=shift.start_time + ' to ' + shift.end_time
 
     form(action="#{url}", method="post")
         input(type="submit", value="Continue on to schedule a new shift")
+    form(action="/scheduling", method="get")
+        input(type="submit", value="Delete other shifts")

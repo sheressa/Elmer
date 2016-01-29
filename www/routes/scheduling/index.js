@@ -46,7 +46,7 @@ router.get('/', function(req, res) {
                     **/
                     shifts.forEach(function(shift) {
                         if (!shift.notes) {
-                            var error = "Please wait 30 seconds, and then refresh and try again.";
+                            var error = "Sorry! WhenIWork is loading slowly. Please wait 30 seconds, and then refresh and try again.";
                             res.render('scheduling/chooseShiftToCancel', { error: error , url: schedule_shifts_url});
                             return;
                         }
@@ -69,6 +69,8 @@ router.get('/', function(req, res) {
                         shift.start_time = moment(shift.start_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_start_date_format);
                         shift.end_time = moment(shift.end_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_end_date_format);
                     })
+
+
 
                     // Then, display them in the jade template. 
                     res.render('scheduling/chooseShiftToCancel', { shifts: shifts, userID: userID, email: email, token: req.query.token, userName: userName });
@@ -139,7 +141,9 @@ router.post('/delete-shifts', function(req, res) {
                 }
 
                 if (!deletedShiftInformation[parentShiftID]) {
-                    deletedShiftInformation[parentShiftID] = { start_time: shift.start_time, end_time: shift.end_time };
+                    var formattedStartTime = moment(shift.start_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_start_date_format);
+                    var formattedEndTime = moment(shift.end_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_end_date_format)
+                    deletedShiftInformation[parentShiftID] = { start_time: formattedStartTime, end_time: formattedEndTime };
                 }
             }
         })

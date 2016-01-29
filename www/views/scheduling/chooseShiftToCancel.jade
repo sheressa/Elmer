@@ -6,7 +6,7 @@ block content
         | #[a(href="#{url}") schedule another shift]
     - }
     - else if (shifts && shifts.length > 0) {
-        h2 Delete Individual Shifts
+        h2 delete individual shifts - choose up to two shifts to delete at a time
         h4=userName + "'s shifts"
         form(action="/scheduling/delete-shifts" , method="post")
             input(type="hidden", name="email", value=email)
