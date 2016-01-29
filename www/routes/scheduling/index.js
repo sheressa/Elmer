@@ -19,16 +19,19 @@ router.get('/', function(req, res) {
         res.status(403).send('Access denied.');
     }
 
+    var altEmail = email.replace(/\W+/g, '');
+    altEmail = 'admin+'+altEmail+'@crisistextline.org';
+
     api.get('users', function (users) {
         users = users.users;
         for (var i in users) {
-            if (users[i].email == email) {
+            if (users[i].email == email || users[i].email == altEmail) {
                 var userName = users[i].first_name + ' ' + users[i].last_name;
                 var userID = users[i].id;
                 var query = {
                     user_id: userID,
-                    start: moment().add(-1, 'day').format('YYYY-MM-DD 00:00:00'),
-                    end: moment().add(8, 'days').format('YYYY-MM-DD HH:mm:ss'),
+                    start: '-1 day',
+                    end: '+8 days',
                     location_id: global.config.locationID.regular_shifts
                 };
 
@@ -70,8 +73,6 @@ router.get('/', function(req, res) {
                         shift.end_time = moment(shift.end_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_end_date_format);
                     })
 
-
-
                     // Then, display them in the jade template. 
                     res.render('scheduling/chooseShiftToCancel', { shifts: shifts, userID: userID, email: email, token: req.query.token, userName: userName });
                 })
@@ -82,7 +83,14 @@ router.get('/', function(req, res) {
 })
 
 function areShiftsDuplicate(shiftA, shiftB) {
-    return JSON.parse(shiftA.notes).parent_shift === JSON.parse(shiftB.notes).parent_shift;
+    var shiftsAreDuplicate = false;
+    try {
+        shiftsAreDuplicate = JSON.parse(shiftA.notes).parent_shift === JSON.parse(shiftB.notes).parent_shift;
+    }
+    catch (err) {
+        console.log('JSON.parse failed to parse ' + shiftA + ' or ' + shiftB);
+    }
+    return shiftsAreDuplicate;
 }
 
 // Route which allows individual deletion of shifts
@@ -100,8 +108,8 @@ router.post('/delete-shifts', function(req, res) {
     
     var query = {
         user_id: req.body.userID,
-        start: moment().add(-1, 'day').format('YYYY-MM-DD 00:00:00'),
-        end: moment().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'),
+        start: '-1 day', 
+        end: '+8 days',
         unpublished: true,
         location_id: global.config.locationID.regular_shifts
     };
@@ -189,13 +197,15 @@ router.get('/cancel-shift', function(req, res) {
     }
 
     var email = req.query.email;
+    var altEmail = email.replace(/\W+/g, '');
+    altEmail = 'admin+'+altEmail+'@crisistextline.org';
 
     api.get('users', function (users) {
         users = users.users;
         for (var i in users) {
-            if (users[i].email == email) {
+            if (users[i].email == email || users[i].email == altEmail) {
                 var q = {
-                    user_id: userID,
+                    user_id: users[i].id,
                     start: moment().add(-1, 'day').format('YYYY-MM-DD 00:00:00'),
                     end: moment().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'),
                     unpublished: true,
