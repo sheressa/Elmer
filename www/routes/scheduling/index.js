@@ -14,7 +14,7 @@ var choose_shift_to_cancel_page_end_date_format = 'h:mm a z'
 var schedule_shifts_url = 'https://app.wheniwork.com/login/?redirect=myschedule'
 
 router.get('/', function(req, res) {
-    var email = req.email;
+    var email = req.query.email;
     if (!validate(req.query.email, req.query.token)) {
         res.status(403).send('Access denied.');
     }
@@ -22,8 +22,8 @@ router.get('/', function(req, res) {
     var altEmail = email.replace(/\W+/g, '');
     altEmail = 'admin+'+altEmail+'@crisistextline.org';
 
-    api.get('users', function (users) {
-        users = users.users;
+    api.get('users', function (dataResponse) {
+        var users = dataResponse.users;
         for (var i in users) {
             if (users[i].email == email || users[i].email == altEmail) {
                 var userName = users[i].first_name + ' ' + users[i].last_name;
@@ -158,7 +158,14 @@ router.post('/delete-shifts', function(req, res) {
 
         api.post('batch', batchPayload, function(response) {
             console.log('Shifts deleted response: \n', response);
-            res.render('scheduling/someShiftsCancelled', { deletedShiftInformation: deletedShiftInformation });
+            var templateData = { 
+                deletedShiftInformation: deletedShiftInformation, 
+                email: req.body.email, 
+                token: req.body.token, 
+                url: 'https://app.wheniwork.com/'
+            }
+
+            res.render('scheduling/someShiftsCancelled', templateData);
         })
     });
 })
