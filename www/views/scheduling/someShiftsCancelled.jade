@@ -8,7 +8,7 @@ block content
 
     form(action="#{url}", method="post")
         input(type="submit", value="Continue on to schedule a new shift")
-    form(action="/scheduling", method="get")
+    form(action="/scheduling/shifts", method="get")
         input(type="hidden", name="email", value=email)
         input(type="hidden", name="token", value=token)
         input(type="submit", value="Delete other shifts")

@@ -8,7 +8,7 @@ block content
     - else if (shifts && shifts.length > 0) {
         h2 delete individual shifts - choose up to two shifts to delete at a time
         h4=userName + "'s shifts"
-        form(action="/scheduling/delete-shifts" , method="post")
+        form(action="/scheduling/shifts" , method="post")
             input(type="hidden", name="email", value=email)
             input(type="hidden", name="userID", value=userID)
             input(type="hidden", name="token", value=token)

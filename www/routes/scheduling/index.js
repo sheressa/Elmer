@@ -13,7 +13,7 @@ var choose_shift_to_cancel_page_start_date_format = 'dddd h:mm a';
 var choose_shift_to_cancel_page_end_date_format = 'h:mm a z'
 var schedule_shifts_url = 'https://app.wheniwork.com/login/?redirect=myschedule'
 
-router.get('/', function(req, res) {
+router.get('/shifts', function(req, res) {
     var email = req.query.email;
     if (!validate(req.query.email, req.query.token)) {
         res.status(403).send('Access denied.');
@@ -38,7 +38,7 @@ router.get('/', function(req, res) {
                 api.get('shifts', query, function(response) {
                     if (!response.shifts || !response.shifts.length) {
                         var error = "You don't seem to have booked any shifts to delete! If this message is sent in error, contact scheduling@crisistextline.org";
-                        res.render('scheduling/chooseShiftToCancel', { error: error , url: schedule_shifts_url});
+                        res.render('scheduling/chooseShiftToCancel', { error: error , url: schedule_shifts_url });
                         return;
                     }
                     var shifts = response.shifts;
@@ -73,8 +73,15 @@ router.get('/', function(req, res) {
                         shift.end_time = moment(shift.end_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_end_date_format);
                     })
 
+                    var templateData = { 
+                        shifts: shifts, 
+                        userID: userID, 
+                        email: email, 
+                        token: req.query.token, 
+                        userName: userName
+                    }
                     // Then, display them in the jade template. 
-                    res.render('scheduling/chooseShiftToCancel', { shifts: shifts, userID: userID, email: email, token: req.query.token, userName: userName });
+                    res.render('scheduling/chooseShiftToCancel', templateData);
                 })
                 break;
             }
@@ -94,7 +101,7 @@ function areShiftsDuplicate(shiftA, shiftB) {
 }
 
 // Route which allows individual deletion of shifts
-router.post('/delete-shifts', function(req, res) {
+router.post('/shifts', function(req, res) {
     if (!validate(req.body.email, req.body.token)) {
         res.status(403).send('Access denied.');
     }
