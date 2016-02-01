@@ -42,10 +42,10 @@ router.get('/shifts', function(req, res) {
                         return;
                     }
                     var shifts = response.shifts;
-                    /** 
+                    /**
                         If the user creates a shift and it hasn't been recurred, we're going to direct the user
                         to refresh. (The rest of deleting recurring shifts relies on using the parent_shift property
-                        stored in the shift.notes param.) 
+                        stored in the shift.notes param.)
                     **/
                     shifts.forEach(function(shift) {
                         if (!shift.notes) {
@@ -67,20 +67,25 @@ router.get('/shifts', function(req, res) {
                         )
                     }
 
+                    // Sorting shifts by when they occur on the weekly calendar
+                    shifts.sort(function(shiftA, shiftB) {
+                        return sortByDayAscAndTimeAsc(moment(shiftA.start_time, wiw_date_format), moment(shiftB.start_time, wiw_date_format));
+                    })
+
                     // Formatting shift time display to be more user-readable
                     shifts.forEach(function(shift) {
                         shift.start_time = moment(shift.start_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_start_date_format);
                         shift.end_time = moment(shift.end_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_end_date_format);
                     })
 
-                    var templateData = { 
-                        shifts: shifts, 
-                        userID: userID, 
-                        email: email, 
-                        token: req.query.token, 
+                    var templateData = {
+                        shifts: shifts,
+                        userID: userID,
+                        email: email,
+                        token: req.query.token,
                         userName: userName
                     }
-                    // Then, display them in the jade template. 
+                    // Then, display them in the jade template.
                     res.render('scheduling/chooseShiftToCancel', templateData);
                 })
                 break;
@@ -100,6 +105,26 @@ function areShiftsDuplicate(shiftA, shiftB) {
     return shiftsAreDuplicate;
 }
 
+/**
+    Returns 1 if firstMomentObject occurs after secondMomentObject in the
+    weekly calendar, returns -1 if firstMomentObject occurs before
+    secondMomentObject.
+**/
+function sortByDayAscAndTimeAsc(firstMomentObject, secondMomentObject) {
+    if (firstMomentObject.day() !== secondMomentObject.day()) {
+        return firstMomentObject.day() > secondMomentObject.day() ? 1 : -1;
+    }
+    else if (firstMomentObject.hours() !== secondMomentObject.hours()) {
+        return firstMomentObject.hours() > secondMomentObject.hours() ? 1 : -1;
+    }
+    else if (firstMomentObject.minutes() !== secondMomentObject.minutes()) {
+        return firstMomentObject.minutes() > secondMomentObject.minutes() ? 1 : -1;
+    }
+    else if (firstMomentObject.seconds() !== secondMomentObject.seconds()) {
+        return firstMomentObject.seconds() > secondMomentObject.seconds() ? 1 : -1;
+    }
+    return 0;
+}
 // Route which allows individual deletion of shifts
 router.post('/shifts', function(req, res) {
     if (!validate(req.body.email, req.body.token)) {
@@ -112,10 +137,10 @@ router.post('/shifts', function(req, res) {
             parentShiftIDsOfShiftsToBeDeleted.push(parseInt(key));
         }
     }
-    
+
     var query = {
         user_id: req.body.userID,
-        start: '-1 day', 
+        start: '-1 day',
         end: '+8 days',
         unpublished: true,
         location_id: global.config.locationID.regular_shifts
@@ -133,19 +158,19 @@ router.post('/shifts', function(req, res) {
 
             if (parentShiftIDsOfShiftsToBeDeleted.indexOf(parentShiftID) >= 0) {
                 // If the shift starts within a week, it's a shift that needs to be converted to an
-                // open shift because the open shift job has already run and passed that day. 
+                // open shift because the open shift job has already run and passed that day.
                 if (Math.abs(moment().diff(moment(shift.start_time, wiw_date_format), 'days')) < global.config.time_interval.days_in_interval_to_repeat_open_shifts) {
                     var reassignShiftToOpenAndRemoveNotesRequest = {
                         "method": 'PUT',
                         "url": "/2/shifts/" + shift.id,
                         "params": {
-                            user_id: 0, 
+                            user_id: 0,
                             notes: ''
                         }
                     }
                     batchPayload.push(reassignShiftToOpenAndRemoveNotesRequest);
                 }
-                // Otherwise, we just delete the shift. 
+                // Otherwise, we just delete the shift.
                 else {
                     var shiftDeleteRequest = {
                         "method": "delete",
@@ -165,10 +190,10 @@ router.post('/shifts', function(req, res) {
 
         api.post('batch', batchPayload, function(response) {
             console.log('Shifts deleted response: \n', response);
-            var templateData = { 
-                deletedShiftInformation: deletedShiftInformation, 
-                email: req.body.email, 
-                token: req.body.token, 
+            var templateData = {
+                deletedShiftInformation: deletedShiftInformation,
+                email: req.body.email,
+                token: req.body.token,
                 url: 'https://app.wheniwork.com/'
             }
 
@@ -228,7 +253,7 @@ router.get('/cancel-shift', function(req, res) {
 
                 // Works to delete the normal volume of shifts associated with one user (2 shifts), recurred
                 // over 50 years. API will break if significantly larger volumes of shifts are attempted
-                // to be deleted. 
+                // to be deleted.
                 api.get('shifts', q, function (shifts) {
                     var shift
                       , batchPayload = []
@@ -237,20 +262,20 @@ router.get('/cancel-shift', function(req, res) {
                     for (var i in shifts.shifts) {
 
                         shift = shifts.shifts[i];
-                        // If the shift starts within a week, it's a shift that needs to be converted to an 
-                        // open shift because the open shift job has already run and passed that day. 
+                        // If the shift starts within a week, it's a shift that needs to be converted to an
+                        // open shift because the open shift job has already run and passed that day.
                         if (Math.abs(moment().diff(moment(shift.start_time, wiw_date_format), 'days')) < global.config.time_interval.days_in_interval_to_repeat_open_shifts) {
                             var reassignShiftToOpenAndRemoveNotesRequest = {
                                 "method": 'PUT',
                                 "url": "/2/shifts/" + shift.id,
                                 "params": {
-                                    user_id: 0, 
+                                    user_id: 0,
                                     notes: ''
-                                }   
+                                }
                             }
                             batchPayload.push(reassignShiftToOpenAndRemoveNotesRequest);
                         }
-                        // Otherwise, we just delete the shift. 
+                        // Otherwise, we just delete the shift.
                         else {
                             var shiftDeleteRequest = {
                                 "method": "delete",
