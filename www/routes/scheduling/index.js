@@ -8,10 +8,10 @@ var router = express.Router();
 
 var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
 
-var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
-var choose_shift_to_cancel_page_start_date_format = 'dddd h:mm a';
-var choose_shift_to_cancel_page_end_date_format = 'h:mm a z'
-var schedule_shifts_url = 'https://app.wheniwork.com/login/?redirect=myschedule'
+var wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
+var chooseShiftToCancelPageStartDateFormat = 'dddd h:mm a';
+var chooseShiftToCancelPageEndDateFormat = 'h:mm a z';
+var scheduleShiftsURL = 'https://app.wheniwork.com/login/?redirect=myschedule';
 
 router.get('/shifts', function(req, res) {
     var email = req.query.email;
@@ -23,11 +23,15 @@ router.get('/shifts', function(req, res) {
     altEmail = 'admin+'+altEmail+'@crisistextline.org';
 
     api.get('users', function (dataResponse) {
-        var users = dataResponse.users;
-        for (var i in users) {
-            if (users[i].email == email || users[i].email == altEmail) {
-                var userName = users[i].first_name + ' ' + users[i].last_name;
-                var userID = users[i].id;
+        var users = dataResponse.users
+          , user
+          ;
+
+        for (var i = 0; i < users.length; i++) {
+            user = users[i];
+            if (user.email == email || user.email == altEmail) {
+                var userName = user.first_name + ' ' + user.last_name;
+                var userID = user.id;
                 var query = {
                     user_id: userID,
                     start: '-1 day',
@@ -38,7 +42,7 @@ router.get('/shifts', function(req, res) {
                 api.get('shifts', query, function(response) {
                     if (!response.shifts || !response.shifts.length) {
                         var error = "You don't seem to have booked any shifts to delete! If this message is sent in error, contact scheduling@crisistextline.org";
-                        res.render('scheduling/chooseShiftToCancel', { error: error , url: schedule_shifts_url });
+                        res.render('scheduling/chooseShiftToCancel', { error: error , url: scheduleShiftsURL });
                         return;
                     }
                     var shifts = response.shifts;
@@ -50,7 +54,7 @@ router.get('/shifts', function(req, res) {
                     shifts.forEach(function(shift) {
                         if (!shift.notes) {
                             var error = "Sorry! WhenIWork is loading slowly. Please wait 30 seconds, and then refresh and try again.";
-                            res.render('scheduling/chooseShiftToCancel', { error: error , url: schedule_shifts_url});
+                            res.render('scheduling/chooseShiftToCancel', { error: error , url: scheduleShiftsURL});
                             return;
                         }
                     })
@@ -69,17 +73,17 @@ router.get('/shifts', function(req, res) {
 
                     // Sorting shifts by when they occur on the weekly calendar
                     shifts.sort(function(shiftA, shiftB) {
-                        return sortByDayAscAndTimeAsc(moment(shiftA.start_time, wiw_date_format), moment(shiftB.start_time, wiw_date_format));
-                    })
+                        return sortByDayAscAndTimeAsc(moment(shiftA.start_time, wiwDateFormat), moment(shiftB.start_time, wiwDateFormat));
+                    });
 
                     // Formatting shift time display to be more user-readable
                     shifts.forEach(function(shift) {
-                        shift.start_time = moment(shift.start_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_start_date_format);
-                        shift.end_time = moment(shift.end_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_end_date_format);
-                    })
+                        shift.start_time = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseShiftToCancelPageStartDateFormat);
+                        shift.end_time = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseShiftToCancelPageEndDateFormat);
+                    });
 
                     var templateData = {
-                        shifts: shifts, // stringify this somehow Tue 3|Mon 6
+                        shifts: shifts,
                         userID: userID,
                         email: email,
                         token: req.query.token,
@@ -102,7 +106,7 @@ router.delete('/shifts', function(req, res) {
     }
 
     var parentShiftIDsOfShiftsToBeDeleted = [];
-    for (key in req.query) {
+    for (var key in req.query) {
         if (req.query[key] === 'on') {
             parentShiftIDsOfShiftsToBeDeleted.push(parseInt(key));
         }
@@ -116,7 +120,7 @@ router.delete('/shifts', function(req, res) {
         location_id: global.config.locationID.regular_shifts
     };
 
-    api.get('shifts', query, function (shifts) {
+    api.get('shifts', query, function (data) {
         var parentShiftID
           , shift
           , batchPayload = []
@@ -124,13 +128,13 @@ router.delete('/shifts', function(req, res) {
           , finalDeletedShiftArray = []
           ;
 
-        shifts.shifts.forEach(function(shift) {
+        data.shifts.forEach(function(shift) {
             parentShiftID = JSON.parse(shift.notes).parent_shift;
 
-            if (parentShiftIDsOfShiftsToBeDeleted.indexOf(parentShiftID) >= 0) {
+            if (parentShiftIDsOfShiftsToBeDeleted.indexOf(parentShiftID) != -1) {
                 // If the shift starts within a week, it's a shift that needs to be converted to an
                 // open shift because the open shift job has already run and passed that day.
-                if (Math.abs(moment().diff(moment(shift.start_time, wiw_date_format), 'days')) < global.config.time_interval.days_in_interval_to_repeat_open_shifts) {
+                if (Math.abs(moment().diff(moment(shift.start_time, wiwDateFormat), 'days')) < global.config.time_interval.days_in_interval_to_repeat_open_shifts) {
                     var reassignShiftToOpenAndRemoveNotesRequest = {
                         "method": 'PUT',
                         "url": "/2/shifts/" + shift.id,
@@ -152,19 +156,18 @@ router.delete('/shifts', function(req, res) {
                 }
 
                 if (!deletedShiftInformation[parentShiftID]) {
-                    var formattedStartTime = moment(shift.start_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_start_date_format);
-                    var formattedEndTime = moment(shift.end_time, wiw_date_format).tz('America/New_York').format(choose_shift_to_cancel_page_end_date_format)
+                    var formattedStartTime = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseShiftToCancelPageStartDateFormat);
+                    var formattedEndTime = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseShiftToCancelPageEndDateFormat)
                     deletedShiftInformation[parentShiftID] = { start_time: formattedStartTime, end_time: formattedEndTime };
                 }
             }
-        })
+        });
 
         for (key in deletedShiftInformation) {
             finalDeletedShiftArray.push(deletedShiftInformation[key]);
         }
 
         api.post('batch', batchPayload, function(response) {
-            console.log('Shifts deleted response: \n', response);
             var templateData = {
                 deletedShiftInformation: JSON.stringify(finalDeletedShiftArray),
                 email: req.query.email,
@@ -183,7 +186,7 @@ router.delete('/shifts', function(req, res) {
             };
 
             res.json(response);
-        })
+        });
     });
 })
 
