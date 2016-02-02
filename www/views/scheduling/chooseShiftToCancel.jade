@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+    - if (error) {
+        h3=error
+        | #[a(href="#{url}") schedule another shift]
+    - }
+    - else if (shifts && shifts.length > 0) {
+        h2 delete individual shifts - choose up to two shifts to delete at a time
+        h4=userName + "'s shifts"
+        form(name="cancel-form")
+            input(type="hidden", name="email", value=email)
+            input(type="hidden", name="userID", value=userID)
+            input(type="hidden", name="token", value=token)
+            each shift in shifts
+                - var parentShiftID = JSON.parse(shift.notes).parent_shift
+                - var title = shift.start_time + ' to ' + shift.end_time
+                div.input
+                    input(type="checkbox", name=parentShiftID)
+                    span.label=title
+            div.actions
+                input(type="submit", id="delete-shifts")
+    - }
