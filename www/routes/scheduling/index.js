@@ -79,12 +79,13 @@ router.get('/shifts', function(req, res) {
                     })
 
                     var templateData = {
-                        shifts: shifts,
+                        shifts: shifts, // stringify this somehow Tue 3|Mon 6
                         userID: userID,
                         email: email,
                         token: req.query.token,
                         userName: userName
-                    }
+                    };
+
                     // Then, display them in the jade template.
                     res.render('scheduling/chooseShiftToCancel', templateData);
                 })
@@ -94,52 +95,21 @@ router.get('/shifts', function(req, res) {
     })
 })
 
-function areShiftsDuplicate(shiftA, shiftB) {
-    var shiftsAreDuplicate = false;
-    try {
-        shiftsAreDuplicate = JSON.parse(shiftA.notes).parent_shift === JSON.parse(shiftB.notes).parent_shift;
-    }
-    catch (err) {
-        console.log('JSON.parse failed to parse ' + shiftA + ' or ' + shiftB);
-    }
-    return shiftsAreDuplicate;
-}
-
-/**
-    Returns 1 if firstMomentObject occurs after secondMomentObject in the
-    weekly calendar, returns -1 if firstMomentObject occurs before
-    secondMomentObject.
-**/
-function sortByDayAscAndTimeAsc(firstMomentObject, secondMomentObject) {
-    if (firstMomentObject.day() !== secondMomentObject.day()) {
-        return firstMomentObject.day() > secondMomentObject.day() ? 1 : -1;
-    }
-    else if (firstMomentObject.hours() !== secondMomentObject.hours()) {
-        return firstMomentObject.hours() > secondMomentObject.hours() ? 1 : -1;
-    }
-    else if (firstMomentObject.minutes() !== secondMomentObject.minutes()) {
-        return firstMomentObject.minutes() > secondMomentObject.minutes() ? 1 : -1;
-    }
-    else if (firstMomentObject.seconds() !== secondMomentObject.seconds()) {
-        return firstMomentObject.seconds() > secondMomentObject.seconds() ? 1 : -1;
-    }
-    return 0;
-}
-// Route which allows individual deletion of shifts
-router.post('/shifts', function(req, res) {
-    if (!validate(req.body.email, req.body.token)) {
+router.delete('/shifts', function(req, res) {
+    console.log(req.query, req.query.token, req.query.email);
+    if (!validate(req.query.email, req.query.token)) {
         res.status(403).send('Access denied.');
     }
 
     var parentShiftIDsOfShiftsToBeDeleted = [];
-    for (key in req.body) {
-        if (req.body[key] === 'on') {
+    for (key in req.query) {
+        if (req.query[key] === 'on') {
             parentShiftIDsOfShiftsToBeDeleted.push(parseInt(key));
         }
     }
 
     var query = {
-        user_id: req.body.userID,
+        user_id: req.query.userID,
         start: '-1 day',
         end: '+8 days',
         unpublished: true,
@@ -151,6 +121,7 @@ router.post('/shifts', function(req, res) {
           , shift
           , batchPayload = []
           , deletedShiftInformation = {}
+          , finalDeletedShiftArray = []
           ;
 
         shifts.shifts.forEach(function(shift) {
@@ -188,18 +159,46 @@ router.post('/shifts', function(req, res) {
             }
         })
 
+        for (key in deletedShiftInformation) {
+            finalDeletedShiftArray.push(deletedShiftInformation[key]);
+        }
+
         api.post('batch', batchPayload, function(response) {
             console.log('Shifts deleted response: \n', response);
             var templateData = {
-                deletedShiftInformation: deletedShiftInformation,
-                email: req.body.email,
-                token: req.body.token,
+                deletedShiftInformation: JSON.stringify(finalDeletedShiftArray),
+                email: req.query.email,
+                token: req.query.token,
                 url: 'https://app.wheniwork.com/'
             }
 
-            res.render('scheduling/someShiftsCancelled', templateData);
+            var url = '/scheduling/shifts/delete-success?';
+            for (var label in templateData) {
+                url += label + '=' + templateData[label] + '&';
+            }
+
+            var response = {
+                success: true,
+                redirect: url
+            };
+
+            res.json(response);
         })
     });
+})
+
+router.get('/shifts/delete-success', function(req, res) {
+    var templateData = {
+        email: req.query.email,
+        token: req.query.token,
+        userName: req.query.userName,
+        url: 'https://app.wheniwork.com/',
+        deletedShiftInformation: req.query.deletedShiftInformation
+    };
+
+    console.log('within delete-success, templateData: ', templateData)
+
+    res.render('scheduling/someShiftsCancelled', templateData);
 })
 
 router.get('/login', function (req, res) {
@@ -226,81 +225,6 @@ router.get('/login', function (req, res) {
                 res.redirect('https://app.wheniwork.com/'+destination+'?al=' + data.hash);
             }
         });
-    });
-});
-
-// Route to cancel all shifts
-router.get('/cancel-shift', function(req, res) {
-    if (!validate(req.query.email, req.query.token)) {
-        res.status(403).send('Access denied.');
-    }
-
-    var email = req.query.email;
-    var altEmail = email.replace(/\W+/g, '');
-    altEmail = 'admin+'+altEmail+'@crisistextline.org';
-
-    api.get('users', function (users) {
-        users = users.users;
-        for (var i in users) {
-            if (users[i].email == email || users[i].email == altEmail) {
-                var q = {
-                    user_id: users[i].id,
-                    start: moment().add(-1, 'day').format('YYYY-MM-DD 00:00:00'),
-                    end: moment().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'),
-                    unpublished: true,
-                    location_id: global.config.locationID.regular_shifts
-                };
-
-                // Works to delete the normal volume of shifts associated with one user (2 shifts), recurred
-                // over 50 years. API will break if significantly larger volumes of shifts are attempted
-                // to be deleted.
-                api.get('shifts', q, function (shifts) {
-                    var shift
-                      , batchPayload = []
-                      ;
-
-                    for (var i in shifts.shifts) {
-
-                        shift = shifts.shifts[i];
-                        // If the shift starts within a week, it's a shift that needs to be converted to an
-                        // open shift because the open shift job has already run and passed that day.
-                        if (Math.abs(moment().diff(moment(shift.start_time, wiw_date_format), 'days')) < global.config.time_interval.days_in_interval_to_repeat_open_shifts) {
-                            var reassignShiftToOpenAndRemoveNotesRequest = {
-                                "method": 'PUT',
-                                "url": "/2/shifts/" + shift.id,
-                                "params": {
-                                    user_id: 0,
-                                    notes: ''
-                                }
-                            }
-                            batchPayload.push(reassignShiftToOpenAndRemoveNotesRequest);
-                        }
-                        // Otherwise, we just delete the shift.
-                        else {
-                            var shiftDeleteRequest = {
-                                "method": "delete",
-                                "url": "/2/shifts/" + shift.id,
-                                "params": {},
-                            };
-                            batchPayload.push(shiftDeleteRequest);
-                        }
-                    }
-                    api.post('batch', batchPayload, function(response) {
-                        console.log(response);
-                    })
-
-                    var api2 = new WhenIWork(global.config.wheniwork.api_key, email, global.config.wheniwork.default_password, function (resp) {
-                        res.render('scheduling/allShiftsCancelled', { url: 'https://app.wheniwork.com/' });
-                    });
-
-                    api2.post('users/autologin', function (data) {
-                        res.render('scheduling/allShiftsCancelled', { url: 'https://app.wheniwork.com/myschedule?al=' + data.hash });
-                    });
-                });
-
-                break;
-            }
-        }
     });
 });
 
@@ -354,6 +278,44 @@ function checkUser(email, first, last, callback) {
             });
         });
     });
+}
+
+/**
+    Returns true if two shifts are duplicate, false if otherwise.
+    Our working definition of duplicate? If two shifts were created
+    from the same parent shift, and thus have the same parent_shift ID
+    in its notes section.
+**/
+function areShiftsDuplicate(shiftA, shiftB) {
+    var shiftsAreDuplicate = false;
+    try {
+        shiftsAreDuplicate = JSON.parse(shiftA.notes).parent_shift === JSON.parse(shiftB.notes).parent_shift;
+    }
+    catch (err) {
+        console.log('JSON.parse failed to parse ' + shiftA + ' or ' + shiftB);
+    }
+    return shiftsAreDuplicate;
+}
+
+/**
+    Returns 1 if firstMomentObject occurs after secondMomentObject in the
+    weekly calendar, returns -1 if firstMomentObject occurs before
+    secondMomentObject.
+**/
+function sortByDayAscAndTimeAsc(firstMomentObject, secondMomentObject) {
+    if (firstMomentObject.day() !== secondMomentObject.day()) {
+        return firstMomentObject.day() > secondMomentObject.day() ? 1 : -1;
+    }
+    else if (firstMomentObject.hours() !== secondMomentObject.hours()) {
+        return firstMomentObject.hours() > secondMomentObject.hours() ? 1 : -1;
+    }
+    else if (firstMomentObject.minutes() !== secondMomentObject.minutes()) {
+        return firstMomentObject.minutes() > secondMomentObject.minutes() ? 1 : -1;
+    }
+    else if (firstMomentObject.seconds() !== secondMomentObject.seconds()) {
+        return firstMomentObject.seconds() > secondMomentObject.seconds() ? 1 : -1;
+    }
+    return 0;
 }
 
 module.exports = router;
