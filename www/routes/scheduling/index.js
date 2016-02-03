@@ -212,7 +212,7 @@ router.get('/login', function (req, res) {
     var email = req.query.email;
 
     checkUser(req.query.email, req.query.fn, req.query.ln, function (user) {
-        var api2 = new WhenIWork(global.config.wheniwork.api_key, email, global.config.wheniwork.default_password, function (resp) {
+        var api2 = new WhenIWork(global.config.wheniwork.api_key, user.email, global.config.wheniwork.default_password, function (resp) {
             res.redirect('https://app.wheniwork.com/login/?redirect=myschedule');
         });
 
@@ -259,12 +259,13 @@ function checkUser(email, first, last, callback) {
             first_name: first,
             last_name: last,
             activated: true,
-            locations: [global.config.locationID.regular_shifts],
+            locations: [global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts],
             password: global.config.wheniwork.default_password
         };
 
         api.post('users', newUser, function (data) {
-            var api2 = new WhenIWork(global.config.wheniwork.api_key, altEmail, global.config.wheniwork.default_password);
+            var api2 = new WhenIWork(global.config.wheniwork.api_key, altEmail, global.config.wheniwork.default_password, function (data) {
+            });
 
             var alert = {sms: false, email: false};
             var alerts = ['timeoff', 'swaps', 'schedule', 'reminders', 'availability', 'new_employee', 'attendance'];
@@ -277,7 +278,8 @@ function checkUser(email, first, last, callback) {
             api2.post('users/alerts', postBody, function () {});
 
             api2.post('users/profile', {email: email}, function (profile) {
-                callback(profile);
+               console.log(profile);
+                callback(profile.user);
             });
         });
     });
