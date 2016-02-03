@@ -7,7 +7,9 @@ block content
       each shift in deletedShiftInformation
         li=shift.start_time + ' to ' + shift.end_time
 
-    form(action="#{url}", method="post")
+    form(action="#{url}", method="get")
+        input(type="hidden", name="email", value=email)
+        input(type="hidden", name="token", value=token)
         input(type="submit", value="Continue on to schedule a new shift")
     form(action="/scheduling/shifts", method="get")
         input(type="hidden", name="email", value=email)
