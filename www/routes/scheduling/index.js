@@ -115,7 +115,7 @@ router.delete('/shifts', function(req, res) {
     var query = {
         user_id: req.query.userID,
         start: '-1 day',
-        end: '+8 days',
+        end: '+50 years',
         unpublished: true,
         location_id: global.config.locationID.regular_shifts
     };
