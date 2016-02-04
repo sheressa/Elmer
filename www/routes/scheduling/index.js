@@ -11,7 +11,7 @@ var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork
 var wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var chooseShiftToCancelPageStartDateFormat = 'dddd h:mm a';
 var chooseShiftToCancelPageEndDateFormat = 'h:mm a z';
-var scheduleShiftsURL = 'https://app.wheniwork.com/login/?redirect=myschedule';
+var scheduleShiftsURL = '/scheduling/login?';
 
 router.get('/shifts', function(req, res) {
     var email = req.query.email;
@@ -32,6 +32,8 @@ router.get('/shifts', function(req, res) {
             if (user.email == email || user.email == altEmail) {
                 var userName = user.first_name + ' ' + user.last_name;
                 var userID = user.id;
+                var fn = user.first_name;
+                var ln = user.last_name;
                 var query = {
                     user_id: userID,
                     start: '-1 day',
@@ -40,9 +42,10 @@ router.get('/shifts', function(req, res) {
                 };
 
                 api.get('shifts', query, function(response) {
+                    var url = scheduleShiftsURL + 'email=' + encodeURIComponent(email) + '&token=' + req.query.token;
                     if (!response.shifts || !response.shifts.length) {
                         var error = "You don't seem to have booked any shifts to delete! If this message is sent in error, contact scheduling@crisistextline.org";
-                        res.render('scheduling/chooseShiftToCancel', { error: error , url: scheduleShiftsURL });
+                        res.render('scheduling/chooseShiftToCancel', { error: error , url: url });
                         return;
                     }
                     var shifts = response.shifts;
@@ -54,7 +57,7 @@ router.get('/shifts', function(req, res) {
                     shifts.forEach(function(shift) {
                         if (!shift.notes) {
                             var error = "Sorry! WhenIWork is loading slowly. Please wait 30 seconds, and then refresh and try again.";
-                            res.render('scheduling/chooseShiftToCancel', { error: error , url: scheduleShiftsURL});
+                            res.render('scheduling/chooseShiftToCancel', { error: error , url: url});
                             return;
                         }
                     })
@@ -100,7 +103,6 @@ router.get('/shifts', function(req, res) {
 })
 
 router.delete('/shifts', function(req, res) {
-    console.log(req.query, req.query.token, req.query.email);
     if (!validate(req.query.email, req.query.token)) {
         res.status(403).send('Access denied.');
     }
@@ -170,7 +172,7 @@ router.delete('/shifts', function(req, res) {
         api.post('batch', batchPayload, function(response) {
             var templateData = {
                 deletedShiftInformation: JSON.stringify(finalDeletedShiftArray),
-                email: req.query.email,
+                email: encodeURIComponent(req.query.email),
                 token: req.query.token,
                 url: 'https://app.wheniwork.com/'
             }
@@ -195,11 +197,9 @@ router.get('/shifts/delete-success', function(req, res) {
         email: req.query.email,
         token: req.query.token,
         userName: req.query.userName,
-        url: 'https://app.wheniwork.com/',
+        url: scheduleShiftsURL,
         deletedShiftInformation: req.query.deletedShiftInformation
     };
-
-    console.log('within delete-success, templateData: ', templateData)
 
     res.render('scheduling/someShiftsCancelled', templateData);
 })
@@ -233,7 +233,6 @@ router.get('/login', function (req, res) {
 
 function validate(email, hash) {
     var check = email + global.config.secret_key;
-
     return sha1(check) == hash;
 }
 
