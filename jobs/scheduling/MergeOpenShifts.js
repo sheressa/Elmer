@@ -4,7 +4,7 @@ var WhenIWork = require('./base');
 
 var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 
-new CronJob('0 0 * * * *', function () {
+new CronJob(global.config.time_interval.open_shifts, function () {
     mergeOpenShifts();
 });
 
@@ -19,23 +19,23 @@ function mergeOpenShifts() {
     };
 
     WhenIWork.get('shifts', query, function (data) {
-        var open_shifts = {};
+        var openShifts = {};
 
         for (var i in data.shifts) {
             if (data.shifts[i].is_open) {
                 var shift = data.shifts[i];
 
-                if (typeof open_shifts[shift.start_time] == 'undefined') {
-                    open_shifts[shift.start_time] = [];
+                if (typeof openShifts[shift.start_time] == 'undefined') {
+                    openShifts[shift.start_time] = [];
                 }
 
-                open_shifts[shift.start_time].push(shift);
+                openShifts[shift.start_time].push(shift);
             }
         }
 
-        for (var i in open_shifts) {
-            if (open_shifts[i].length > 1) {
-                var shift = open_shifts[i];
+        for (var i in openShifts) {
+            if (openShifts[i].length > 1) {
+                var shift = openShifts[i];
                 var max = -1;
                 var instances = 0;
                 var remainingShiftUpdated = false;
