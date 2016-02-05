@@ -22,22 +22,22 @@ config.locationID = {
 }
 
 config.time_interval = {
-    // runs every 1 min. 
+    // runs every 1 min.
     recur_and_publish_shifts_cron_job_string: '0 */1 * * * *',
 
-    // runs every 20 mins. 
+    // runs every 20 mins.
     notify_first_shift_cron_job_string: '0 */20 * * * *',
 
-    // runs every day at 11:00 and 23:00. 
+    // runs every day at 11:00 and 23:00.
     time_off_requests_cron_job_string: '0 0 11,23 * * *',
 
-    // Each recurrence chain is 1 year long. 
+    // Each recurrence chain is 1 year long.
     max_shifts_in_chain: 52,
-    
-    // Buffer added to end of chain to ensure that edge cases don't result in skipped weeks. 
+
+    // Buffer added to end of chain to ensure that edge cases don't result in skipped weeks.
     chain_buffer_days: 1,
 
-    // Each shift is recurred for 5 years. 
+    // Each shift is recurred for 5 years.
     years_to_recur_shift: 5,
 
     // In looking for newly created shifts to recur, we search 2 weeks from the present.
@@ -46,13 +46,13 @@ config.time_interval = {
     // While we recur shifts for much longer, they're only published (viewable to the employee) 4 weeks from present.
     weeks_to_publish_recurred_shifts: 4,
 
-    // Used to search for requests to be auto-approved. 
+    // Used to search for requests to be auto-approved.
     months_to_search_for_time_off_requests: 6,
 
-    // Used to search for users in order to notify them via email.  
+    // Used to search for users in order to notify them via email.
     days_to_search_for_new_users_who_have_scheduled_their_first_shift: 7,
 
-    // How often do we create new openshifts
+    // How often do we create new openshifts and merge duplicate openshifts
     open_shifts: '0 0 * * * *', // every hour
 
     // How often we repeat open shifts
