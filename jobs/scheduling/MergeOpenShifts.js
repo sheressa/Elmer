@@ -38,6 +38,7 @@ function mergeOpenShifts() {
                 var shift = open_shifts[i];
                 var max = -1;
                 var instances = 0;
+                var remainingShiftUpdated = false;
 
                 for (var j in shift) {
                     if (shift[j].instances == undefined || shift[j].instances == 0) {
@@ -52,8 +53,9 @@ function mergeOpenShifts() {
                 }
 
                 for (var j in shift) {
-                    if (shift[j].instances !== undefined && shift[j].instances == max) {
+                    if (shift[j].instances !== undefined && shift[j].instances == max && !remainingShiftUpdated) {
                         WhenIWork.update('shifts/'+shift[j].id, {instances: instances});
+                        remainingShiftUpdated = true;
                     } else {
                         WhenIWork.delete('shifts/'+shift[j].id);
                     }
