@@ -34,18 +34,21 @@ function handleTimeOffRequests() {
         //For each pending request, look for any shifts that fall within the time off request
         newRequests.forEach(function(request) {
             var shiftSearchParams = {
-                "start": moment(request.start_time, date_format),
-                "end": moment(request.end_time, date_format),
+                "start": request.start_time,
+                "end": request.end_time,
                 "user_id": request.user_id,
                 "location_id": global.config.locationID.regular_shifts,
                 "unpublished": true
             };
 
             WhenIWork.get('shifts', shiftSearchParams, function(response) {
+
                 if (!response.shifts || response.shifts.length === 0) {
                     console.log('No shifts found that fall within the range of timeoff request.');
                     return false;
                 }
+
+                console.log('shift responses which fall within ', request.start_time, '**', request.end_time, ' &&& number of shifts returned for that time off request', response.shifts.length);
 
                 // Status code `2` represents approved requests.
                 var timeOffApprovalRequest = {
