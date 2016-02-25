@@ -13,13 +13,13 @@ var copy_fields = [
     'break_time',
     'alerted',
     'published'
-];    
+];
 
 new CronJob(global.config.time_interval.open_shifts, function () {
-    openShifts();
+    recurOpenShifts();
 }, null, true);
 
-function openShifts() {
+function recurOpenShifts() {
     // Example time filter: 1:59:00 pm - 2:01:00 pm
     var filter = {
         // start time = the top of the current hour -1 minute
@@ -62,4 +62,4 @@ function hourMatches(time) {
     return now == time;
 }
 
-module.exports.openShifts = openShifts;
+module.exports.recurOpenShifts = recurOpenShifts;

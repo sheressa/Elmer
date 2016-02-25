@@ -68,4 +68,16 @@ config.stathat = {
     email: 'todo'
 };
 
+config.numberOfCrisisCounselorsPerSupervisor = 15;
+
+config.numberOfSupervisorsPerShift = {
+    '0_Sun' : { '12AM': 2, '2AM': 2, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 2, '2PM': 2, '4PM': 3, '6PM': 3, '8PM': 3, '10PM': 3},
+    '1_Mon' : { '12AM': 2, '2AM': 2, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 2, '2PM': 2, '4PM': 4, '6PM': 4, '8PM': 4, '10PM': 4},
+    '2_Tue' : { '12AM': 3, '2AM': 3, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 2, '2PM': 2, '4PM': 4, '6PM': 4, '8PM': 4, '10PM': 4},
+    '3_Wed' : { '12AM': 2, '2AM': 2, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 2, '2PM': 2, '4PM': 4, '6PM': 4, '8PM': 4, '10PM': 4},
+    '4_Thu' : { '12AM': 2, '2AM': 2, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 3, '2PM': 3, '4PM': 4, '6PM': 4, '8PM': 4, '10PM': 4},
+    '5_Fri' : { '12AM': 2, '2AM': 2, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 2, '2PM': 2, '4PM': 5, '6PM': 5, '8PM': 4, '10PM': 4},
+    '6_Sat' : { '12AM': 2, '2AM': 2, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 2, '2PM': 2, '4PM': 5, '6PM': 5, '8PM': 4, '10PM': 4}
+}
+
 module.exports = config;
