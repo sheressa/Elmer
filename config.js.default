@@ -19,7 +19,7 @@ config.locationID = {
     test2: 1007104,
     supervisors: 884473,
     crisis_counselors_demo: 1004215
-}
+};
 
 config.time_interval = {
     // runs every 1 min.
@@ -53,11 +53,11 @@ config.time_interval = {
     days_to_search_for_new_users_who_have_scheduled_their_first_shift: 7,
 
     // How often do we create new openshifts and merge duplicate openshifts
-    open_shifts: '0 0 * * * *', // every hour
+    open_shifts: '0 0 */2 * * *', // every two hours
 
     // How often we repeat open shifts
     days_in_interval_to_repeat_open_shifts: 7
-}
+};
 
 config.mandrill = {
     api_key: 'TODO'
@@ -71,13 +71,14 @@ config.stathat = {
 config.numberOfCrisisCounselorsPerSupervisor = 15;
 
 config.numberOfSupervisorsPerShift = {
-    '0_Sun' : { '12AM': 2, '2AM': 2, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 2, '2PM': 2, '4PM': 3, '6PM': 3, '8PM': 3, '10PM': 3},
-    '1_Mon' : { '12AM': 2, '2AM': 2, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 2, '2PM': 2, '4PM': 4, '6PM': 4, '8PM': 4, '10PM': 4},
-    '2_Tue' : { '12AM': 3, '2AM': 3, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 2, '2PM': 2, '4PM': 4, '6PM': 4, '8PM': 4, '10PM': 4},
-    '3_Wed' : { '12AM': 2, '2AM': 2, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 2, '2PM': 2, '4PM': 4, '6PM': 4, '8PM': 4, '10PM': 4},
-    '4_Thu' : { '12AM': 2, '2AM': 2, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 3, '2PM': 3, '4PM': 4, '6PM': 4, '8PM': 4, '10PM': 4},
-    '5_Fri' : { '12AM': 2, '2AM': 2, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 2, '2PM': 2, '4PM': 5, '6PM': 5, '8PM': 4, '10PM': 4},
-    '6_Sat' : { '12AM': 2, '2AM': 2, '4AM': 2, '6AM': 2, '8AM': 2, '10AM': 2, '12PM': 2, '2PM': 2, '4PM': 5, '6PM': 5, '8PM': 4, '10PM': 4}
-}
+    'Sun' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 3, '6pm': 3, '8pm': 3, '10pm': 3},
+    'Mon' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
+    'Tue' : { '12am': 3, '2am': 3, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
+    'Wed' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
+    'Thu' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 3, '2pm': 3, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
+    'Fri' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 5, '6pm': 5, '8pm': 4, '10pm': 4},
+    'Sat' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 5, '6pm': 5, '8pm': 4, '10pm': 4}
+};
+
 
 module.exports = config;

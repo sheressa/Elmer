@@ -2,64 +2,107 @@ var CronJob = require('cron').CronJob;
 var WhenIWork = require('./base');
 var moment = require('moment');
 
-var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
-var copy_fields = [
-    'is_open',
-    'instances', // for now, we're direct copying the # of available instances assuming this week is source of truth
-    'location_id',
-    'position_id',
-    'site_id',
-    'user_id',
-    'break_time',
-    'alerted',
-    'published'
-];
+var WIWDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
+var shiftQueryDateFormat = 'YYYY-MM-DD HH:mm:ss';
 
 new CronJob(global.config.time_interval.open_shifts, function () {
     recurOpenShifts();
 }, null, true);
 
 function recurOpenShifts() {
-    // Example time filter: 1:59:00 pm - 2:01:00 pm
+    var now = moment().minute(0).second(0);
+    // Each time this cron runs, we run this function over the previous four shift times for failsafe redundancy.
+    for (var i = 0; i < 5; i++) {
+        var targetTime = now.clone().add(i * -2, 'hours');
+        getCountOfOccupiedShiftsForTime(targetTime, function(occupiedShiftCount, targetTime) {
+            // Because we're making async calls in a loop, we pass targetTime through callbacks
+            // so that it's defined locally for each scope.
+            var numberOfOpenShiftsToAdd = returnMaxOpenShiftCountForTime(targetTime) - occupiedShiftCount;
+            if (numberOfOpenShiftsToAdd <= 0) {
+                return;
+            }
+            // @TODO: refactor, so that this check is the first API call we do--will cut down on calls.
+            checkIfOpenShiftsHaveAlreadyBeenAdded(targetTime, function(shiftsHaveBeenAdded, targetTime) {
+                if (!shiftsHaveBeenAdded) {
+                    addOpenShifts(numberOfOpenShiftsToAdd, targetTime);
+                }
+            });
+        });
+    }
+}
+
+function getCountOfOccupiedShiftsForTime(targetTimeMomentObj, callback) {
     var filter = {
-        // start time = the top of the current hour -1 minute
-        start: '-1 minute',
-        // end time = the top of the current hour +1 minute
-        end: '+1 minute',
-        location_id: global.config.locationID.regular_shifts,
-        include_allopen: true // include_onlyopen doesn't work. no idea why
+        start: targetTimeMomentObj.clone().format(shiftQueryDateFormat),
+        end: targetTimeMomentObj.clone().add(1, 'minute').format(shiftQueryDateFormat),
+        include_allopen: true,
+        location_id: global.config.locationID.regular_shifts
     };
 
-    WhenIWork.get('shifts', filter, function (data) {
-        for (var i in data.shifts) {
-            // Make sure that we're only copying open shifts and that we're only
-            // copying if we're within the same hour as the open shift.
-            if (data.shifts[i].is_open && hourMatches(data.shifts[i].start_time)) {
-                var shift = data.shifts[i];
-                var new_shift = {};
-
-                for (var j in copy_fields) {
-                    new_shift[copy_fields[j]] = shift[copy_fields[j]];
-                }
-
-                new_shift.start_time = moment(shift.start_time, wiw_date_format);
-                new_shift.end_time = moment(shift.end_time, wiw_date_format);
-
-                new_shift.start_time = new_shift.start_time.add(7, 'day').format(wiw_date_format);
-                new_shift.end_time = new_shift.end_time.add(7, 'day').format(wiw_date_format);
-
-                WhenIWork.post('shifts', new_shift, function (data) {
-                    // do something?
-                });
+    WhenIWork.get('shifts', filter, function(response) {
+        var allShifts = response.shifts
+          , occupiedShiftCount = 0
+          , shift
+          ;
+        for (var i = 0; i < allShifts.length; i++) {
+            shift = allShifts[i];
+            if (!JSON.parse(shift.is_open)) {
+                occupiedShiftCount++;
             }
         }
+        callback(occupiedShiftCount, targetTimeMomentObj);
+        return;
+    })
+}
+
+function returnMaxOpenShiftCountForTime(targetTimeMomentObj) {
+    var dayStr = targetTimeMomentObj.format('ddd'); // a string like "Thu"
+    var hourStr = targetTimeMomentObj.format('ha'); // a string like "4pm"
+    return global.config.crisisCounselorsPerSupervisor * global.config.numberOfSupervisorsPerShift[dayStr][hourStr];
+}
+
+// Checks if open shifts are already present a week from the targetTime
+function checkIfOpenShiftsHaveAlreadyBeenAdded(targetTimeMomentObj, callback) {
+    // Querying for shifts starting at 8pm produces weird, buggy behavior from the WIW API.
+    // Guess: 8pm is the dividing line between GMT days. So if we query for shifts starting a
+    // minute before 8pm, this strangely yields shifts starting at 10pm. Hence, our `start` time
+    // is precisely on the hour.
+    var filter = {
+        start: targetTimeMomentObj.clone().add(1, 'week').format(shiftQueryDateFormat),
+        end: targetTimeMomentObj.clone().add(1, 'minute').add(1, 'week').format(shiftQueryDateFormat),
+        include_allopen: true,
+        location_id: global.config.locationID.regular_shifts
+    };
+    WhenIWork.get('shifts', filter, function(data) {
+        for (var i = 0; i < data.shifts.length; i++) {
+            // If the shift is open, and begins at the same hour as when we're running this job.
+            if (JSON.parse(data.shifts[i].is_open)) {
+                callback(true, targetTimeMomentObj);
+                return;
+            }
+        }
+        callback(false, targetTimeMomentObj);
+        return;
     });
 }
 
-function hourMatches(time) {
-    var now = moment().minute(0).second(0).format(wiw_date_format);
-
-    return now == time;
+// Adds a specified number of shifts at exactly a week ahead of the targetTimeMomentObj
+function addOpenShifts(numberOfOpenShiftsToAdd, targetTimeMomentObj) {
+    var newShiftParams = {
+        start_time: targetTimeMomentObj.clone().minute(0).second(0).add(1, 'week').format(WIWDateFormat),
+        end_time: targetTimeMomentObj.clone().minute(0).second(0).add(2, 'hour').add(1, 'week').format(WIWDateFormat),
+        location_id: global.config.locationID.regular_shifts,
+        instances: numberOfOpenShiftsToAdd,
+        published: true
+    };
+    WhenIWork.create('shifts/', newShiftParams);
 }
 
-module.exports.recurOpenShifts = recurOpenShifts;
+// Exporting modularized functions for testability
+module.exports = {
+    recurOpenShifts: recurOpenShifts,
+    getCountOfOccupiedShiftsForTime: getCountOfOccupiedShiftsForTime,
+    returnMaxOpenShiftCountForTime: returnMaxOpenShiftCountForTime,
+    checkIfOpenShiftsHaveAlreadyBeenAdded: checkIfOpenShiftsHaveAlreadyBeenAdded,
+    addOpenShifts: addOpenShifts
+};
