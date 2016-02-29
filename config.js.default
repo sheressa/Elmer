@@ -19,7 +19,7 @@ config.locationID = {
     test2: 1007104,
     supervisors: 884473,
     crisis_counselors_demo: 1004215
-}
+};
 
 config.time_interval = {
     // runs every 1 min.
@@ -53,11 +53,11 @@ config.time_interval = {
     days_to_search_for_new_users_who_have_scheduled_their_first_shift: 7,
 
     // How often do we create new openshifts and merge duplicate openshifts
-    open_shifts: '0 0 * * * *', // every hour
+    open_shifts: '0 0 */2 * * *', // every two hours
 
     // How often we repeat open shifts
     days_in_interval_to_repeat_open_shifts: 7
-}
+};
 
 config.mandrill = {
     api_key: 'TODO'
@@ -67,5 +67,18 @@ config.stathat = {
     enabled: false,
     email: 'todo'
 };
+
+config.crisisCounselorsPerSupervisor = 15;
+
+config.numberOfSupervisorsPerShift = {
+    'Sun' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 3, '6pm': 3, '8pm': 3, '10pm': 3},
+    'Mon' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 4, '6pm': 4, '8pm': 3, '10pm': 3},
+    'Tue' : { '12am': 2, '2am': 2, '4am': 1, '6am': 1, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
+    'Wed' : { '12am': 2, '2am': 2, '4am': 1, '6am': 1, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
+    'Thu' : { '12am': 2, '2am': 2, '4am': 1, '6am': 1, '8am': 2, '10am': 2, '12pm': 3, '2pm': 3, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
+    'Fri' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 5, '6pm': 5, '8pm': 3, '10pm': 3},
+    'Sat' : { '12am': 2, '2am': 2, '4am': 1, '6am': 1, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 3, '6pm': 3, '8pm': 3, '10pm': 3}
+};
+
 
 module.exports = config;
