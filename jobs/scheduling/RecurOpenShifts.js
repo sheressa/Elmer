@@ -37,8 +37,8 @@ function getCountOfOccupiedShiftsForTime(targetTimeMomentObj, callback) {
     // time taken off (and a shift removed from the normal schedule) will artificially
     // increase the number of open shifts we add.
     var filter = {
-        start: targetTimeMomentObj.clone().add(12, 'weeks').format(shiftQueryDateFormat),
-        end: targetTimeMomentObj.clone().add(12, 'weeks').add(1, 'minute').format(shiftQueryDateFormat),
+        start: targetTimeMomentObj.clone().add(10, 'weeks').format(shiftQueryDateFormat),
+        end: targetTimeMomentObj.clone().add(10, 'weeks').add(1, 'minute').format(shiftQueryDateFormat),
         include_allopen: true,
         location_id: global.config.locationID.regular_shifts
     };
