@@ -68,16 +68,16 @@ config.stathat = {
     email: 'todo'
 };
 
-config.numberOfCrisisCounselorsPerSupervisor = 15;
+config.crisisCounselorsPerSupervisor = 15;
 
 config.numberOfSupervisorsPerShift = {
     'Sun' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 3, '6pm': 3, '8pm': 3, '10pm': 3},
-    'Mon' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
-    'Tue' : { '12am': 3, '2am': 3, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
-    'Wed' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
-    'Thu' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 3, '2pm': 3, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
-    'Fri' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 5, '6pm': 5, '8pm': 4, '10pm': 4},
-    'Sat' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 5, '6pm': 5, '8pm': 4, '10pm': 4}
+    'Mon' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 4, '6pm': 4, '8pm': 3, '10pm': 3},
+    'Tue' : { '12am': 2, '2am': 2, '4am': 1, '6am': 1, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
+    'Wed' : { '12am': 2, '2am': 2, '4am': 1, '6am': 1, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
+    'Thu' : { '12am': 2, '2am': 2, '4am': 1, '6am': 1, '8am': 2, '10am': 2, '12pm': 3, '2pm': 3, '4pm': 4, '6pm': 4, '8pm': 4, '10pm': 4},
+    'Fri' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 5, '6pm': 5, '8pm': 3, '10pm': 3},
+    'Sat' : { '12am': 2, '2am': 2, '4am': 1, '6am': 1, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 3, '6pm': 3, '8pm': 3, '10pm': 3}
 };
 
 

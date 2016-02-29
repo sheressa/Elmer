@@ -6,11 +6,11 @@ var WIWDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var shiftQueryDateFormat = 'YYYY-MM-DD HH:mm:ss';
 
 new CronJob(global.config.time_interval.open_shifts, function () {
-    recurOpenShifts();
-}, null, true);
-
-function recurOpenShifts() {
     var now = moment().minute(0).second(0);
+    recurOpenShifts(now);
+}, null, false);
+
+function recurOpenShifts(now) {
     // Each time this cron runs, we run this function over the previous four shift times for failsafe redundancy.
     for (var i = 0; i < 5; i++) {
         var targetTime = now.clone().add(i * -2, 'hours');
@@ -32,9 +32,13 @@ function recurOpenShifts() {
 }
 
 function getCountOfOccupiedShiftsForTime(targetTimeMomentObj, callback) {
+    // We're determining the open shift count twelve weeks out, further out than
+    // how far counselors can see their shifts. This will make it less likely that
+    // time taken off (and a shift removed from the normal schedule) will artificially
+    // increase the number of open shifts we add.
     var filter = {
-        start: targetTimeMomentObj.clone().format(shiftQueryDateFormat),
-        end: targetTimeMomentObj.clone().add(1, 'minute').format(shiftQueryDateFormat),
+        start: targetTimeMomentObj.clone().add(12, 'weeks').format(shiftQueryDateFormat),
+        end: targetTimeMomentObj.clone().add(12, 'weeks').add(1, 'minute').format(shiftQueryDateFormat),
         include_allopen: true,
         location_id: global.config.locationID.regular_shifts
     };
