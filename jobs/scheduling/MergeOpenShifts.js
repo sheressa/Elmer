@@ -1,7 +1,7 @@
 
 var CronJob = require('cron').CronJob;
 var WhenIWork = require('./base');
-var colorizeShift = require('../../lib/colorizeShift');
+var colorizeShift = require('../../lib/ColorizeShift');
 
 var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 
