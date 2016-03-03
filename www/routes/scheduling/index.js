@@ -3,8 +3,7 @@ var WhenIWork = require.main.require('wheniwork-unofficial');
 var moment    = require.main.require('moment');
 var sha1      = require.main.require('sha1');
 var stathat   = require(global.config.root_dir + '/lib/stathat');
-var colorizeShift = require('../../lib/ColorizeShift');
-
+var colorizeShift = require(global.config.root_dir + '/lib/ColorizeShift');
 
 var router = express.Router();
 
