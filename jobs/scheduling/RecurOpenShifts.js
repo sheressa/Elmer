@@ -45,7 +45,7 @@ function recurOpenShifts(now) {
                     // Delete the invalid open shifts
                     var shiftDeleteRequest = {
                         method: "delete",
-                        url: "/2/shifts/" + shift.id,
+                        url: "/2/shifts/" + shiftID,
                         params: {}
                     };
                     batchPayload.push(shiftDeleteRequest);
