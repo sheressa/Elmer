@@ -3,6 +3,8 @@ var WhenIWork = require.main.require('wheniwork-unofficial');
 var moment    = require.main.require('moment');
 var sha1      = require.main.require('sha1');
 var stathat   = require(global.config.root_dir + '/lib/stathat');
+var colorizeShift = require('../../lib/ColorizeShift');
+
 
 var router = express.Router();
 
@@ -137,14 +139,16 @@ router.delete('/shifts', function(req, res) {
                 // If the shift starts within a week, it's a shift that needs to be converted to an
                 // open shift because the open shift job has already run and passed that day.
                 if (Math.abs(moment().diff(moment(shift.start_time, wiwDateFormat), 'days')) < global.config.time_interval.days_in_interval_to_repeat_open_shifts) {
+                    var updatedShiftParams = {
+                        user_id: 0,
+                        notes: ''
+                    };
+                    updatedShiftParams = colorizeShift(updatedShiftParams, shift.start_time);
                     var reassignShiftToOpenAndRemoveNotesRequest = {
                         "method": 'PUT',
                         "url": "/2/shifts/" + shift.id,
-                        "params": {
-                            user_id: 0,
-                            notes: ''
-                        }
-                    }
+                        "params": updatedShiftParams
+                    };
                     batchPayload.push(reassignShiftToOpenAndRemoveNotesRequest);
                 }
                 // Otherwise, we just delete the shift.

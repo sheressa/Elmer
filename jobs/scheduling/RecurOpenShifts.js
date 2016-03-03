@@ -14,50 +14,100 @@ new CronJob(global.config.time_interval.open_shifts, function () {
 function recurOpenShifts(now) {
     // Each time this cron runs, we run this function over the previous four shift times for failsafe redundancy.
     for (var i = 0; i < 5; i++) {
+        // Because we're making async calls in a loop, we pass targetTime through callback
+        // so that it's defined locally for each scope.
         var targetTime = now.clone().add(i * -2, 'hours');
-        getCountOfOccupiedShiftsForTime(targetTime, function(occupiedShiftCount, targetTime) {
-            // Because we're making async calls in a loop, we pass targetTime through callbacks
-            // so that it's defined locally for each scope.
-            var numberOfOpenShiftsToAdd = returnMaxOpenShiftCountForTime(targetTime) - occupiedShiftCount;
-            if (numberOfOpenShiftsToAdd <= 0) {
+        findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount(targetTime, function(openShiftsNeedToBeAddedBOOL, openShiftIDs, correctNumberOfOpenShiftsToAdd, targetTime) {
+            if (!openShiftsNeedToBeAddedBOOL) {
                 return;
             }
-            // @TODO: refactor, so that this check is the first API call we do--will cut down on calls.
-            checkIfOpenShiftsHaveAlreadyBeenAdded(targetTime, function(shiftsHaveBeenAdded, targetTime) {
-                if (!shiftsHaveBeenAdded) {
-                    addOpenShifts(numberOfOpenShiftsToAdd, targetTime);
-                }
-            });
-        });
+            // If the correct number of open shifts haven't been added
+            else {
+                var batchPayload = [];
+                // Add the correct number of open shifts
+                var newOpenShiftParams = {
+                    start_time: targetTime.clone().minute(0).second(0).add(1, 'week').format(WIWDateFormat),
+                    end_time: targetTime.clone().minute(0).second(0).add(2, 'hour').add(1, 'week').format(WIWDateFormat),
+                    location_id: global.config.locationID.regular_shifts,
+                    instances: correctNumberOfOpenShiftsToAdd,
+                    published: true
+                };
+                newOpenShiftParams = colorizeShift(newOpenShiftParams);
+
+                var newOpenShiftRequest = {
+                    method: "post",
+                    url: "/2/shifts",
+                    params: newOpenShiftParams
+                };
+                batchPayload.push(newOpenShiftRequest);
+
+                openShiftIDs.forEach(function(shiftID) {
+                    // Delete the invalid open shifts
+                    var shiftDeleteRequest = {
+                        method: "delete",
+                        url: "/2/shifts/" + shift.id,
+                        params: {}
+                    };
+                    batchPayload.push(shiftDeleteRequest);
+                });
+
+                WhenIWork.post('batch', batchPayload);
+            }
+        })
     }
 }
 
-function getCountOfOccupiedShiftsForTime(targetTimeMomentObj, callback) {
-    // We're determining the open shift count twelve weeks out, further out than
-    // how far counselors can see their shifts. This will make it less likely that
-    // time taken off (and a shift removed from the normal schedule) will artificially
-    // increase the number of open shifts we add.
+// Checks if open shifts are already present a week from the targetTime
+// Callback params: callback(openShiftsNeedToBeAddedBOOL, openShiftIDs, correctNumberOfOpenShiftsToAdd, targetTimeMomentObj);
+function findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount(targetTimeMomentObj, callback) {
+    var openShiftIDs = []
+      , countOfOccupiedShifts = 0
+      , countOfOpenShifts = 0
+      , targetTimeMomentObj = targetTimeMomentObj
+      , shift
+      ;
+    /*
+        Querying for shifts starting at 8pm produces weird, buggy behavior from the WIW API.
+        Guess: 8pm is the dividing line between GMT days. So if we query for shifts starting a
+        minute before 8pm, this strangely yields shifts starting at 10pm. Hence, our `start` time
+        is precisely on the hour.
+    */
     var filter = {
-        start: targetTimeMomentObj.clone().add(10, 'weeks').format(shiftQueryDateFormat),
-        end: targetTimeMomentObj.clone().add(10, 'weeks').add(1, 'minute').format(shiftQueryDateFormat),
+        start: targetTimeMomentObj.clone().add(1, 'week').format(shiftQueryDateFormat),
+        end: targetTimeMomentObj.clone().add(1, 'minute').add(1, 'week').format(shiftQueryDateFormat),
         include_allopen: true,
         location_id: global.config.locationID.regular_shifts
     };
 
-    WhenIWork.get('shifts', filter, function(response) {
-        var allShifts = response.shifts
-          , occupiedShiftCount = 0
-          , shift
-          ;
-        for (var i = 0; i < allShifts.length; i++) {
-            shift = allShifts[i];
-            if (!JSON.parse(shift.is_open)) {
-                occupiedShiftCount++;
+    WhenIWork.get('shifts', filter, function(data) {
+        for (var i = 0; i < data.shifts.length; i++) {
+            shift = data.shifts[i];
+            if (JSON.parse(shift.is_open)) {
+                if (!shift.instances) {
+                    countOfOpenShifts++;
+                }
+                else {
+                    countOfOpenShifts += JSON.parse(shift.instances);
+                }
+                openShiftIDs.push(shift.id);
+            }
+            else {
+                countOfOccupiedShifts++;
             }
         }
-        callback(occupiedShiftCount, targetTimeMomentObj);
-        return;
-    })
+
+        var correctNumberOfOpenShiftsToAdd = returnMaxOpenShiftCountForTime(targetTimeMomentObj.clone()) - countOfOccupiedShifts;
+        // If we have a negative or zero number of open shifts to add--the shift is overbooked--or the number of
+        // open shifts present is equal to the correct count, we don't need to add any shifts.
+        if (correctNumberOfOpenShiftsToAdd <= 0 || countOfOpenShifts === correctNumberOfOpenShiftsToAdd) {
+            callback(false);
+            return;
+        }
+        else {
+            callback(true, openShiftIDs, correctNumberOfOpenShiftsToAdd, targetTimeMomentObj);
+            return;
+        }
+    });
 }
 
 function returnMaxOpenShiftCountForTime(targetTimeMomentObj) {
@@ -66,49 +116,9 @@ function returnMaxOpenShiftCountForTime(targetTimeMomentObj) {
     return global.config.crisisCounselorsPerSupervisor * global.config.numberOfSupervisorsPerShift[dayStr][hourStr];
 }
 
-// Checks if open shifts are already present a week from the targetTime
-function checkIfOpenShiftsHaveAlreadyBeenAdded(targetTimeMomentObj, callback) {
-    // Querying for shifts starting at 8pm produces weird, buggy behavior from the WIW API.
-    // Guess: 8pm is the dividing line between GMT days. So if we query for shifts starting a
-    // minute before 8pm, this strangely yields shifts starting at 10pm. Hence, our `start` time
-    // is precisely on the hour.
-    var filter = {
-        start: targetTimeMomentObj.clone().add(1, 'week').format(shiftQueryDateFormat),
-        end: targetTimeMomentObj.clone().add(1, 'minute').add(1, 'week').format(shiftQueryDateFormat),
-        include_allopen: true,
-        location_id: global.config.locationID.regular_shifts
-    };
-    WhenIWork.get('shifts', filter, function(data) {
-        for (var i = 0; i < data.shifts.length; i++) {
-            // If the shift is open, and begins at the same hour as when we're running this job.
-            if (JSON.parse(data.shifts[i].is_open)) {
-                callback(true, targetTimeMomentObj);
-                return;
-            }
-        }
-        callback(false, targetTimeMomentObj);
-        return;
-    });
-}
-
-// Adds a specified number of shifts at exactly a week ahead of the targetTimeMomentObj
-function addOpenShifts(numberOfOpenShiftsToAdd, targetTimeMomentObj) {
-    var newShiftParams = {
-        start_time: targetTimeMomentObj.clone().minute(0).second(0).add(1, 'week').format(WIWDateFormat),
-        end_time: targetTimeMomentObj.clone().minute(0).second(0).add(2, 'hour').add(1, 'week').format(WIWDateFormat),
-        location_id: global.config.locationID.regular_shifts,
-        instances: numberOfOpenShiftsToAdd,
-        published: true
-    };
-    newShiftParams = colorizeShift(newShiftParams);
-    WhenIWork.create('shifts/', newShiftParams);
-}
-
 // Exporting modularized functions for testability
 module.exports = {
     recurOpenShifts: recurOpenShifts,
-    getCountOfOccupiedShiftsForTime: getCountOfOccupiedShiftsForTime,
     returnMaxOpenShiftCountForTime: returnMaxOpenShiftCountForTime,
-    checkIfOpenShiftsHaveAlreadyBeenAdded: checkIfOpenShiftsHaveAlreadyBeenAdded,
-    addOpenShifts: addOpenShifts
+    findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount: findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount,
 };
