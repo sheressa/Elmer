@@ -1,6 +1,7 @@
 var CronJob = require('cron').CronJob;
 var WhenIWork = require('./base');
 var moment = require('moment');
+var colorizeShift = require('../../lib/colorizeShift');
 
 var WIWDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var shiftQueryDateFormat = 'YYYY-MM-DD HH:mm:ss';
@@ -99,6 +100,7 @@ function addOpenShifts(numberOfOpenShiftsToAdd, targetTimeMomentObj) {
         instances: numberOfOpenShiftsToAdd,
         published: true
     };
+    newShiftParams = colorizeShift(newShiftParams);
     WhenIWork.create('shifts/', newShiftParams);
 }
 

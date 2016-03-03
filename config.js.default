@@ -80,5 +80,15 @@ config.numberOfSupervisorsPerShift = {
     'Sat' : { '12am': 2, '2am': 2, '4am': 1, '6am': 1, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 3, '6pm': 3, '8pm': 3, '10pm': 3}
 };
 
+var red = 'D61F27';
+config.shiftColors = {
+    'Sun': { '2am': red, '4am': red, '6am': red, '8am': red },
+    'Mon': { '2am': red, '4am': red, '6am': red, '8am': red },
+    'Tue': { '2am': red, '4am': red, '6am': red, '8am': red },
+    'Wed': { '2am': red, '4am': red, '6am': red, '8am': red },
+    'Thu': { '2am': red, '4am': red, '6am': red, '8am': red },
+    'Fri': { '2am': red, '4am': red, '6am': red, '8am': red },
+    'Sat': { '2am': red, '4am': red, '6am': red, '8am': red },
+};
 
 module.exports = config;
