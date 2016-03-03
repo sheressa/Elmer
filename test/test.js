@@ -1,5 +1,5 @@
 // TODO: pick an assertion library. @tong!
-var c = require('./lib/ColorizeShift.js');
+var c = require('../lib/ColorizeShift');
 var df = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var moment = require('moment');
 
