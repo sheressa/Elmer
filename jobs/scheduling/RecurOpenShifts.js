@@ -9,7 +9,7 @@ var shiftQueryDateFormat = 'YYYY-MM-DD HH:mm:ss';
 new CronJob(global.config.time_interval.open_shifts, function () {
     var now = moment().minute(0).second(0);
     recurOpenShifts(now);
-}, null, false);
+}, null, true);
 
 function recurOpenShifts(now) {
     // Each time this cron runs, we run this function over the previous four shift times for failsafe redundancy.
