@@ -19,6 +19,7 @@ function recurOpenShifts(now) {
         var targetTime = now.clone().add(i * -2, 'hours');
         findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount(targetTime, function(openShiftsNeedToBeAddedBOOL, openShiftIDs, correctNumberOfOpenShiftsToAdd, targetTime) {
             if (!openShiftsNeedToBeAddedBOOL) {
+                console.log('No open shifts need to be added for time: ', targetTime.toString());
                 return;
             }
             // If the correct number of open shifts haven't been added
@@ -51,6 +52,7 @@ function recurOpenShifts(now) {
                     batchPayload.push(shiftDeleteRequest);
                 });
 
+                console.log('Adding ', correctNumberOfOpenShiftsToAdd, ' open shifts to the time: ', targetTime.toString(), '. Deleting incorrect count of open shifts--their shift IDs: ', openShiftIDs);
                 WhenIWork.post('batch', batchPayload);
             }
         })
@@ -97,10 +99,12 @@ function findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount(targe
         }
 
         var correctNumberOfOpenShiftsToAdd = returnMaxOpenShiftCountForTime(targetTimeMomentObj.clone()) - countOfOccupiedShifts;
+        console.log('Found ', countOfOpenShifts, ' open shifts, ', countOfOccupiedShifts, ' occupied shifts found for a time where we expect ', returnMaxOpenShiftCountForTime(targetTimeMomentObj.clone()), ' open shifts. Time: ', targetTimeMomentObj.toString());
+
         // If we have a negative or zero number of open shifts to add--the shift is overbooked--or the number of
         // open shifts present is equal to the correct count, we don't need to add any shifts.
         if (correctNumberOfOpenShiftsToAdd <= 0 || countOfOpenShifts === correctNumberOfOpenShiftsToAdd) {
-            callback(false);
+            callback(false, openShiftIDs, correctNumberOfOpenShiftsToAdd, targetTimeMomentObj);
             return;
         }
         else {
