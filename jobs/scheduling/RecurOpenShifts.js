@@ -13,7 +13,7 @@ new CronJob(global.config.time_interval.open_shifts, function () {
 
 function recurOpenShifts(now) {
     // Each time this cron runs, we run this function over the previous four shift times for failsafe redundancy.
-    for (var i = 0; i < 50; i++) {
+    for (var i = 0; i < 5; i++) {
         // Because we're making async calls in a loop, we pass targetTime through callback
         // so that it's defined locally for each scope.
         var targetTime = now.clone().add(i * -2, 'hours');
