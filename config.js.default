@@ -80,15 +80,16 @@ config.numberOfSupervisorsPerShift = {
     'Sat' : { '12am': 2, '2am': 2, '4am': 1, '6am': 1, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 3, '6pm': 3, '8pm': 3, '10pm': 3}
 };
 
-var red = 'D61F27';
+var red  = 'D61F27';
+var gray = 'AAAAAA';
 config.shiftColors = {
-    'Sun': { '2am': red, '4am': red, '6am': red},
-    'Mon': { '2am': red, '4am': red, '6am': red},
-    'Tue': { '2am': red, '4am': red, '6am': red},
-    'Wed': { '2am': red, '4am': red, '6am': red},
-    'Thu': { '2am': red, '4am': red, '6am': red},
-    'Fri': { '2am': red, '4am': red, '6am': red},
-    'Sat': { '2am': red, '4am': red, '6am': red},
+    'Sun': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '8pm': gray, '10pm': gray },
+    'Mon': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '8pm': gray, '10pm': gray },
+    'Tue': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '8pm': gray, '10pm': gray },
+    'Wed': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '8pm': gray, '10pm': gray },
+    'Thu': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '8pm': gray, '10pm': gray },
+    'Fri': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '8pm': gray, '10pm': gray },
+    'Sat': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '8pm': gray, '10pm': gray }
 };
 
 module.exports = config;
