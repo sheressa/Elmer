@@ -27,6 +27,13 @@ function recurNewlyCreatedShifts() {
 
     WhenIWork.get('shifts', postData, function(response) {
         var allShifts = response.shifts;
+        if (typeof allShifts !== 'object') {
+            console.log('NO SHIFTS RETURNED.');
+            console.log('===================');
+            console.log('RESPONSE: ' + response);
+            console.log('POST: ' + postData);
+            return;
+        }
         var newShifts = allShifts.filter(function(shift) {
             return !shift.notes;
         })
