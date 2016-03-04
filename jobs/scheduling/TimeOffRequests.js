@@ -1,6 +1,6 @@
 var CronJob = require('cron').CronJob;
 var WhenIWork = require('./base');
-var moment = require('moment');
+var moment = require('moment-timezone');
 var fs = require('fs');
 
 var date_format = 'YYYY-MM-DD HH:mm:ss';
