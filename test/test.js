@@ -1,20 +1,39 @@
-// TODO: pick an assertion library. @tong!
-var c = require('../lib/ColorizeShift');
-var df = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
+var colorize = require('../lib/ColorizeShift');
+var dateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var moment = require('moment');
+var assert = require('assert');
 
-var t1 = moment(1456995600000);
-var t2 = moment(1457017200000);
+var tests = [
+  {
+    time: moment(1456995600000).format(dateFormat),
+    humanReadable: 'make 4am red',
+    color: 'D61F27'
+  }, {
+    time: moment(1457017200000).format(dateFormat),
+    humanReadable: 'make 10am gray',
+    color: 'AAAAAA'
+  }
+];
 
-var s1 = {
-    start_time: t1.format(df)
-};
+describe('ColorizeShift', function () {
+  describe('colorize(obj, timestamp)', function () {
+    for (var i in tests) {
+      it('should ' + tests[i].humanReadable, function () {
+        var shift = {};
+        shift = colorize(shift, tests[i].time);
+        assert.equal(shift.color, tests[i].color);
+      });
+    }
+  });
 
-var s2 = {
-    start_time: t2.format(df)
-};
+  describe('colorize(obj)', function () {
+    for (var i in tests) {
+      it('should ' + tests[i].humanReadable, function () {
+        var shift = {start_time: tests[i].time};
+        shift = colorize(shift);
+        assert.equal(shift.color, tests[i].color);
+      });
+    }
+  });
+});
 
-console.log(c(s1));
-console.log(c(s2));
-console.log(c({}, t1));
-console.log(c({}, t2));
