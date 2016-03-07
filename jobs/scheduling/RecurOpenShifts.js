@@ -12,6 +12,10 @@ new CronJob(global.config.time_interval.open_shifts, function () {
 }, null, true);
 
 function recurOpenShifts(now) {
+    if (now.hours() % 2 == 1) {
+        console.log('running at an odd hour. abort.');
+        return;
+    }
     // Each time this cron runs, we run this function over the previous four shift times for failsafe redundancy.
     for (var i = 0; i < 5; i++) {
         // Because we're making async calls in a loop, we pass targetTime through callback
