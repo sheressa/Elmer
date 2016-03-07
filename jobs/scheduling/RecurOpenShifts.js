@@ -6,7 +6,7 @@ var colorizeShift = require('../../lib/ColorizeShift');
 var WIWDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var shiftQueryDateFormat = 'YYYY-MM-DD HH:mm:ss';
 
-new CronJob(global.config.time_interval.open_shifts, function () {
+var cronJob = new CronJob(global.config.time_interval.open_shifts, function () {
     var now = moment().minute(0).second(0);
     recurOpenShifts(now);
 }, null, true);
@@ -17,7 +17,7 @@ function recurOpenShifts(now) {
         return;
     }
     // Each time this cron runs, we run this function over the previous four shift times for failsafe redundancy.
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < 25; i++) {
         // Because we're making async calls in a loop, we pass targetTime through callback
         // so that it's defined locally for each scope.
         var targetTime = now.clone().add(i * -2, 'hours');
@@ -129,4 +129,5 @@ module.exports = {
     recurOpenShifts: recurOpenShifts,
     returnMaxOpenShiftCountForTime: returnMaxOpenShiftCountForTime,
     findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount: findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount,
+    cronJob: cronJob
 };
