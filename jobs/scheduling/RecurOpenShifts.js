@@ -7,9 +7,16 @@ var WIWDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var shiftQueryDateFormat = 'YYYY-MM-DD HH:mm:ss';
 
 var cronJob = new CronJob(global.config.time_interval.open_shifts, function () {
+    runJob();
+}, null, true);
+
+function runJob() {
     var now = moment().minute(0).second(0);
     recurOpenShifts(now);
-}, null, true);
+}
+
+// run it once on boot
+runJob();
 
 function recurOpenShifts(now) {
     if (now.hours() % 2 == 1) {

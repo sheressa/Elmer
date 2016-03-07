@@ -7,7 +7,7 @@ var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 
 new CronJob(global.config.time_interval.open_shifts, function () {
     mergeOpenShifts();
-});
+}, null, true);
 
 mergeOpenShifts();
 
