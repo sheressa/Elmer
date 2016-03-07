@@ -6,4 +6,5 @@ module.exports.recurFromUnixTimestamp = function (from) {
 
   var t = moment(from);
   recurrer.recurOpenShifts(t);
+  recurrer.cronJob.stop();
 };
