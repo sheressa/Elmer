@@ -7,9 +7,12 @@ var out_format = 'ddd h:mm A';
 
 module.exports.dumpSchedules = function () {
     // We want to see shifts 8 days out from now.
-    var end = moment().add(8, 'days').format('YYYY-MM-DD HH:mm:ss');
+    var params = {
+        location_id: global.config.locationID.regular_shifts,
+        end: '+8 days'
+    };
 
-    api.get('shifts', {end_time: end}, function (data) {
+    api.get('shifts', params, function (data) {
         var user_shifts = {};
         var shift;
 
@@ -28,7 +31,7 @@ module.exports.dumpSchedules = function () {
         }
 
         // Now we need to get the email addresses
-        api.get('users', {ids: Object.keys(user_shifts)}, function (data) {
+        api.get('users', function (data) {
             var user;
             for (var i in data['users']) {
                 user = data['users'][i];
@@ -42,11 +45,14 @@ module.exports.dumpSchedules = function () {
             }
 
             // Done state: wrap up here.
-            var line;
+            var line, shift;
             for (var i in user_shifts) {
                 line = i.toLowerCase();
                 for (var j in user_shifts[i]) {
-                    line = line + "\t" + user_shifts[i][j].format(out_format);
+                    shift = user_shifts[i][j].format(out_format);
+                    if (line.indexOf(shift) < 0) {
+                        line = line + "\t" + shift;
+                    }
                 }
 
                 // print the shit
