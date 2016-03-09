@@ -71,7 +71,7 @@ config.stathat = {
     email: 'todo'
 };
 
-config.crisisCounselorsPerSupervisor = 17;
+config.crisisCounselorsPerSupervisor = 30;
 
 config.numberOfSupervisorsPerShift = {
     'Sun' : { '12am': 2, '2am': 2, '4am': 2, '6am': 2, '8am': 2, '10am': 2, '12pm': 2, '2pm': 2, '4pm': 3, '6pm': 3, '8pm': 3, '10pm': 3},
