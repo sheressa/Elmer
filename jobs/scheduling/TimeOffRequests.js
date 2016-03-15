@@ -5,9 +5,9 @@ var fs = require('fs');
 
 var date_format = 'YYYY-MM-DD HH:mm:ss';
 
-// new CronJob(global.config.time_interval.time_off_requests_cron_job_string, function () {
-//     handleTimeOffRequests();
-// }, null, true);
+new CronJob(global.config.time_interval.time_off_requests_cron_job_string, function () {
+    handleTimeOffRequests();
+}, null, true);
 
 handleTimeOffRequests();
 
@@ -37,7 +37,7 @@ function handleTimeOffRequests() {
                 "start": request.start_time,
                 "end": request.end_time,
                 "user_id": request.user_id,
-                "location_id": global.config.locationID.regular_shifts,
+                "location_id": [global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts],
                 "unpublished": true
             };
 
