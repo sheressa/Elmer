@@ -5,9 +5,9 @@ var fs = require('fs');
 
 var date_format = 'YYYY-MM-DD HH:mm:ss';
 
-new CronJob(global.config.time_interval.time_off_requests_cron_job_string, function () {
-    handleTimeOffRequests();
-}, null, true);
+// new CronJob(global.config.time_interval.time_off_requests_cron_job_string, function () {
+//     handleTimeOffRequests();
+// }, null, true);
 
 handleTimeOffRequests();
 
@@ -43,13 +43,6 @@ function handleTimeOffRequests() {
 
             WhenIWork.get('shifts', shiftSearchParams, function(response) {
 
-                if (!response.shifts || response.shifts.length === 0) {
-                    console.log('No shifts found that fall within the range of timeoff request.');
-                    return false;
-                }
-
-                console.log('shift responses which fall within ', request.start_time, '**', request.end_time, ' &&& number of shifts returned for that time off request', response.shifts.length);
-
                 // Status code `2` represents approved requests.
                 var timeOffApprovalRequest = {
                     "method": "put",
@@ -61,32 +54,35 @@ function handleTimeOffRequests() {
 
                 var batchPayload = [timeOffApprovalRequest];
 
-                //For each shift, create a delete request and an open shift to replace it
-                response.shifts.forEach(function(shift) {
-                    var shiftDeleteRequest = {
-                        "method": "delete",
-                        "url": "/2/shifts/" + shift.id,
-                        "params": {},
-                    };
+                if (!response.shifts || response.shifts.length === 0) {
+                    console.log('No shifts found that fall within the range of that timeoff request, but we\'re still approving that request.');
+                }
+                else {
+                    //For each shift, create a delete request and an open shift to replace it
+                    response.shifts.forEach(function(shift) {
+                        var shiftDeleteRequest = {
+                            "method": "delete",
+                            "url": "/2/shifts/" + shift.id,
+                            "params": {},
+                        };
 
-                    batchPayload.push(shiftDeleteRequest);
+                        batchPayload.push(shiftDeleteRequest);
 
-                    var newOpenShiftRequest = {
-                        "method": "post",
-                        "url": "/2/shifts",
-                        "params": {
-                            "start_time": shift.start_time,
-                            "end_time": shift.end_time,
-                            "notes": "SHIFT COVERAGE",
-                            "published": true,
-                            "location_id": global.config.locationID
-                                                 .makeup_and_extra_shifts,
-                        }
-                    };
-
-                    batchPayload.push(newOpenShiftRequest);
-                });
-
+                        var newOpenShiftRequest = {
+                            "method": "post",
+                            "url": "/2/shifts",
+                            "params": {
+                                "start_time": shift.start_time,
+                                "end_time": shift.end_time,
+                                "notes": "SHIFT COVERAGE",
+                                "published": true,
+                                "location_id": global.config.locationID
+                                                     .makeup_and_extra_shifts,
+                            }
+                        };
+                        batchPayload.push(newOpenShiftRequest);
+                    });
+                }
                 //Send the time off request approval and all shift deletions/open shift creations to batch
                 WhenIWork.post('batch', batchPayload, function(response) {
                     console.log(response);
