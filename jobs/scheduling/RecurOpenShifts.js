@@ -128,7 +128,7 @@ function findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount(targe
 function returnMaxOpenShiftCountForTime(targetTimeMomentObj) {
     var dayStr = targetTimeMomentObj.format('ddd'); // a string like "Thu"
     var hourStr = targetTimeMomentObj.format('ha'); // a string like "4pm"
-    return global.config.crisisCounselorsPerSupervisor * global.config.numberOfSupervisorsPerShift[dayStr][hourStr];
+    return global.config.numberOfCounselorsPerShift[dayStr][hourStr];
 }
 
 // Exporting modularized functions for testability
