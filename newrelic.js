@@ -19,6 +19,14 @@ exports.config = {
      * issues with the agent, 'info' and higher will impose the least overhead on
      * production applications.
      */
-    level: 'info'
+    level: 'trace'
+  },
+  // Enables the capture of request parameters with transaction traces and error traces.
+  capture_params: true,
+
+  // Collects error traces.
+  error_collector: {
+    enabled: true
+
   }
 }
