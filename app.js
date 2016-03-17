@@ -1,8 +1,10 @@
 global.config = require('./config');
 
-if (process.env.NODE_ENV !== 'production') {
-	global.config.locationID.regular_shifts = global.config.locationID.test;
+if (process.env.NODE_ENV === 'production') {
     require('newrelic');
+}
+else {
+    global.config.locationID.regular_shifts = global.config.locationID.test;
 }
 
 var debug = require('debug')('my-application');
