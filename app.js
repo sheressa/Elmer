@@ -1,3 +1,4 @@
+require('newrelic');
 global.config = require('./config');
 
 if (process.env.NODE_ENV !== 'production') {
