@@ -28,21 +28,21 @@ function recurOpenShifts(now) {
         // Because we're making async calls in a loop, we pass targetTime through callback
         // so that it's defined locally for each scope.
         var targetTime = now.clone().add(i * -2, 'hours');
-        findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount(targetTime, function(openShiftIDs, correctNumberOfOpenShiftsToAdd, targetTime) {
+        findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTime, function(extraOpenShiftsToDelete, correctNumberOfShiftsToSet, targetTime) {
             var batchPayload = [];
 
             // If we don't need to add any new open shifts, we return.
-            if (correctNumberOfOpenShiftsToAdd === 0) {
+            if (correctNumberOfShiftsToSet === 0) {
                 console.log('No open shifts need to be added for time: ', targetTime.toString());
                 return;
             }
             // If we need to add open shifts
-            else if (correctNumberOfOpenShiftsToAdd > 0) {
+            else if (correctNumberOfShiftsToSet > 0) {
                 var newOpenShiftParams = {
                     start_time: targetTime.clone().minute(0).second(0).add(1, 'week').format(WIWDateFormat),
                     end_time: targetTime.clone().minute(0).second(0).add(2, 'hour').add(1, 'week').format(WIWDateFormat),
                     location_id: global.config.locationID.regular_shifts,
-                    instances: correctNumberOfOpenShiftsToAdd,
+                    instances: correctNumberOfShiftsToSet,
                     published: true
                 };
                 newOpenShiftParams = colorizeShift(newOpenShiftParams);
@@ -54,9 +54,13 @@ function recurOpenShifts(now) {
                 };
                 batchPayload.push(newOpenShiftRequest);
             }
-            // Batch delete the invalid open shifts in two cases: 1) correctNumberOfOpenShiftsToAdd > 0; we need to add open shifts
-            // and 2) correctNumberOfOpenShiftsToAdd < 0; our open shift count is too high
-            openShiftIDs.forEach(function(shiftID) {
+            /**
+                Batch delete the invalid open shifts in two cases: 1) correctNumberOfShiftsToSet > 0; we need to add open shifts
+                and 2) correctNumberOfShiftsToSet < 0; the number of occupied shifts is currently greater than the total number
+                of open shifts for that block. In BOTH cases, we need to delete all old open shifts.
+            **/
+
+            extraOpenShiftsToDelete.forEach(function(shiftID) {
                 var shiftDeleteRequest = {
                     method: "delete",
                     url: "/2/shifts/" + shiftID,
@@ -65,17 +69,17 @@ function recurOpenShifts(now) {
                 batchPayload.push(shiftDeleteRequest);
             });
 
-            if (correctNumberOfOpenShiftsToAdd < 0) { correctNumberOfOpenShiftsToAdd = 'no'; }
-            console.log('Adding ', correctNumberOfOpenShiftsToAdd, ' open shifts to the time: ', targetTime.toString(), '. Deleting incorrect count of open shifts--their shift IDs: ', openShiftIDs);
+            if (correctNumberOfShiftsToSet < 0) { correctNumberOfShiftsToSet = 'no'; }
+            console.log('Adding ', correctNumberOfShiftsToSet, ' open shifts to the time: ', targetTime.toString(), '. Deleting incorrect count of open shifts--their shift IDs: ', extraOpenShiftsToDelete);
             WhenIWork.post('batch', batchPayload);
         })
     }
 }
 
 // Checks if open shifts are already present a week from the targetTime
-// Callback params: callback(openShiftIDs, correctNumberOfOpenShiftsToAdd, targetTimeMomentObj);
-function findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount(targetTimeMomentObj, callback) {
-    var openShiftIDs = []
+// Callback params: callback(extraOpenShiftsToDelete, correctNumberOfShiftsToSet, targetTimeMomentObj);
+function findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTimeMomentObj, callback) {
+    var extraOpenShiftsToDelete = []
       , countOfOccupiedShifts = 0
       , countOfOpenShifts = 0
       , targetTimeMomentObj = targetTimeMomentObj
@@ -104,16 +108,16 @@ function findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount(targe
                 else {
                     countOfOpenShifts += JSON.parse(shift.instances);
                 }
-                openShiftIDs.push(shift.id);
+                extraOpenShiftsToDelete.push(shift.id);
             }
             else {
                 countOfOccupiedShifts++;
             }
         }
 
-        var correctNumberOfOpenShiftsToAdd = returnMaxOpenShiftCountForTime(targetTimeMomentObj.clone()) - countOfOccupiedShifts;
+        var correctNumberOfShiftsToSet = returnMaxOpenShiftCountForTime(targetTimeMomentObj.clone()) - countOfOccupiedShifts;
         console.log('Found ', countOfOpenShifts, ' open shifts, ', countOfOccupiedShifts, ' occupied shifts found for a time where we expect ', returnMaxOpenShiftCountForTime(targetTimeMomentObj.clone()), ' open shifts. Time: ', targetTimeMomentObj.toString());
-        callback(openShiftIDs, correctNumberOfOpenShiftsToAdd, targetTimeMomentObj);
+        callback(extraOpenShiftsToDelete, correctNumberOfShiftsToSet, targetTimeMomentObj);
         return;
     });
 }
@@ -128,6 +132,6 @@ function returnMaxOpenShiftCountForTime(targetTimeMomentObj) {
 module.exports = {
     recurOpenShifts: recurOpenShifts,
     returnMaxOpenShiftCountForTime: returnMaxOpenShiftCountForTime,
-    findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount: findIfOpenShiftsNeedToBeAddedAndOpenShiftIDsAndOccupiedShiftCount,
+    findExtraOpenShiftsToDeleteAndOccupiedShiftCount: findExtraOpenShiftsToDeleteAndOccupiedShiftCount,
     cronJob: cronJob
 };
