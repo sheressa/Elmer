@@ -7,6 +7,8 @@ config.root_dir = __dirname;
 
 config.secret_key = 'SuperSecretKey';
 
+config.new_relic_license_key = '';
+
 config.wheniwork = {
     api_key: 'TODO',
     username: 'TODO',
