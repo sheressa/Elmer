@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 var debug = require('debug')('my-application');
 var app = require('./www/app');
-// var jobs = require('require-all')(__dirname + '/jobs');
+var jobs = require('require-all')(__dirname + '/jobs');
 
 app.set('port', process.env.PORT || 3000);
 
