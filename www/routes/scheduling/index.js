@@ -234,6 +234,82 @@ router.get('/login', function (req, res) {
     });
 });
 
+router.get('/shifts/time-interval', function(req, res) {
+    var startTime = req.query.start
+      , endTime = req.query.end
+      , token = req.query.token
+      ;
+
+    // @TODO: some kind of auth needs to happen here
+    var query = {
+        start: moment.unix(startTime).subtract(1, 'minute').format(wiwDateFormat),
+        end: moment.unix(startTime).add(1, 'minute').format(wiwDateFormat),
+        location_id: [ global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts ]
+    };
+
+    console.log('query: ', query);
+
+    api.get('shifts', query, function(response) {
+        // console.log('get shifts response: ', response);
+        var shifts = response.shifts
+          , shift
+          , userShiftData = {}
+          , getUserEmailRequest
+          , batchPayload = []
+          ;
+        if (!shifts || shifts.length === 0) {
+            res.status(204).send('No shifts found.');
+            return;
+        }
+        for (var i = 0; i < shifts.length; i++) {
+            shift = shifts[i];
+            if (!shift.is_open) {
+                if (!userShiftData[shift.user_id]) {
+                    userShiftData[shift.user_id] = [shift];
+                    getUserEmailRequest = {
+                        "method": "GET",
+                        "url": "/2/users/" + shift.user_id
+                    };
+                    batchPayload.push(getUserEmailRequest);
+                }
+                else {
+                    userShiftData[shift.user_id].push(shift);
+                }
+            }
+        }
+
+        console.log('batch payload: ', batchPayload);
+
+        console.log('user shift data: ', userShiftData)
+
+        api.post('batch', batchPayload, function(response) {
+            var user
+              , email
+              , returnArray
+              , placeholder
+              ;
+            for (var i = 0; i < response.length; i ++) {
+                user = response[i];
+                if (userShiftData[user.id]) {
+                    email = user.email;
+
+                    // @TODO: find some way to denormalize the user's email address so that we get rid of the admin+ and @crisistextline.org
+
+                    userShiftData[user.email] = userShiftData[user.id];
+                    delete userShiftData[user.id];
+                }
+            }
+
+            // Transforming object of keys and values into array.
+            for (key in userShiftData) {
+                placeholder = {key : userShiftData[key]}
+                returnArray.push(placeholder);
+            }
+            res.json(returnArray);
+        })
+    })
+})
+
 function validate(email, hash) {
     var check = email + global.config.secret_key;
     return sha1(check) == hash;
@@ -280,7 +356,7 @@ function checkUser(email, first, last, callback) {
             api2.post('users/alerts', postBody, function () {});
 
             api2.post('users/profile', {email: email}, function (profile) {
-               console.log(profile);
+                console.log(profile);
                 callback(profile.user);
             });
         });
