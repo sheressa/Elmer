@@ -234,23 +234,38 @@ router.get('/login', function (req, res) {
     });
 });
 
+/**
+    Retrieves the shifts and owners' email addresses which fall within a requested
+    time interval.
+
+    @request params
+        - start {string} the start time to retrieve shifts, in UNIX epoch secs (not millisecs)
+        - end {string} the end time to retrieve shifts
+    @response
+        Returns array of user email (key) user's shift array (value) objects.
+    @notes
+        WhenIWork API retrieves shifts that START between the start and end times. Note that the end time is not inclusive of itself--i.e., querying for shift times
+        with epoch stamps corresponding to start=2pm and end=4pm will only retrieve shifts
+        which begin at a time between 2pm and 3:59pm. It will not retrieve shifts which begin at 4pm.
+**/
 router.get('/shifts/time-interval', function(req, res) {
     var startTime = req.query.start
       , endTime = req.query.end
       , token = req.query.token
       ;
 
-    // @TODO: some kind of auth needs to happen here
+    if (req.query.token !== sha1(global.config.platform_secret_key)) {
+        res.status(403).send('Access denied.');
+        return;
+    }
+
     var query = {
-        start: moment.unix(startTime).subtract(1, 'minute').format(wiwDateFormat),
-        end: moment.unix(startTime).add(1, 'minute').format(wiwDateFormat),
+        start: moment.unix(startTime).format(wiwDateFormat),
+        end: moment.unix(endTime).format(wiwDateFormat),
         location_id: [ global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts ]
     };
 
-    console.log('query: ', query);
-
     api.get('shifts', query, function(response) {
-        // console.log('get shifts response: ', response);
         var shifts = response.shifts
           , shift
           , userShiftData = {}
@@ -261,6 +276,7 @@ router.get('/shifts/time-interval', function(req, res) {
             res.status(204).send('No shifts found.');
             return;
         }
+        // We've found shifts. Now let's find the emails of their owners via batch req.
         for (var i = 0; i < shifts.length; i++) {
             shift = shifts[i];
             if (!shift.is_open) {
@@ -278,31 +294,38 @@ router.get('/shifts/time-interval', function(req, res) {
             }
         }
 
-        console.log('batch payload: ', batchPayload);
-
-        console.log('user shift data: ', userShiftData)
-
         api.post('batch', batchPayload, function(response) {
             var user
               , email
-              , returnArray
+              , returnArray = []
               , placeholder
               ;
             for (var i = 0; i < response.length; i ++) {
-                user = response[i];
+                user = response[i].user;
                 if (userShiftData[user.id]) {
                     email = user.email;
-
-                    // @TODO: find some way to denormalize the user's email address so that we get rid of the admin+ and @crisistextline.org
-
-                    userShiftData[user.email] = userShiftData[user.id];
+                    if (user.notes) {
+                        /**
+                            Retrieving email from user notes, where we've stored
+                            the non-transformed email (i.e., txiang@ctl.org, not
+                            admin+txiangctlorg@crisistextline.org)
+                        **/
+                        try {
+                            email = JSON.parse(user.notes).email;
+                        }
+                        catch(e) {
+                            console.log('JSON.parse failed for examining user notes for user: ' + user.id + ', error: ', e);
+                        }
+                    }
+                    userShiftData[email] = userShiftData[user.id];
                     delete userShiftData[user.id];
                 }
             }
-
             // Transforming object of keys and values into array.
             for (key in userShiftData) {
-                placeholder = {key : userShiftData[key]}
+                var key = key;
+                placeholder = {};
+                placeholder[key] = userShiftData[key];
                 returnArray.push(placeholder);
             }
             res.json(returnArray);
