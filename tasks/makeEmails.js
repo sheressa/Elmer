@@ -1,6 +1,6 @@
 var WhenIWork = require('wheniwork-unofficial');
 var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
-var emails = require('./emails');
+var emails = require('./canonicalEmails');
 
 // Create an array indexed by the admin+ email address, ex:
 // { 'admin+banana@crisistextline.org': 'banana' }
