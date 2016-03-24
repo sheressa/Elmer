@@ -76,12 +76,13 @@ function processUsers(users) {
                 user_data = data.users[i].notes;
 
                 if (user_data.indexOf('two_shift_notification') < 0) {
-                    user_data += 'two_shift_notification' + "\n";
+                    user_data = JSON.parse(user_data);
+                    user_data.two_shift_notification = true;
 
                     update_queue.push({
                         method: 'PUT',
                         url: '/2/users/'+data.users[i].id,
-                        params: {notes: user_data}
+                        params: {notes: JSON.stringify(user_data)}
                     });
 
                     only_two_notify.push(data.users[i].id);
