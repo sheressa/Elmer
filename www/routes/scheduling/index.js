@@ -311,7 +311,7 @@ router.get('/shifts/time-interval', function(req, res) {
                             admin+txiangctlorg@crisistextline.org)
                         **/
                         try {
-                            email = JSON.parse(user.notes).email;
+                            email = JSON.parse(user.notes).canonicalEmail;
                         }
                         catch(e) {
                             console.log('JSON.parse failed for examining user notes for user: ' + user.id + ', error: ', e);
@@ -361,7 +361,8 @@ function checkUser(email, first, last, callback) {
             last_name: last,
             activated: true,
             locations: [global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts],
-            password: global.config.wheniwork.default_password
+            password: global.config.wheniwork.default_password,
+            notes: { canonicalEmail: email }
         };
 
         api.post('users', newUser, function (data) {
