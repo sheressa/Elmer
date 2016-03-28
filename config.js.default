@@ -88,13 +88,19 @@ config.numberOfCounselorsPerShift = {
 var red  = 'D61F27';
 var gray = '5e5e5e';
 config.shiftColors = {
-    'Sun': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '6pm': gray, '8pm': gray, '10pm': gray },
-    'Mon': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '6pm': gray, '8pm': gray, '10pm': gray },
-    'Tue': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '6pm': gray, '8pm': gray, '10pm': gray },
-    'Wed': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '6pm': gray, '8pm': gray, '10pm': gray },
-    'Thu': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '6pm': gray, '8pm': gray, '10pm': gray },
-    'Fri': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '6pm': gray, '8pm': gray, '10pm': gray },
-    'Sat': { '12am': gray, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '6pm': gray, '8pm': gray, '10pm': gray }
+    'Sun': { '12am': red, '2am': red, '4am': red, '6am': gray, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '6pm': gray, '8pm': gray, '10pm': red },
+
+    'Mon': { '12am': red, '2am': red, '4am': red, '6am': red, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '6pm': gray, '8pm': gray, '10pm': red },
+
+    'Tue': { '12am': red, '2am': red, '4am': red, '6am': gray, '8am': gray, '10am': gray, '12pm': gray, '2pm': red, '4pm': gray, '6pm': gray, '8pm': gray, '10pm': red },
+
+    'Wed': { '12am': red, '2am': red, '4am': red, '6am': gray, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '6pm': gray, '8pm': gray, '10pm': gray },
+
+    'Thu': { '12am': red, '2am': red, '4am': red, '6am': gray, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': gray, '6pm': gray, '8pm': gray, '10pm': gray },
+
+    'Fri': { '12am': red, '2am': red, '4am': red, '6am': gray, '8am': gray, '10am': gray, '12pm': gray, '2pm': red, '4pm': gray, '6pm': gray, '8pm': gray, '10pm': red },
+
+    'Sat': { '12am': red, '2am': red, '4am': red, '6am': gray, '8am': gray, '10am': gray, '12pm': gray, '2pm': gray, '4pm': red, '6pm': red, '8pm': red, '10pm': red }
 };
 
 module.exports = config;
