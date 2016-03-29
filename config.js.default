@@ -35,8 +35,8 @@ config.time_interval = {
     // runs every 20 mins.
     notify_first_shift_cron_job_string: '0 */20 * * * *',
 
-    // runs every day at 11:00 and 23:00.
-    time_off_requests_cron_job_string: '0 0 11,23 * * *',
+    // runs every five mins.
+    time_off_requests_cron_job_string: '0 */5 * * * *',
 
     // Each recurrence chain is 1 year long.
     max_shifts_in_chain: 52,
