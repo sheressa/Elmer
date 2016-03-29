@@ -32,7 +32,6 @@ module.exports.go = function () {
   });
 };
 
-// Chris, talking about his first pass: if their email didnt start with admin+, I just populated the canonicalEmail field with their WiW email address.
 function updateNotes(user, batchRequestArray) {
   var note = {}
     , email = user.email
@@ -54,7 +53,8 @@ function updateNotes(user, batchRequestArray) {
 
   // If the WiW notes-stored email of the user is equal to the email we have on
   // the platform, we don't need to update anything.
-  if (user.notes && user.notes.canonicalEmail === adminEmails[getAdmin(email)]) {
+  if (user.notes && user.notes.canonicalEmail === adminEmails[getAdmin(email.toLowerCase())]) {
+    console.log('dont need to update', adminEmails[getAdmin(email.toLowerCase())], ' ', email, user.notes.canonicalEmail)
     return;
   }
 
@@ -70,7 +70,7 @@ function updateNotes(user, batchRequestArray) {
   }
   else {
     note.canonicalEmail = email.toLowerCase();
-    console.log(note);
+    console.log('updating user with: ', note);
     updateRequest = {
       method: 'PUT',
       url: '/2/users/' + user.id,
