@@ -1,18 +1,22 @@
-var express   = require.main.require('express');
-var WhenIWork = require.main.require('wheniwork-unofficial');
-var moment    = require.main.require('moment');
-var sha1      = require.main.require('sha1');
-var stathat   = require(global.config.root_dir + '/lib/stathat');
-var colorizeShift = require(global.config.root_dir + '/lib/ColorizeShift');
+var express   = require.main.require('express')
+  , WhenIWork = require.main.require('wheniwork-unofficial')
+  , moment    = require.main.require('moment')
+  , sha1      = require.main.require('sha1')
+  , stathat   = require(global.config.root_dir + '/lib/stathat')
+  , colorizeShift = require(global.config.root_dir + '/lib/ColorizeShift')
+  ;
 
-var router = express.Router();
+var router = express.Router()
+  , api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password)
+  ;
 
-var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
-
-var wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
-var chooseShiftToCancelPageStartDateFormat = 'dddd h:mm a';
-var chooseShiftToCancelPageEndDateFormat = 'h:mm a z';
-var scheduleShiftsURL = '/scheduling/login?';
+var wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ'
+  , chooseRegShiftToCancelPageStartDateFormat = 'dddd h:mm a' // Wednesday 4:00 p
+  , chooseRegShiftToCancelPageEndDateFormat = 'h:mm a z' // 6:00 pm ES
+  , chooseMakeupShiftToCancelPageStartDateFormat = 'dddd, MMM Do YYYY - h:mm a' // Wednesday, Mar 30th 2016 - 4:00 p
+  , chooseMakeupShiftToCancelPageEndDateFormat = 'h:mm a z' // 6:00 pm ES
+  , scheduleShiftsURL = '/scheduling/login?'
+  ;
 
 router.get('/shifts', function(req, res) {
     var email = req.query.email;
@@ -38,8 +42,8 @@ router.get('/shifts', function(req, res) {
                 var query = {
                     user_id: userID,
                     start: '-1 day',
-                    end: '+8 days',
-                    location_id: global.config.locationID.regular_shifts
+                    end: '+365 days',
+                    location_id: [global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts]
                 };
 
                 api.get('shifts', query, function(response) {
@@ -49,13 +53,30 @@ router.get('/shifts', function(req, res) {
                         res.render('scheduling/chooseShiftToCancel', { error: error , url: url });
                         return;
                     }
-                    var shifts = response.shifts;
+                    var shifts = response.shifts
+                      , makeupShifts = []
+                      , regularShifts = []
+                      , targetShift
+                      ;
+
+
+                    // Filter makeup shifts from regular shifts
+                    for (var i = 0 ; i < shifts.length; i++) {
+                        targetShift = shifts[i];
+                        if (targetShift.location_id === global.config.locationID.regular_shifts) {
+                            regularShifts.push(targetShift);
+                        }
+                        else if (targetShift.location_id === global.config.locationID.makeup_and_extra_shifts) {
+                            makeupShifts.push(targetShift);
+                        }
+                    }
+
                     /**
-                        If the user creates a shift and it hasn't been recurred, we're going to direct the user
+                        If the user creates a regular shift and it hasn't been recurred, we're going to direct the user
                         to refresh. (The rest of deleting recurring shifts relies on using the parent_shift property
                         stored in the shift.notes param.)
                     **/
-                    shifts.forEach(function(shift) {
+                    regularShifts.forEach(function(shift) {
                         if (!shift.notes) {
                             var error = "Sorry! WhenIWork is loading slowly. Please wait 30 seconds, and then refresh and try again.";
                             res.render('scheduling/chooseShiftToCancel', { error: error , url: url});
@@ -63,36 +84,53 @@ router.get('/shifts', function(req, res) {
                         }
                     })
 
-                    var i = shifts.length;
+                    // Removes duplicate reg shifts--those that are in the same recurrence chain.
+                    var i = regularShifts.length;
                     while (i--) {
-                        shifts = shifts.filter(
+                        if (!regularShifts[i]) {
+                            continue;
+                        }
+                        regularShifts = regularShifts.filter(
                             function(shift, index) {
                                 if (i === index) {
                                     return true;
                                 }
-                                return !areShiftsDuplicate(shifts[i], shift);
+                                return !areShiftsDuplicate(regularShifts[i], shift);
                             }
                         )
                     }
 
-                    // Sorting shifts by when they occur on the weekly calendar
-                    shifts.sort(function(shiftA, shiftB) {
+                    // Sorting regularShifts by when they occur on the weekly calendar
+                    regularShifts.sort(function(shiftA, shiftB) {
                         return sortByDayAscAndTimeAsc(moment(shiftA.start_time, wiwDateFormat), moment(shiftB.start_time, wiwDateFormat));
                     });
 
-                    // Formatting shift time display to be more user-readable
-                    shifts.forEach(function(shift) {
-                        shift.start_time = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseShiftToCancelPageStartDateFormat);
-                        shift.end_time = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseShiftToCancelPageEndDateFormat);
+                    // Formatting regularShift time display to be more user-readable
+                    regularShifts.forEach(function(shift) {
+                        shift.start_time = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseRegShiftToCancelPageStartDateFormat);
+                        shift.end_time = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseRegShiftToCancelPageEndDateFormat);
+                    });
+
+                    // Sorting makeupShifts in order of when they occur
+                    makeupShifts.sort(function(shiftA, shiftB) {
+                        return dateSort(moment(shiftA.start_time, wiwDateFormat), moment(shiftB.start_time, wiwDateFormat));
+                    });
+
+                    makeupShifts.forEach(function(shift) {
+                        shift.start_time = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseMakeupShiftToCancelPageStartDateFormat);
+                        shift.end_time = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseMakeupShiftToCancelPageEndDateFormat);
                     });
 
                     var templateData = {
-                        shifts: shifts,
+                        regularShifts: regularShifts,
+                        makeupShifts: makeupShifts,
                         userID: userID,
                         email: email,
                         token: req.query.token,
                         userName: userName
                     };
+
+                    console.log(templateData);
 
                     // Then, display them in the jade template.
                     res.render('scheduling/chooseShiftToCancel', templateData);
@@ -161,8 +199,8 @@ router.delete('/shifts', function(req, res) {
                 }
 
                 if (!deletedShiftInformation[parentShiftID]) {
-                    var formattedStartTime = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseShiftToCancelPageStartDateFormat);
-                    var formattedEndTime = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseShiftToCancelPageEndDateFormat)
+                    var formattedStartTime = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseRegShiftToCancelPageStartDateFormat);
+                    var formattedEndTime = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseRegShiftToCancelPageEndDateFormat)
                     deletedShiftInformation[parentShiftID] = { start_time: formattedStartTime, end_time: formattedEndTime };
                 }
             }
@@ -423,6 +461,14 @@ function sortByDayAscAndTimeAsc(firstMomentObject, secondMomentObject) {
         return firstMomentObject.seconds() > secondMomentObject.seconds() ? 1 : -1;
     }
     return 0;
+}
+
+/**
+    Returns 1 if firstMomentObject occurs after secondMomentObject,
+    returns -1 if firstMomentObject occurs before secondMomentObject.
+**/
+function dateSort(firstMomentObject, secondMomentObject) {
+    return (firstMomentObject > secondMomentObject ? 1 : -1);
 }
 
 module.exports = router;
