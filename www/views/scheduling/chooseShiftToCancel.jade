@@ -13,11 +13,12 @@ block content
             input(type="hidden", name="email", value=email)
             input(type="hidden", name="userID", value=userID)
             input(type="hidden", name="token", value=token)
+            input(type="hidden", name="userName", value=userName)
             each shift in regularShifts
                 - var parentShiftID = JSON.parse(shift.notes).parent_shift
                 - var title = shift.start_time + ' to ' + shift.end_time
                 div.input
-                    input(type="checkbox", name=parentShiftID)
+                    input(type="checkbox", name='regShift' + parentShiftID)
                     span.label=title
             - if (makeupShifts && makeupShifts.length > 0) {
                 h4 one-time makeup shifts
@@ -25,7 +26,7 @@ block content
                     - var parentShiftID = 'makeupShift'
                     - var title = shift.start_time + ' to ' + shift.end_time
                     div.input
-                        input(type="checkbox", name=parentShiftID)
+                        input(type="checkbox", name='makShift' + shift.id)
                         span.label=title
             - }
             div.actions
