@@ -5,10 +5,10 @@ var colorize = require('../lib/ColorizeShift');
 
 module.exports.go = function () {
   var filter = {
-    start: '-2 weeks',
+    start: '-1 day',
     end:   '+2 weeks',
     include_allopen: true,
-    locationId: global.config.locationID.regular_shifts
+    locationId: [global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts]
   };
 
   api.get('shifts', filter, function (results) {
@@ -16,10 +16,23 @@ module.exports.go = function () {
 	    return e.is_open;
     });
 
-    var update;
+    var update
+      , batchRequest = []
+      ;
+
     openShifts.forEach(function (e, i, arr) {
-      update = colorize({}, e.start_time);
-      api.update('shifts/'+e.id, update);
+      update = colorize({}, e.start_time, (e.location_id === global.config.locationID.makeup_and_extra_shifts));
+      var shiftDeleteRequest = {
+          "method": "PUT",
+          "url": "/2/shifts/" + e.id,
+          "params": update,
+      };
+      batchRequest.push(shiftDeleteRequest);
     });
+
+    api.post('batch', batchRequest, function(response) {
+      console.log(response);
+    })
+
   });
 };
