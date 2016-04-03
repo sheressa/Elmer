@@ -1,9 +1,19 @@
+global.config = require('../config');
+
+if (process.env.NODE_ENV !== 'production') {
+    global.config.locationID.regular_shifts = global.config.locationID.test;
+}
+else {
+    require('newrelic');
+}
+
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var debug = require('debug')('my-application');
 
 var routes = require('require-all')(__dirname + '/routes');
 
@@ -61,5 +71,10 @@ app.use(function(err, req, res, next) {
     });
 });
 
+app.set('port', process.env.PORT || 3000);
+
+var server = app.listen(app.get('port'), function() {
+  debug('Express server listening on port ' + server.address().port);
+});
 
 module.exports = app;
