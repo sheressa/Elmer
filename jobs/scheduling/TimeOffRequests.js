@@ -1,7 +1,9 @@
-var CronJob = require('cron').CronJob;
-var WhenIWork = require('./base');
-var moment = require('moment-timezone');
-var fs = require('fs');
+var CronJob = require('cron').CronJob
+  , WhenIWork = require('./base')
+  , moment = require('moment-timezone')
+  , fs = require('fs')
+  , returnColorizedShift = require(global.config.root_dir + '/lib/ColorizeShift')
+  ;
 
 var date_format = 'YYYY-MM-DD HH:mm:ss';
 
@@ -68,17 +70,21 @@ function handleTimeOffRequests() {
 
                         batchPayload.push(shiftDeleteRequest);
 
-                        var newOpenShiftRequest = {
-                            "method": "post",
-                            "url": "/2/shifts",
-                            "params": {
+                        var params = {
                                 "start_time": shift.start_time,
                                 "end_time": shift.end_time,
                                 "notes": "SHIFT COVERAGE",
                                 "published": true,
                                 "location_id": global.config.locationID
                                                      .makeup_and_extra_shifts,
-                            }
+                            };
+
+                        params = returnColorizedShift(params, shift.start_time, true);
+
+                        var newOpenShiftRequest = {
+                            "method": "post",
+                            "url": "/2/shifts",
+                            "params": params
                         };
                         batchPayload.push(newOpenShiftRequest);
                     });

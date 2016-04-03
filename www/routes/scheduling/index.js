@@ -3,7 +3,7 @@ var express   = require.main.require('express')
   , moment    = require.main.require('moment')
   , sha1      = require.main.require('sha1')
   , stathat   = require(global.config.root_dir + '/lib/stathat')
-  , colorizeShift = require(global.config.root_dir + '/lib/ColorizeShift')
+  , returnColorizedShift = require(global.config.root_dir + '/lib/colorizeShift')
   ;
 
 var router = express.Router()
@@ -191,7 +191,7 @@ router.delete('/shifts', function(req, res) {
                             user_id: 0,
                             notes: ''
                         };
-                        updatedShiftParams = colorizeShift(updatedShiftParams, shift.start_time);
+                        updatedShiftParams = returnColorizedShift(updatedShiftParams, shift.start_time);
                         var reassignShiftToOpenAndRemoveNotesRequest = {
                             "method": 'PUT',
                             "url": "/2/shifts/" + shift.id,
@@ -217,13 +217,15 @@ router.delete('/shifts', function(req, res) {
                 }
             }
             else if (shift.location_id === global.config.locationID.makeup_and_extra_shifts && shiftIDsOfMakeupShiftsToBeDeleted.indexOf(shift.id) != -1) {
+                var params = {
+                    user_id : 0
+                };
+                param = returnColorizedShift(params, shift.start_time, true);
                 var openShiftRequest = {
                     method : 'PUT',
                     url : '/2/shifts/' + shift.id,
-                    params : {
-                        user_id: 0
-                    }
-                }
+                    params : params
+                };
                 batchPayload.push(openShiftRequest);
 
                 var formattedStartTime = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseMakeupShiftToCancelPageStartDateFormat);

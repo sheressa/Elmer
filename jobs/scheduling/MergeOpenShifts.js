@@ -1,7 +1,7 @@
 
 var CronJob = require('cron').CronJob;
 var WhenIWork = require('./base');
-var colorizeShift = require('../../lib/ColorizeShift');
+var returnColorizedShift = require('../../lib/ColorizeShift');
 
 var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 
@@ -56,7 +56,7 @@ function mergeOpenShifts() {
                 for (var j in shift) {
                     if (shift[j].instances !== undefined && shift[j].instances == max && !remainingShiftUpdated) {
                         var update = {instances: instances};
-                        update = colorizeShift(update, shift[j].start_time);
+                        update = returnColorizedShift(update, shift[j].start_time);
 
                         WhenIWork.update('shifts/'+shift[j].id, update);
 
