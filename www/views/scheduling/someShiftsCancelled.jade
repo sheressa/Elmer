@@ -2,15 +2,26 @@ extends ../layout
 
 block content
     h1 The following shifts have been successfully deleted:
-    - deletedShiftInformation = JSON.parse(deletedShiftInformation)
-    ul
-      each shift in deletedShiftInformation
-        li=shift.start_time + ' to ' + shift.end_time
+
+    - if (regShifts.length > 0) {
+        h4 regular weekly shifts deleted
+        ul
+            each shift in regShifts
+                li=shift.start_time + ' to ' + shift.end_time
+    - }
+
+    - if (makShifts.length > 0) {
+        h4 one-time makeup shifts deleted
+        ul
+            each shift in makShifts
+                li=shift.start_time + ' to ' + shift.end_time
+    - }
 
     form(action="#{url}", method="get")
         input(type="hidden", name="email", value=email)
         input(type="hidden", name="token", value=token)
         input(type="submit", value="Continue on to schedule a new shift")
+
     form(action="/scheduling/shifts", method="get")
         input(type="hidden", name="email", value=email)
         input(type="hidden", name="token", value=token)
