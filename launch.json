@@ -1,0 +1,16 @@
+[
+  {
+    "_comment": "starts process which launches main express server that handles http requests",
+    "uid": "express",
+    "append": true,
+    "watch": false,
+    "script": "./www/app.js"
+  },
+  {
+    "_comment": "starts process which runs cron jobs interacting with When I Work",
+    "uid": "cron",
+    "append": true,
+    "watch": false,
+    "script": "./runJobs.js"
+  }
+]
