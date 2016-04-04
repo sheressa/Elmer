@@ -1,18 +1,22 @@
-var express   = require.main.require('express');
-var WhenIWork = require.main.require('wheniwork-unofficial');
-var moment    = require.main.require('moment');
-var sha1      = require.main.require('sha1');
-var stathat   = require(global.config.root_dir + '/lib/stathat');
-var colorizeShift = require(global.config.root_dir + '/lib/ColorizeShift');
+var express   = require.main.require('express')
+  , WhenIWork = require.main.require('wheniwork-unofficial')
+  , moment    = require.main.require('moment')
+  , sha1      = require.main.require('sha1')
+  , stathat   = require(global.config.root_dir + '/lib/stathat')
+  , returnColorizedShift = require(global.config.root_dir + '/lib/colorizeShift')
+  ;
 
-var router = express.Router();
+var router = express.Router()
+  , api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password)
+  ;
 
-var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
-
-var wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
-var chooseShiftToCancelPageStartDateFormat = 'dddd h:mm a';
-var chooseShiftToCancelPageEndDateFormat = 'h:mm a z';
-var scheduleShiftsURL = '/scheduling/login?';
+var wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ'
+  , chooseRegShiftToCancelPageStartDateFormat = 'dddd h:mm a' // Wednesday 4:00 p
+  , chooseRegShiftToCancelPageEndDateFormat = 'h:mm a z' // 6:00 pm ES
+  , chooseMakeupShiftToCancelPageStartDateFormat = 'dddd, MMM Do YYYY - h:mm a' // Wednesday, Mar 30th 2016 - 4:00 p
+  , chooseMakeupShiftToCancelPageEndDateFormat = 'h:mm a z' // 6:00 pm ES
+  , scheduleShiftsURL = '/scheduling/login?'
+  ;
 
 router.get('/shifts', function(req, res) {
     var email = req.query.email;
@@ -38,8 +42,8 @@ router.get('/shifts', function(req, res) {
                 var query = {
                     user_id: userID,
                     start: '-1 day',
-                    end: '+8 days',
-                    location_id: global.config.locationID.regular_shifts
+                    end: '+180 days',
+                    location_id: [global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts]
                 };
 
                 api.get('shifts', query, function(response) {
@@ -49,13 +53,30 @@ router.get('/shifts', function(req, res) {
                         res.render('scheduling/chooseShiftToCancel', { error: error , url: url });
                         return;
                     }
-                    var shifts = response.shifts;
+                    var shifts = response.shifts
+                      , makeupShifts = []
+                      , regularShifts = []
+                      , targetShift
+                      ;
+
+
+                    // Filter makeup shifts from regular shifts
+                    for (var i = 0 ; i < shifts.length; i++) {
+                        targetShift = shifts[i];
+                        if (targetShift.location_id === global.config.locationID.regular_shifts) {
+                            regularShifts.push(targetShift);
+                        }
+                        else if (targetShift.location_id === global.config.locationID.makeup_and_extra_shifts) {
+                            makeupShifts.push(targetShift);
+                        }
+                    }
+
                     /**
-                        If the user creates a shift and it hasn't been recurred, we're going to direct the user
+                        If the user creates a regular shift and it hasn't been recurred, we're going to direct the user
                         to refresh. (The rest of deleting recurring shifts relies on using the parent_shift property
                         stored in the shift.notes param.)
                     **/
-                    shifts.forEach(function(shift) {
+                    regularShifts.forEach(function(shift) {
                         if (!shift.notes) {
                             var error = "Sorry! WhenIWork is loading slowly. Please wait 30 seconds, and then refresh and try again.";
                             res.render('scheduling/chooseShiftToCancel', { error: error , url: url});
@@ -63,31 +84,46 @@ router.get('/shifts', function(req, res) {
                         }
                     })
 
-                    var i = shifts.length;
+                    // Removes duplicate reg shifts--those that are in the same recurrence chain.
+                    var i = regularShifts.length;
                     while (i--) {
-                        shifts = shifts.filter(
+                        if (!regularShifts[i]) {
+                            continue;
+                        }
+                        regularShifts = regularShifts.filter(
                             function(shift, index) {
                                 if (i === index) {
                                     return true;
                                 }
-                                return !areShiftsDuplicate(shifts[i], shift);
+                                return !areShiftsDuplicate(regularShifts[i], shift);
                             }
                         )
                     }
 
-                    // Sorting shifts by when they occur on the weekly calendar
-                    shifts.sort(function(shiftA, shiftB) {
+                    // Sorting regularShifts by when they occur on the weekly calendar
+                    regularShifts.sort(function(shiftA, shiftB) {
                         return sortByDayAscAndTimeAsc(moment(shiftA.start_time, wiwDateFormat), moment(shiftB.start_time, wiwDateFormat));
                     });
 
-                    // Formatting shift time display to be more user-readable
-                    shifts.forEach(function(shift) {
-                        shift.start_time = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseShiftToCancelPageStartDateFormat);
-                        shift.end_time = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseShiftToCancelPageEndDateFormat);
+                    // Formatting regularShift time display to be more user-readable
+                    regularShifts.forEach(function(shift) {
+                        shift.start_time = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseRegShiftToCancelPageStartDateFormat);
+                        shift.end_time = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseRegShiftToCancelPageEndDateFormat);
+                    });
+
+                    // Sorting makeupShifts in order of when they occur
+                    makeupShifts.sort(function(shiftA, shiftB) {
+                        return dateSort(moment(shiftA.start_time, wiwDateFormat), moment(shiftB.start_time, wiwDateFormat));
+                    });
+
+                    makeupShifts.forEach(function(shift) {
+                        shift.start_time = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseMakeupShiftToCancelPageStartDateFormat);
+                        shift.end_time = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseMakeupShiftToCancelPageEndDateFormat);
                     });
 
                     var templateData = {
-                        shifts: shifts,
+                        regularShifts: regularShifts,
+                        makeupShifts: makeupShifts,
                         userID: userID,
                         email: email,
                         token: req.query.token,
@@ -108,10 +144,17 @@ router.delete('/shifts', function(req, res) {
         res.status(403).send('Access denied.');
     }
 
-    var parentShiftIDsOfShiftsToBeDeleted = [];
-    for (var key in req.query) {
-        if (req.query[key] === 'on') {
-            parentShiftIDsOfShiftsToBeDeleted.push(parseInt(key));
+    var parentShiftIDsOfRegularShiftsToBeDeleted = []
+      , shiftIDsOfMakeupShiftsToBeDeleted = []
+      , key
+      ;
+
+    for (key in req.query) {
+        if (key.substr(0, 8) === 'regShift' && req.query[key] === 'on') {
+            parentShiftIDsOfRegularShiftsToBeDeleted.push(parseInt(key.substr(8)));
+        }
+        else if (key.substr(0, 8) === 'makShift' && req.query[key] === 'on') {
+            shiftIDsOfMakeupShiftsToBeDeleted.push(parseInt(key.substr(8)));
         }
     }
 
@@ -120,61 +163,81 @@ router.delete('/shifts', function(req, res) {
         start: '-1 day',
         end: '+50 years',
         unpublished: true,
-        location_id: global.config.locationID.regular_shifts
+        location_id: [ global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts ]
     };
 
     api.get('shifts', query, function (data) {
         var parentShiftID
           , shift
           , batchPayload = []
-          , deletedShiftInformation = {}
-          , finalDeletedShiftArray = []
+          , deletedShiftInformation = {regShifts : {}, makShifts : {}}
           ;
 
         data.shifts.forEach(function(shift) {
-            parentShiftID = JSON.parse(shift.notes).parent_shift;
-
-            if (parentShiftIDsOfShiftsToBeDeleted.indexOf(parentShiftID) != -1) {
-                // If the shift starts within a week, it's a shift that needs to be converted to an
-                // open shift because the open shift job has already run and passed that day.
-                if (Math.abs(moment().diff(moment(shift.start_time, wiwDateFormat), 'days')) < global.config.time_interval.days_in_interval_to_repeat_open_shifts) {
-                    var updatedShiftParams = {
-                        user_id: 0,
-                        notes: ''
-                    };
-                    updatedShiftParams = colorizeShift(updatedShiftParams, shift.start_time);
-                    var reassignShiftToOpenAndRemoveNotesRequest = {
-                        "method": 'PUT',
-                        "url": "/2/shifts/" + shift.id,
-                        "params": updatedShiftParams
-                    };
-                    batchPayload.push(reassignShiftToOpenAndRemoveNotesRequest);
+            if (shift.location_id === global.config.locationID.regular_shifts) {
+                try {
+                    parentShiftID = JSON.parse(shift.notes).parent_shift;
                 }
-                // Otherwise, we just delete the shift.
-                else {
-                    var shiftDeleteRequest = {
-                        "method": "delete",
-                        "url": "/2/shifts/" + shift.id,
-                        "params": {},
-                    };
-                    batchPayload.push(shiftDeleteRequest);
+                catch (e) {
+                    parentShiftID = null;
+                    console.log('Error parsing JSON for shift: ', shift.id, ' error: ', e);
                 }
 
-                if (!deletedShiftInformation[parentShiftID]) {
-                    var formattedStartTime = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseShiftToCancelPageStartDateFormat);
-                    var formattedEndTime = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseShiftToCancelPageEndDateFormat)
-                    deletedShiftInformation[parentShiftID] = { start_time: formattedStartTime, end_time: formattedEndTime };
+                if (parentShiftIDsOfRegularShiftsToBeDeleted.indexOf(parentShiftID) != -1) {
+                    // If the shift starts within a week, it's a shift that needs to be converted to an
+                    // open shift because the open shift job has already run and passed that day.
+                    if (Math.abs(moment().diff(moment(shift.start_time, wiwDateFormat), 'days')) < global.config.time_interval.days_in_interval_to_repeat_open_shifts) {
+                        var updatedShiftParams = {
+                            user_id: 0,
+                            notes: ''
+                        };
+                        updatedShiftParams = returnColorizedShift(updatedShiftParams, shift.start_time);
+                        var reassignShiftToOpenAndRemoveNotesRequest = {
+                            "method": 'PUT',
+                            "url": "/2/shifts/" + shift.id,
+                            "params": updatedShiftParams
+                        };
+                        batchPayload.push(reassignShiftToOpenAndRemoveNotesRequest);
+                    }
+                    // Otherwise, we just delete the shift.
+                    else {
+                        var shiftDeleteRequest = {
+                            "method": "delete",
+                            "url": "/2/shifts/" + shift.id,
+                            "params": {},
+                        };
+                        batchPayload.push(shiftDeleteRequest);
+                    }
+
+                    if (!deletedShiftInformation.regShifts[parentShiftID]) {
+                        var formattedStartTime = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseRegShiftToCancelPageStartDateFormat);
+                        var formattedEndTime = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseRegShiftToCancelPageEndDateFormat)
+                        deletedShiftInformation.regShifts[parentShiftID] = { start_time: formattedStartTime, end_time: formattedEndTime };
+                    }
                 }
+            }
+            else if (shift.location_id === global.config.locationID.makeup_and_extra_shifts && shiftIDsOfMakeupShiftsToBeDeleted.indexOf(shift.id) != -1) {
+                var params = {
+                    user_id : 0
+                };
+                param = returnColorizedShift(params, shift.start_time, true);
+                var openShiftRequest = {
+                    method : 'PUT',
+                    url : '/2/shifts/' + shift.id,
+                    params : params
+                };
+                batchPayload.push(openShiftRequest);
+
+                var formattedStartTime = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseMakeupShiftToCancelPageStartDateFormat);
+                var formattedEndTime = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseMakeupShiftToCancelPageEndDateFormat);
+
+                deletedShiftInformation.makShifts[shift.id] = { start_time: formattedStartTime, end_time: formattedEndTime };
             }
         });
 
-        for (key in deletedShiftInformation) {
-            finalDeletedShiftArray.push(deletedShiftInformation[key]);
-        }
-
         api.post('batch', batchPayload, function(response) {
             var templateData = {
-                deletedShiftInformation: JSON.stringify(finalDeletedShiftArray),
+                deletedShiftInformation: JSON.stringify(deletedShiftInformation),
                 email: encodeURIComponent(req.query.email),
                 token: req.query.token,
                 url: 'https://app.wheniwork.com/'
@@ -196,12 +259,32 @@ router.delete('/shifts', function(req, res) {
 })
 
 router.get('/shifts/delete-success', function(req, res) {
+    var deletedShiftInformation
+      , regShifts = []
+      , makShifts = []
+      ;
+
+    try {
+        deletedShiftInformation = JSON.parse(req.query.deletedShiftInformation);
+    }
+    catch (e) {
+        console.log('Unable to parse deleted shift information, error: ', e);
+    }
+
+    for (key in deletedShiftInformation.regShifts) {
+        regShifts.push(deletedShiftInformation.regShifts[key]);
+    }
+    for (key in deletedShiftInformation.makShifts) {
+        makShifts.push(deletedShiftInformation.makShifts[key]);
+    }
+
     var templateData = {
         email: req.query.email,
         token: req.query.token,
         userName: req.query.userName,
         url: scheduleShiftsURL,
-        deletedShiftInformation: req.query.deletedShiftInformation
+        regShifts: regShifts,
+        makShifts: makShifts
     };
 
     res.render('scheduling/someShiftsCancelled', templateData);
@@ -423,6 +506,14 @@ function sortByDayAscAndTimeAsc(firstMomentObject, secondMomentObject) {
         return firstMomentObject.seconds() > secondMomentObject.seconds() ? 1 : -1;
     }
     return 0;
+}
+
+/**
+    Returns 1 if firstMomentObject occurs after secondMomentObject,
+    returns -1 if firstMomentObject occurs before secondMomentObject.
+**/
+function dateSort(firstMomentObject, secondMomentObject) {
+    return (firstMomentObject > secondMomentObject ? 1 : -1);
 }
 
 module.exports = router;
