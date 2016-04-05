@@ -82,7 +82,7 @@ router.get('/shifts', function(req, res) {
                             res.render('scheduling/chooseShiftToCancel', { error: error , url: url});
                             return;
                         }
-                    })
+                    });
 
                     // Removes duplicate reg shifts--those that are in the same recurrence chain.
                     var i = regularShifts.length;
@@ -293,6 +293,7 @@ router.get('/shifts/delete-success', function(req, res) {
 router.get('/login', function (req, res) {
     if (!validate(req.query.email, req.query.token)) {
         res.status(403).send('Access denied.');
+        return;
     }
 
     var email = req.query.email;
@@ -300,11 +301,13 @@ router.get('/login', function (req, res) {
     checkUser(req.query.email, req.query.fn, req.query.ln, function (user) {
         var api2 = new WhenIWork(global.config.wheniwork.api_key, user.email, global.config.wheniwork.default_password, function (resp) {
             res.redirect('https://app.wheniwork.com/login/?redirect=myschedule');
+            return;
         });
 
         api2.post('users/autologin', function (data) {
             if (typeof data.error !== 'undefined') {
                 res.redirect('https://app.wheniwork.com');
+                return;
             } else {
                 var destination = 'myschedule';
                 if (req.query.destination != undefined && req.query.destination != '') {
@@ -312,6 +315,7 @@ router.get('/login', function (req, res) {
                 }
 
                 res.redirect('https://app.wheniwork.com/'+destination+'?al=' + data.hash);
+                return;
             }
         });
     });
@@ -445,7 +449,7 @@ function checkUser(email, first, last, callback) {
             activated: true,
             locations: [global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts],
             password: global.config.wheniwork.default_password,
-            notes: { canonicalEmail: email }
+            notes: JSON.stringify({ canonicalEmail: email })
         };
 
         api.post('users', newUser, function (data) {
