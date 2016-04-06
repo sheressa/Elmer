@@ -1,0 +1,12 @@
+extends ../layout
+
+block content
+    h1 Please select the timezone you would like to see your schedule in
+    p You can always change this setting later in your Profile in When I Work
+    form(action="#{url}", method="get")
+        select(name="timezone")
+            each val,idx in timezones
+                option(value="#{idx}") #{val}
+        each val,idx in params
+            input(type="hidden", name="#{idx}", value="#{val}")
+        input(type="submit", value="Submit")
