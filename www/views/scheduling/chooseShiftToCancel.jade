@@ -8,7 +8,7 @@ block content
     - else if (regularShifts && regularShifts.length > 0) {
         h2=userName + "'s shifts"
         h3 delete individual shifts - choose up to two shifts to delete at a time
-        h4 regular weekly shifts
+        h4 Weekly shifts
         form(name="cancel-form")
             input(type="hidden", name="email", value=email)
             input(type="hidden", name="userID", value=userID)
@@ -21,7 +21,7 @@ block content
                     input(type="checkbox", name='regShift' + parentShiftID)
                     span.label=title
             - if (makeupShifts && makeupShifts.length > 0) {
-                h4 one-time makeup shifts
+                h4 One-time (or makeup) shifts
                 each shift in makeupShifts
                     - var parentShiftID = 'makeupShift'
                     - var title = shift.start_time + ' to ' + shift.end_time
