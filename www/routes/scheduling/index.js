@@ -4,6 +4,7 @@ var express   = require.main.require('express')
   , sha1      = require.main.require('sha1')
   , stathat   = require(global.config.root_dir + '/lib/stathat')
   , returnColorizedShift = require(global.config.root_dir + '/lib/ColorizeShift')
+  , querystring = require('querystring')
   ;
 
 var router = express.Router()
@@ -309,6 +310,28 @@ router.get('/login', function (req, res) {
                 res.redirect('https://app.wheniwork.com');
                 return;
             } else {
+                // If they have not yet set their timezone
+                if ((user.notes.indexOf('timezoneSet') < 0) && req.query.timezone == undefined) {
+                    res.redirect('/scheduling/timezone?' + querystring.stringify(req.query));
+                    return;
+                }
+                // If they are coming via the timezone route (they've selected a timezone)
+                // Note this is all done in the background
+                else if (req.query.timezone !== undefined && req.query.timezone !== '') {
+                    // Parse notes
+                    var notes = {};
+                    if (user.notes.indexOf('{') >= 0) {
+                        notes = JSON.parse(user.notes);
+                    }
+                    notes['timezoneSet'] = true;
+
+                    // Update the profile to reflect that they set their timezone
+                    api.update('users/' + user.id, {notes: JSON.stringify(notes)}, function (resp) { console.log(resp); });
+
+                    // Set their timezone
+                    api2.update('users/' + user.id, {timezone_id: req.query.timezone});
+                }
+
                 var destination = 'myschedule';
                 if (req.query.destination != undefined && req.query.destination != '') {
                     destination = req.query.destination;
@@ -320,6 +343,28 @@ router.get('/login', function (req, res) {
         });
     });
 });
+
+router.get('/timezone', function (req, res) {
+    if (!validate(req.query.email, req.query.token)) {
+        res.status(403).send('Access denied.');
+        return;
+    }
+
+    var timezones = {
+        9: 'Eastern',
+        11: 'Central',
+        13: 'Mountain',
+        170: 'Arizona',
+        15: 'Pacific',
+        19: 'Hawaii',
+        167: 'Alaska'
+    };
+
+    var url = '/scheduling/login';
+
+    res.render('scheduling/timezone', {url: url, params: req.query, timezones: timezones});
+});
+
 
 /**
     Retrieves the shifts and owners' email addresses which fall within a requested
