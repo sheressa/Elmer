@@ -300,16 +300,20 @@ router.get('/login', function (req, res) {
     var email = req.query.email;
 
     checkUser(req.query.email, req.query.fn, req.query.ln, function (user) {
+        // Try to log in as the user using our global password.
+        // If we can't, immediately redirect to When I Work and don't try to do anything else.
         var api2 = new WhenIWork(global.config.wheniwork.api_key, user.email, global.config.wheniwork.default_password, function (resp) {
             res.redirect('https://app.wheniwork.com/login/?redirect=myschedule');
-            return;
         });
 
+        // Try to generate an autologin token for a user
         api2.post('users/autologin', function (data) {
+            // If we can't generate one for some reason, redirect immediately.
             if (typeof data.error !== 'undefined') {
                 res.redirect('https://app.wheniwork.com');
-                return;
-            } else {
+            }
+            // Once we have an autologin token...
+            else {
                 // If they have not yet set their timezone
                 if ((user.notes.indexOf('timezoneSet') < 0) && req.query.timezone == undefined) {
                     res.redirect('/scheduling/timezone?' + querystring.stringify(req.query));
@@ -320,8 +324,12 @@ router.get('/login', function (req, res) {
                 else if (req.query.timezone !== undefined && req.query.timezone !== '') {
                     // Parse notes
                     var notes = {};
-                    if (user.notes.indexOf('{') >= 0) {
+                    try {
                         notes = JSON.parse(user.notes);
+                    } catch (e) {
+                        if (user.notes !== undefined && user.notes.trim() !== '') {
+                            notes[user.notes.trim()] = true;
+                        }
                     }
                     notes['timezoneSet'] = true;
 
@@ -338,7 +346,6 @@ router.get('/login', function (req, res) {
                 }
 
                 res.redirect('https://app.wheniwork.com/'+destination+'?al=' + data.hash);
-                return;
             }
         });
     });
