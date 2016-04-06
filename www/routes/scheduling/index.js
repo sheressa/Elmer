@@ -300,6 +300,29 @@ router.get('/login', function (req, res) {
     var email = req.query.email;
 
     checkUser(req.query.email, req.query.fn, req.query.ln, function (user) {
+        // If they have not yet set their timezone
+        if ((user.notes.indexOf('timezoneSet') < 0) && req.query.timezone == undefined) {
+            res.redirect('/scheduling/timezone?' + querystring.stringify(req.query));
+            return;
+        }
+        // If they are coming via the timezone route (they've selected a timezone)
+        // Note this is all done in the background
+        else if (req.query.timezone !== undefined && req.query.timezone !== '') {
+            // Parse notes
+            var notes = {};
+            try {
+                notes = JSON.parse(user.notes);
+            } catch (e) {
+                if (user.notes !== undefined && user.notes.trim() !== '') {
+                    notes[user.notes.trim()] = true;
+                }
+            }
+            notes['timezoneSet'] = true;
+
+            // Update the profile to reflect that they set their timezone
+            api.update('users/' + user.id, {notes: JSON.stringify(notes), timezone_id: req.query.timezone});
+        }
+        
         // Try to log in as the user using our global password.
         // If we can't, immediately redirect to When I Work and don't try to do anything else.
         var api2 = new WhenIWork(global.config.wheniwork.api_key, user.email, global.config.wheniwork.default_password, function (resp) {
@@ -314,32 +337,6 @@ router.get('/login', function (req, res) {
             }
             // Once we have an autologin token...
             else {
-                // If they have not yet set their timezone
-                if ((user.notes.indexOf('timezoneSet') < 0) && req.query.timezone == undefined) {
-                    res.redirect('/scheduling/timezone?' + querystring.stringify(req.query));
-                    return;
-                }
-                // If they are coming via the timezone route (they've selected a timezone)
-                // Note this is all done in the background
-                else if (req.query.timezone !== undefined && req.query.timezone !== '') {
-                    // Parse notes
-                    var notes = {};
-                    try {
-                        notes = JSON.parse(user.notes);
-                    } catch (e) {
-                        if (user.notes !== undefined && user.notes.trim() !== '') {
-                            notes[user.notes.trim()] = true;
-                        }
-                    }
-                    notes['timezoneSet'] = true;
-
-                    // Update the profile to reflect that they set their timezone
-                    api.update('users/' + user.id, {notes: JSON.stringify(notes)}, function (resp) { console.log(resp); });
-
-                    // Set their timezone
-                    api2.update('users/' + user.id, {timezone_id: req.query.timezone});
-                }
-
                 var destination = 'myschedule';
                 if (req.query.destination != undefined && req.query.destination != '') {
                     destination = req.query.destination;
