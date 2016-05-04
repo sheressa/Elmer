@@ -60,7 +60,6 @@ router.get('/shifts', function(req, res) {
                       , targetShift
                       ;
 
-
                     // Filter makeup shifts from regular shifts
                     for (var i = 0 ; i < shifts.length; i++) {
                         targetShift = shifts[i];
@@ -322,7 +321,7 @@ router.get('/login', function (req, res) {
             // Update the profile to reflect that they set their timezone
             api.update('users/' + user.id, {notes: JSON.stringify(notes), timezone_id: req.query.timezone});
         }
-        
+
         // Try to log in as the user using our global password.
         // If we can't, immediately redirect to When I Work and don't try to do anything else.
         var api2 = new WhenIWork(global.config.wheniwork.api_key, user.email, global.config.wheniwork.default_password, function (resp) {
@@ -453,7 +452,7 @@ router.get('/shifts/time-interval', function(req, res) {
                             console.log('JSON.parse failed for examining user notes for user: ' + user.id + ', error: ', e);
                         }
                     }
-                    userShiftData[email] = userShiftData[user.id];
+                    userShiftData[email] = { 'shiftData' : userShiftData[user.id], 'userData': user };
                     delete userShiftData[user.id];
                 }
             }
