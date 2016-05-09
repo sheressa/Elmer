@@ -129,9 +129,9 @@ function returnMaxOpenShiftCountForTime(targetTimeMomentObj) {
 }
 
 // Exporting modularized functions for testability
-module.exports = {
-    recurOpenShifts: recurOpenShifts,
-    returnMaxOpenShiftCountForTime: returnMaxOpenShiftCountForTime,
-    findExtraOpenShiftsToDeleteAndOccupiedShiftCount: findExtraOpenShiftsToDeleteAndOccupiedShiftCount,
-    cronJob: cronJob
-};
+// module.exports = {
+//     recurOpenShifts: recurOpenShifts,
+//     returnMaxOpenShiftCountForTime: returnMaxOpenShiftCountForTime,
+//     findExtraOpenShiftsToDeleteAndOccupiedShiftCount: findExtraOpenShiftsToDeleteAndOccupiedShiftCount,
+//     cronJob: cronJob
+// };
