@@ -3,7 +3,7 @@ var express   = require.main.require('express')
   , moment    = require.main.require('moment')
   , sha1      = require.main.require('sha1')
   , stathat   = require(global.config.root_dir + '/lib/stathat')
-  , returnColorizedShift = require(global.config.root_dir + '/lib/ColorizeShift')
+  , returnColorizedShift = require(global.config.root_dir + '/lib/ColorizeShift').go
   , querystring = require('querystring')
   ;
 

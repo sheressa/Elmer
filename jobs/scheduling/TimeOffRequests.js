@@ -2,7 +2,7 @@ var CronJob = require('cron').CronJob
   , WhenIWork = require('./base')
   , moment = require('moment-timezone')
   , fs = require('fs')
-  , returnColorizedShift = require(global.config.root_dir + '/lib/ColorizeShift')
+  , returnColorizedShift = require(global.config.root_dir + '/lib/ColorizeShift').go
   ;
 
 var date_format = 'YYYY-MM-DD HH:mm:ss';
