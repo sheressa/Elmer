@@ -5,21 +5,23 @@ block content
         h3=error
         | #[a(href="#{url}") schedule another shift]
     - }
-    - else if (regularShifts && regularShifts.length > 0) {
+    - else if((makeupShifts && makeupShifts.length > 0) || (regularShifts && regularShifts.length > 0)) {
         h2=userName + "'s shifts"
         h3 delete individual shifts - choose up to two shifts to delete at a time
-        h4 Weekly shifts
         form(name="cancel-form")
             input(type="hidden", name="email", value=email)
             input(type="hidden", name="userID", value=userID)
             input(type="hidden", name="token", value=token)
             input(type="hidden", name="userName", value=userName)
-            each shift in regularShifts
-                - var parentShiftID = JSON.parse(shift.notes).parent_shift
-                - var title = shift.start_time + ' to ' + shift.end_time
-                div.input
-                    input(type="checkbox", name='regShift' + parentShiftID)
-                    span.label=title
+            - if (regularShifts && regularShifts.length > 0) {
+                h4 Weekly shifts
+                each shift in regularShifts
+                    - var parentShiftID = JSON.parse(shift.notes).parent_shift
+                    - var title = shift.start_time + ' to ' + shift.end_time
+                    div.input
+                        input(type="checkbox", name='regShift' + parentShiftID)
+                        span.label=title
+            - }
             - if (makeupShifts && makeupShifts.length > 0) {
                 h4 One-time (or makeup) shifts
                 each shift in makeupShifts
@@ -31,4 +33,11 @@ block content
             - }
             div.actions
                 input(type="submit", id="delete-shifts")
+    - }
+    - else {
+        h2 you have not scheduled any shifts yet!
+        form(action="#{url}", method="get")
+            input(type="hidden", name="email", value=email)
+            input(type="hidden", name="token", value=token)
+            input(type="submit", value="Schedule a shift")
     - }

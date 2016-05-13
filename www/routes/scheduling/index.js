@@ -31,6 +31,7 @@ router.get('/shifts', function(req, res) {
     api.get('users', function (dataResponse) {
         var users = dataResponse.users
           , user
+          , templateData
           ;
 
         for (var i = 0; i < users.length; i++) {
@@ -51,7 +52,17 @@ router.get('/shifts', function(req, res) {
                     var url = scheduleShiftsURL + 'email=' + encodeURIComponent(email) + '&token=' + req.query.token;
                     if (!response.shifts || !response.shifts.length) {
                         var error = "You don't seem to have booked any shifts to delete! If this message is sent in error, contact scheduling@crisistextline.org";
-                        res.render('scheduling/chooseShiftToCancel', { error: error , url: url });
+                        templateData = {
+                            regularShifts: [],
+                            makeupShifts: [],
+                            userID: userID,
+                            email: email,
+                            token: req.query.token,
+                            userName: userName,
+                            error: error,
+                            url: url
+                        };
+                        res.render('scheduling/chooseShiftToCancel', templateData);
                         return;
                     }
                     var shifts = response.shifts
@@ -121,7 +132,7 @@ router.get('/shifts', function(req, res) {
                         shift.end_time = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseMakeupShiftToCancelPageEndDateFormat);
                     });
 
-                    var templateData = {
+                    templateData = {
                         regularShifts: regularShifts,
                         makeupShifts: makeupShifts,
                         userID: userID,
@@ -132,6 +143,7 @@ router.get('/shifts', function(req, res) {
 
                     // Then, display them in the jade template.
                     res.render('scheduling/chooseShiftToCancel', templateData);
+                    return;
                 })
                 break;
             }
