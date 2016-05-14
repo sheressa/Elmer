@@ -1,12 +1,12 @@
-var express   = require.main.require('express')
-  , WhenIWork = require.main.require('wheniwork-unofficial')
+var express   = require('express')
+  , WhenIWork = require('wheniwork-unofficial')
   , initWhenIWork = require('./initWhenIWorkAPI')
-  , moment    = require.main.require('moment')
-  , sha1      = require.main.require('sha1')
+  , moment    = require('moment')
+  , sha1      = require('sha1')
   , stathat   = require(global.config.root_dir + '/lib/stathat')
   , returnColorizedShift = require(global.config.root_dir + '/lib/ColorizeShift').go
   , querystring = require('querystring')
-  , helpers = require(global.config.root_dir + '/www/routes/scheduling/helpers')
+  , helpers = require(global.config.root_dir + '/www/scheduling/helpers')
   , shiftSchedulingRouter = require('./shifts')
   ;
 

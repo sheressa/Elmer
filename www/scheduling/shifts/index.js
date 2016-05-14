@@ -4,7 +4,7 @@ var express   = require('express')
   , moment    = require('moment')
   , sha1      = require('sha1')
   , returnColorizedShift = require(global.config.root_dir + '/lib/ColorizeShift').go
-  , helpers = require(global.config.root_dir + '/www/routes/scheduling/helpers')
+  , helpers = require(global.config.root_dir + '/www/scheduling/helpers')
   ;
 
 // @TODO: modularize route logic into controllers which can be tested without hitting these routes
