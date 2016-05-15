@@ -132,6 +132,7 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
             userName: userName
           };
 
+          // emitter.emit('chooseShiftsToDeleteJadeTemplateData', templateData);
           // Then, display them in the jade template.
           res.render('scheduling/chooseShiftToCancel', templateData);
           return;
