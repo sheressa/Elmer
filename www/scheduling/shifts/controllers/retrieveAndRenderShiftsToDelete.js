@@ -16,8 +16,7 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
     res.status(403).send('Access denied.');
   }
 
-  var altEmail = email.replace(/\W+/g, '');
-  altEmail = 'admin+'+altEmail+'@crisistextline.org';
+  var altEmail = helpers.generateAltEmail(email);
 
   whenIWorkAPI.get('users', function (dataResponse) {
     var users = dataResponse.users

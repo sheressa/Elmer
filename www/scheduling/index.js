@@ -104,8 +104,7 @@ router.get('/timezone', function (req, res) {
 
 
 function checkUser(email, first, last, callback) {
-    var altEmail = email.replace(/\W+/g, '');
-    altEmail = 'admin+'+altEmail+'@crisistextline.org';
+    var altEmail = helpers.generateAltEmail(email);
 
     api.get('users', function (users) {
         users = users.users;
@@ -117,8 +116,13 @@ function checkUser(email, first, last, callback) {
         }
 
         stathat.increment('Scheduling - Accounts Created', 1);
+        /**
+            At this point, we didn't find the user so let's create it.
 
-        // At this point, we didn't find the user so let's create it.
+            When someone already has an email registered with WhenIWork, but it's
+            attached to another organization's account, the account collides. Hence,
+            We need to create a new account using a faked email.
+        **/
         var newUser = {
             role: 3,
             email: altEmail,
