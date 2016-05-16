@@ -6,17 +6,17 @@ var colorizeShift = require('../../lib/ColorizeShift').go;
 var WIWDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var shiftQueryDateFormat = 'YYYY-MM-DD HH:mm:ss';
 
-// var cronJob = new CronJob(global.config.time_interval.open_shifts, function () {
-//     runJob();
-// }, null, true);
+var cronJob = new CronJob(global.config.time_interval.open_shifts, function () {
+    runJob();
+}, null, true);
 
-// function runJob() {
-//     var now = moment().minute(0).second(0);
-//     recurOpenShifts(now);
-// }
+function runJob() {
+    var now = moment().minute(0).second(0);
+    recurOpenShifts(now);
+}
 
-// // run it once on boot
-// runJob();
+// run it once on boot
+runJob();
 
 function recurOpenShifts(now) {
     if (now.hours() % 2 == 1) {
@@ -129,9 +129,9 @@ function returnMaxOpenShiftCountForTime(targetTimeMomentObj) {
 }
 
 // Exporting modularized functions for testability
-// module.exports = {
-//     recurOpenShifts: recurOpenShifts,
-//     returnMaxOpenShiftCountForTime: returnMaxOpenShiftCountForTime,
-//     findExtraOpenShiftsToDeleteAndOccupiedShiftCount: findExtraOpenShiftsToDeleteAndOccupiedShiftCount,
-//     cronJob: cronJob
-// };
+module.exports = {
+    recurOpenShifts: recurOpenShifts,
+    returnMaxOpenShiftCountForTime: returnMaxOpenShiftCountForTime,
+    findExtraOpenShiftsToDeleteAndOccupiedShiftCount: findExtraOpenShiftsToDeleteAndOccupiedShiftCount,
+    cronJob: cronJob
+};
