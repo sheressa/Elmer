@@ -1,6 +1,6 @@
 var express = require('express')
   , WhenIWork = require('wheniwork-unofficial')
-  , initWhenIWork = require('../initWhenIWorkAPI')
+  , api = require('../initWhenIWorkAPI')
   , moment = require('moment')
   , sha1 = require('sha1')
   , helpers = require(global.config.root_dir + '/www/scheduling/helpers')
@@ -12,9 +12,7 @@ var retrieveAndRenderShiftsToDelete = require('./controllers/retrieveAndRenderSh
   , renderShiftDeleteSuccess = require('./controllers/renderShiftDeleteSuccess')
   ;
 
-var router = express.Router()
-  , api = initWhenIWork()
-  ;
+var router = express.Router();
 
 var wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ'
   , chooseRegShiftToCancelPageStartDateFormat = 'dddd h:mm a' // Wednesday 4:00 p

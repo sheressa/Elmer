@@ -1,14 +1,6 @@
-var WhenIWork = require.main.require('wheniwork-unofficial')
-  , api
-  ;
+var WhenIWork = require.main.require('wheniwork-unofficial');
 
-function initAPI() {
-  if (!api) {
-    return api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password)
-  }
-  else {
-    return api;
-  }
-}
+// Node will re-use a module once you import it once, so this API will not initialized twice.
+var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
 
-module.exports = initAPI;
+module.exports = api;
