@@ -17,8 +17,8 @@ describe('retrieveAndRenderShiftsToDelete should retrieve shifts and render them
       token: 'FAKETOKEN'
     }
   };
-  var userEmail = 'amudantest@gmail.com';
-  var userToken = '820c73e4ac58081f452535de679c608a8c8434a0';
+  var userEmail = 'amudantest@test.com';
+  var userToken = '9365583ac27c52684eb6efb8e9374c04823dce59';
 
   var api = new WhenIWork(config.wheniwork.api_key, config.wheniwork.username, config.wheniwork.password);
 
