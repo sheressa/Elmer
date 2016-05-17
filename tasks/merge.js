@@ -4,5 +4,5 @@ var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork
 var merge = require('../jobs/scheduling/MergeOpenShifts');
 
 module.exports.merge = function() {
-    merge();
+  merge();
 }

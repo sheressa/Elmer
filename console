@@ -3,16 +3,16 @@ global.config = require('./config');
 var args = process.argv.slice(2);
 
 try {
-    var task = require(__dirname + '/tasks/' + args[0]);
-    if (typeof task[args[1]] == 'function') {
-        var params = args.slice(2);
-        task[args[1]].apply(null, params);
-    } else {
-        console.log('Function ' + args[1] + ' does not exist.');
-    }
+  var task = require(__dirname + '/tasks/' + args[0]);
+  if (typeof task[args[1]] == 'function') {
+    var params = args.slice(2);
+    task[args[1]].apply(null, params);
+  } else {
+    console.log('Function ' + args[1] + ' does not exist.');
+  }
 }
 catch(e) {
-    console.log('That task or function does not exist. Error: ', e);
+  console.log('That task or function does not exist. Error: ', e);
 }
 
 
