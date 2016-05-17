@@ -15,8 +15,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var debug = require('debug')('my-application');
 
-var routes = require('require-all')(__dirname + '/routes');
-
 var app = express();
 
 // view engine setup
@@ -30,15 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-for (var i in routes) {
-    for (var j in routes[i]) {
-        if (j == 'index') {
-            app.use('/'+i, routes[i][j]);
-        } else {
-            app.use('/'+i+'/'+j, routes[i][j]);
-        }
-    }
-}
+app.use('/scheduling', require('./scheduling'))
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
