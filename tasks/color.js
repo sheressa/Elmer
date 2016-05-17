@@ -23,9 +23,9 @@ module.exports.go = function () {
     openShifts.forEach(function (e, i, arr) {
       update = colorize({}, e.start_time, (e.location_id === global.config.locationID.makeup_and_extra_shifts));
       var shiftDeleteRequest = {
-          "method": "PUT",
-          "url": "/2/shifts/" + e.id,
-          "params": update,
+        "method": "PUT",
+        "url": "/2/shifts/" + e.id,
+        "params": update,
       };
       batchRequest.push(shiftDeleteRequest);
     });

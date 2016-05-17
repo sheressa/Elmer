@@ -12,99 +12,99 @@ config.platform_secret_key = '';
 config.new_relic_license_key = '';
 
 config.wheniwork = {
-    api_key: 'TODO',
-    username: 'TODO',
-    password: 'TODO',
-    default_password: 'TODO'
+  api_key: 'TODO',
+  username: 'TODO',
+  password: 'TODO',
+  default_password: 'TODO'
 };
 
 config.locationID = {
-    new_graduate: 959290,
-    makeup_and_extra_shifts: 1003762,
-    regular_shifts: 1003765,
-    test: 990385,
-    test2: 1007104,
-    supervisors: 884473,
-    crisis_counselors_demo: 1004215
+  new_graduate: 959290,
+  makeup_and_extra_shifts: 1003762,
+  regular_shifts: 1003765,
+  test: 990385,
+  test2: 1007104,
+  supervisors: 884473,
+  crisis_counselors_demo: 1004215
 };
 
 config.time_interval = {
-    // runs every 1 min.
-    recur_and_publish_shifts_cron_job_string: '0 */1 * * * *',
+  // runs every 1 min.
+  recur_and_publish_shifts_cron_job_string: '0 */1 * * * *',
 
-    // runs every 20 mins.
-    notify_first_shift_cron_job_string: '0 */20 * * * *',
+  // runs every 20 mins.
+  notify_first_shift_cron_job_string: '0 */20 * * * *',
 
-    // runs every five mins.
-    time_off_requests_cron_job_string: '0 */5 * * * *',
+  // runs every five mins.
+  time_off_requests_cron_job_string: '0 */5 * * * *',
 
-    // Each recurrence chain is 1 year long.
-    max_shifts_in_chain: 52,
+  // Each recurrence chain is 1 year long.
+  max_shifts_in_chain: 52,
 
-    // Buffer added to end of chain to ensure that edge cases don't result in skipped weeks.
-    chain_buffer_days: 1,
+  // Buffer added to end of chain to ensure that edge cases don't result in skipped weeks.
+  chain_buffer_days: 1,
 
-    // Each shift is recurred for 5 years.
-    years_to_recur_shift: 5,
+  // Each shift is recurred for 5 years.
+  years_to_recur_shift: 5,
 
-    // In looking for newly created shifts to recur, we search 2 weeks from the present.
-    weeks_to_search_for_recurred_shifts: 2,
+  // In looking for newly created shifts to recur, we search 2 weeks from the present.
+  weeks_to_search_for_recurred_shifts: 2,
 
-    // While we recur shifts for much longer, they're only published (viewable to the employee) 4 weeks from present.
-    weeks_to_publish_recurred_shifts: 4,
+  // While we recur shifts for much longer, they're only published (viewable to the employee) 4 weeks from present.
+  weeks_to_publish_recurred_shifts: 4,
 
-    // Used to search for requests to be auto-approved.
-    months_to_search_for_time_off_requests: 6,
+  // Used to search for requests to be auto-approved.
+  months_to_search_for_time_off_requests: 6,
 
-    // Used to search for users in order to notify them via email.
-    days_to_search_for_new_users_who_have_scheduled_their_first_shift: 7,
+  // Used to search for users in order to notify them via email.
+  days_to_search_for_new_users_who_have_scheduled_their_first_shift: 7,
 
-    // How often do we create new openshifts and merge duplicate openshifts
-    open_shifts: '0 0 */2 * * *', // every two hours
+  // How often do we create new openshifts and merge duplicate openshifts
+  open_shifts: '0 0 */2 * * *', // every two hours
 
-    // How often we repeat open shifts
-    days_in_interval_to_repeat_open_shifts: 7
+  // How often we repeat open shifts
+  days_in_interval_to_repeat_open_shifts: 7
 };
 
 config.mandrill = {
-    api_key: 'TODO'
+  api_key: 'TODO'
 };
 
 config.stathat = {
-    enabled: false,
-    email: 'todo'
+  enabled: false,
+  email: 'todo'
 };
 
 config.numberOfCounselorsPerShift = {
-    'Sun' : { '12am': 083, '2am': 064, '4am': 028, '6am': 014, '8am': 010, '10am': 017, '12pm': 032, '2pm': 036, '4pm': 038, '6pm': 042, '8pm': 074, '10pm': 106},
+  'Sun' : { '12am': 083, '2am': 064, '4am': 028, '6am': 014, '8am': 010, '10am': 017, '12pm': 032, '2pm': 036, '4pm': 038, '6pm': 042, '8pm': 074, '10pm': 106},
 
-    'Mon' : { '12am': 111, '2am': 054, '4am': 021, '6am': 010, '8am': 012, '10am': 021, '12pm': 037, '2pm': 043, '4pm': 044, '6pm': 054, '8pm': 073, '10pm': 100},
+  'Mon' : { '12am': 111, '2am': 054, '4am': 021, '6am': 010, '8am': 012, '10am': 021, '12pm': 037, '2pm': 043, '4pm': 044, '6pm': 054, '8pm': 073, '10pm': 100},
 
-    'Tue' : { '12am': 078, '2am': 051, '4am': 021, '6am': 014, '8am': 019, '10am': 027, '12pm': 034, '2pm': 038, '4pm': 052, '6pm': 058, '8pm': 069, '10pm': 099},
+  'Tue' : { '12am': 078, '2am': 051, '4am': 021, '6am': 014, '8am': 019, '10am': 027, '12pm': 034, '2pm': 038, '4pm': 052, '6pm': 058, '8pm': 069, '10pm': 099},
 
-    'Wed' : { '12am': 088, '2am': 049, '4am': 019, '6am': 010, '8am': 014, '10am': 028, '12pm': 042, '2pm': 043, '4pm': 045, '6pm': 053, '8pm': 070, '10pm': 099},
+  'Wed' : { '12am': 088, '2am': 049, '4am': 019, '6am': 010, '8am': 014, '10am': 028, '12pm': 042, '2pm': 043, '4pm': 045, '6pm': 053, '8pm': 070, '10pm': 099},
 
-    'Thu' : { '12am': 082, '2am': 045, '4am': 021, '6am': 010, '8am': 013, '10am': 024, '12pm': 036, '2pm': 036, '4pm': 048, '6pm': 057, '8pm': 076, '10pm': 092},
+  'Thu' : { '12am': 082, '2am': 045, '4am': 021, '6am': 010, '8am': 013, '10am': 024, '12pm': 036, '2pm': 036, '4pm': 048, '6pm': 057, '8pm': 076, '10pm': 092},
 
-    'Fri' : { '12am': 079, '2am': 037, '4am': 017, '6am': 010, '8am': 015, '10am': 022, '12pm': 031, '2pm': 041, '4pm': 044, '6pm': 053, '8pm': 053, '10pm': 072},
+  'Fri' : { '12am': 079, '2am': 037, '4am': 017, '6am': 010, '8am': 015, '10am': 022, '12pm': 031, '2pm': 041, '4pm': 044, '6pm': 053, '8pm': 053, '10pm': 072},
 
-    'Sat' : { '12am': 070, '2am': 046, '4am': 017, '6am': 011, '8am': 008, '10am': 020, '12pm': 022, '2pm': 032, '4pm': 041, '6pm': 044, '8pm': 063, '10pm': 077}
+  'Sat' : { '12am': 070, '2am': 046, '4am': 017, '6am': 011, '8am': 008, '10am': 020, '12pm': 022, '2pm': 032, '4pm': 041, '6pm': 044, '8pm': 063, '10pm': 077}
 };
 
 config.shiftColors = {
-    'Sun': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'red' },
+  'Sun': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'red' },
 
-    'Mon': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'gray' },
+  'Mon': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'gray' },
 
-    'Tue': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'red' },
+  'Tue': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'red' },
 
-    'Wed': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
+  'Wed': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
 
-    'Thu': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
+  'Thu': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
 
-    'Fri': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'red', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'red' },
+  'Fri': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'red', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'red' },
 
-    'Sat': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'red', '6pm': 'red', '8pm': 'red', '10pm': 'red' }
+  'Sat': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'red', '6pm': 'red', '8pm': 'red', '10pm': 'red' }
 };
 
 module.exports = config;
