@@ -76,35 +76,36 @@ config.stathat = {
 };
 
 config.numberOfCounselorsPerShift = {
-  'Sun' : { '12am': 083, '2am': 064, '4am': 028, '6am': 014, '8am': 010, '10am': 017, '12pm': 032, '2pm': 036, '4pm': 038, '6pm': 042, '8pm': 074, '10pm': 106},
+  'Sun' : { '12am': 64, '2am': 42, '4am': 22, '6am': 10, '8am': 14, '10am': 22, '12pm': 35, '2pm': 34, '4pm': 44, '6pm': 53, '8pm': 74, '10pm': 96},
 
-  'Mon' : { '12am': 111, '2am': 054, '4am': 021, '6am': 010, '8am': 012, '10am': 021, '12pm': 037, '2pm': 043, '4pm': 044, '6pm': 054, '8pm': 073, '10pm': 100},
+  'Mon' : { '12am': 84, '2am': 32, '4am': 16, '6am': 11, '8am': 20, '10am': 37, '12pm': 42, '2pm': 45, '4pm': 48, '6pm': 59, '8pm': 96, '10pm': 103},
 
-  'Tue' : { '12am': 078, '2am': 051, '4am': 021, '6am': 014, '8am': 019, '10am': 027, '12pm': 034, '2pm': 038, '4pm': 052, '6pm': 058, '8pm': 069, '10pm': 099},
+  'Tue' : { '12am': 95, '2am': 63, '4am': 30, '6am': 16, '8am': 32, '10am': 39, '12pm': 52, '2pm': 56, '4pm': 44, '6pm': 49, '8pm': 68, '10pm': 82},
 
-  'Wed' : { '12am': 088, '2am': 049, '4am': 019, '6am': 010, '8am': 014, '10am': 028, '12pm': 042, '2pm': 043, '4pm': 045, '6pm': 053, '8pm': 070, '10pm': 099},
+  'Wed' : { '12am': 57, '2am': 29, '4am': 11, '6am': 9, '8am': 12, '10am': 22, '12pm': 30, '2pm': 38, '4pm': 39, '6pm': 48, '8pm': 67, '10pm': 82},
 
-  'Thu' : { '12am': 082, '2am': 045, '4am': 021, '6am': 010, '8am': 013, '10am': 024, '12pm': 036, '2pm': 036, '4pm': 048, '6pm': 057, '8pm': 076, '10pm': 092},
+  'Thu' : { '12am': 28, '2am': 12, '4am': 12, '6am': 8, '8am': 16, '10am': 24, '12pm': 26, '2pm': 37, '4pm': 37, '6pm': 44, '8pm': 60, '10pm': 69},
 
-  'Fri' : { '12am': 079, '2am': 037, '4am': 017, '6am': 010, '8am': 015, '10am': 022, '12pm': 031, '2pm': 041, '4pm': 044, '6pm': 053, '8pm': 053, '10pm': 072},
+  'Fri' : { '12am': 49, '2am': 29, '4am': 13, '6am': 8, '8am': 12, '10am': 26, '12pm': 30, '2pm': 35, '4pm': 39, '6pm': 44, '8pm': 64, '10pm': 70},
 
-  'Sat' : { '12am': 070, '2am': 046, '4am': 017, '6am': 011, '8am': 008, '10am': 020, '12pm': 022, '2pm': 032, '4pm': 041, '6pm': 044, '8pm': 063, '10pm': 077}
+  'Sat' : { '12am': 58, '2am': 37, '4am': 17, '6am': 8, '8am': 12, '10am': 25, '12pm': 29, '2pm': 33, '4pm': 42, '6pm': 44, '8pm': 61, '10pm': 80}
 };
 
 config.shiftColors = {
-  'Sun': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'red' },
+  'Sun': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'red', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'red' },
 
-  'Mon': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'gray' },
+  'Mon': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'red', '4pm': 'red', '6pm': 'red', '8pm': 'red', '10pm': 'red' },
 
-  'Tue': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'red' },
+  'Tue': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'red', '10am': 'red', '12pm': 'red', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
 
-  'Wed': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
+  'Wed': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'red', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
 
-  'Thu': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
+  'Thu': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
 
-  'Fri': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'red', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'red' },
+  'Fri': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'red', '12pm': 'red', '2pm': 'gray', '4pm': 'red', '6pm': 'red', '8pm': 'red', '10pm': 'red' },
 
-  'Sat': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'red', '6pm': 'red', '8pm': 'red', '10pm': 'red' }
+  'Sat': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'red', '6pm': 'red', '8pm': 'red', '10pm': 'red' }
 };
+
 
 module.exports = config;
