@@ -1,16 +1,17 @@
 # Elmer
-Elmer, like da glue, holds everything together. Currently, it extends the functionality of our scheduling app [WhenIWork](http://wheniwork.com/) by supporting our custom use cases. Quite generally, it supports:
-a. single sign-on through online.crisistextline.org
-b. sending custom emails to users when they've successfully scheduled shifts
-c. recurring shifts weekly
-d. coloring shifts
-e. deleting shifts
-Among other functionality.
+Elmer, like da glue, holds everything together. Currently, it extends the functionality of our scheduling app [WhenIWork](http://wheniwork.com/) by supporting our custom use cases. Quite generally--among other functionality--it supports:
+
+1. single sign-on through online.crisistextline.org
+2. sending custom emails to users when they've successfully scheduled shifts
+3. recurring shifts weekly
+4. coloring shifts
+5. deleting shifts
 
 ## Running on local
 Run `npm install`. In your main directory, `touch config.js`. Copy-and-paste the contents of `config.js.default` into this new config file. Add requisite API keys.
 
 Check out `package.json`. Note that `npm start` runs the app when in production, which really runs two separate processes:
+
 1. runs scheduling cronjobs
 2. runs Express routes which handle shift scheduling, deletion, single-sign-on / user creation, and timezone validation.
 
