@@ -112,7 +112,7 @@ function checkUser(email, first, last, callback) {
         return;
       }
     }
-
+      
     stathat.increment('Scheduling - Accounts Created', 1);
     /**
       At this point, we didn't find the user so let's create it.
