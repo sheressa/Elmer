@@ -7,60 +7,59 @@ global.config = config // @TODO; A hack which prevents retrieveAndRenderShiftsTo
 
 var assert = require('assert')
   , sampleData = require('./sampleData')
-  , retrieveAndRenderShiftsToDelete = require(config.root_dir + '/www/scheduling/shifts/controllers/retrieveAndRenderShiftsToDelete')
-  ;
+  , retrieveAndRenderShiftsToDelete = require(config.root_dir + '/www/scheduling/shifts/controllers/retrieveAndRenderShiftsToDelete');
 
 describe('retrieveAndRenderShiftsToDelete should retrieve shifts and render them when user navigates to shift deletion page', function() {
-  var base = nock('https://api.wheniwork.com/2');
-  var loginResponse = {
-    login: {
-      token: 'FAKETOKEN'
-    }
-  };
-  var userEmail = 'amudantest@test.com';
-  var userToken = '9365583ac27c52684eb6efb8e9374c04823dce59';
-
   var api = new WhenIWork(config.wheniwork.api_key, config.wheniwork.username, config.wheniwork.password);
 
-// https://api.wheniwork.com/2/users?
+  // Set up the API mock to send back data that we can pass in to our test.
+  beforeEach(function() {
+    console.log('running setup stuff in beforeEach');
 
-  it('should retrieve shifts belonging to a user', function (done) {
-    base
-      .get('/users')
-      .query(true)
-      .reply(200, {users: [sampleData.user]});
+    var apiMocker = nock('https://api.wheniwork.com/2')
+          .get('/users')
+          .query(true)
+          .reply(200, {users: [sampleData.user]});
 
-    base
-      .get('/shifts')
-      // If just the userID matches the query, then we'll return the sample data. (In real life, we'd need to get the time frame of the shifts we want to retrieve, among other things.)
-      .query(function(actualQueryObject) {
-        if (actualQueryObject.user_id == sampleData.user.id) return true;
-        else return false;
-      })
-      .reply(200, sampleData.shifts);
+    var apiMocker2 = nock('https://api.wheniwork.com/2')
+          .get('/shifts')
+          // If just the userID matches the query, then we'll return the sample data. (In real life, we'd need to get the time frame of the shifts we want to retrieve, among other things.)
+          .query(function(actualQueryObject) {
+            if (actualQueryObject.user_id == sampleData.user.id) return true;
+            else return false;
+          })
+          .reply(200, sampleData.shifts);
+  });
 
-    // Dummy express request object
-    var request = {
-      query: {
-        email: userEmail,
-        token: userToken
-      }
-    }
+  describe('Shift retrieval for a user', function() {
 
-    // Dummy Express response object
-    var response = {
-      status: function(code) {
-        console.log('Response code: ' + code);
-      },
+    it('should retrieve shifts belonging to a user', function (done) {
+      // var api = nock('https://api.wheniwork.com/2');
 
-      render: function(routeToRender, templateData) {
-        if (templateData.regularShifts.length > 0) {
+      // Dummy express request object
+      var request = {
+        query: {
+          email: 'amudantest@test.com',
+          token: '9365583ac27c52684eb6efb8e9374c04823dce59'
+        }
+      };
+
+      // Dummy Express response object
+      var response = {
+        status: function(code) {
+          console.log('Response code: ' + code);
+        },
+
+        render: function(routeToRender, templateData) {
+          assert.equal(templateData.regularShifts.length, 4);
           done();
         }
-      }
-    };
+      };
 
-    retrieveAndRenderShiftsToDelete(request, response, api)
+      retrieveAndRenderShiftsToDelete(request, response, api);
+
+    });
+
   });
-});
 
+});
