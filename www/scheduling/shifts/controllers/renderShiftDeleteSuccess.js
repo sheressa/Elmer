@@ -11,7 +11,7 @@ function renderShiftDeleteSuccess(req, res) {
     deletedShiftInformation = JSON.parse(req.query.deletedShiftInformation);
   }
   catch (e) {
-    console.log('Unable to parse deleted shift information, error: ', e);
+    consoleWithTime('Unable to parse deleted shift information, error: ', e);
   }
 
   for (key in deletedShiftInformation.regShifts) {

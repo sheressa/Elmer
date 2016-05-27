@@ -8,12 +8,9 @@ try {
     var params = args.slice(2);
     task[args[1]].apply(null, params);
   } else {
-    console.log('Function ' + args[1] + ' does not exist.');
+    consoleWithTime('Function ' + args[1] + ' does not exist.');
   }
 }
 catch(e) {
-  console.log('That task or function does not exist. Error: ', e);
+  consoleWithTime('That task or function does not exist. Error: ', e);
 }
-
-
-

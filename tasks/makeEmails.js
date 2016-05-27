@@ -27,7 +27,8 @@ module.exports.go = function () {
       updateNotes(obj, batchRequestArray);
     });
     api.post('batch', batchRequestArray, function(response) {
-      console.log('Batch user update post request response: ', response);
+      consoleWithTime
+      ('Batch user update post request response: ', response);
     });
   });
 };
@@ -42,7 +43,8 @@ function updateNotes(user, batchRequestArray) {
     user.notes = JSON.parse(user.notes);
   }
   catch(e){
-    console.log('User notes field is not a parseable JSON object, user: ', user, ' error: ', e);
+    consoleWithTime
+    ('User notes field is not a parseable JSON object, user: ', user, ' error: ', e);
   }
 
   // If the user's notes property is populated, but it's not a JSON string,
@@ -54,7 +56,8 @@ function updateNotes(user, batchRequestArray) {
   // If the WiW notes-stored email of the user is equal to the email we have on
   // the platform, we don't need to update anything.
   if (user.notes && user.notes.canonicalEmail === adminEmails[getAdmin(email.toLowerCase())]) {
-    console.log('dont need to update', adminEmails[getAdmin(email.toLowerCase())], ' ', email, user.notes.canonicalEmail)
+    consoleWithTime
+    ('dont need to update', adminEmails[getAdmin(email.toLowerCase())], ' ', email, user.notes.canonicalEmail)
     return;
   }
 
@@ -66,11 +69,13 @@ function updateNotes(user, batchRequestArray) {
 
   // Then, we reassign the canonicalEmail email in the note section.
   if (email == undefined) {
-    console.log('User with undefined email: ', user);
+    consoleWithTime
+    ('User with undefined email: ', user);
   }
   else {
     note.canonicalEmail = email.toLowerCase();
-    console.log('updating user with: ', note);
+    consoleWithTime
+    ('updating user with: ', note);
     updateRequest = {
       method: 'PUT',
       url: '/2/users/' + user.id,

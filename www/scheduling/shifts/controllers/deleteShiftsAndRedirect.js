@@ -52,7 +52,7 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
           }
           catch (e) {
             parentShiftID = null;
-            console.log('Error parsing JSON for shift: ', shift.id, ' error: ', e);
+            consoleWithTime('Error parsing JSON for shift: ', shift.id, ' error: ', e);
           }
 
           if (parentShiftIDsOfRegularShiftsToBeDeleted.indexOf(parentShiftID) != -1) {

@@ -86,7 +86,7 @@ function retrieveShiftsAndOwnersWithinTimeInterval(req, res, whenIWorkAPI) {
               email = JSON.parse(user.notes).canonicalEmail;
             }
             catch(e) {
-              console.log('JSON.parse failed for examining user notes for user: ' + user.id + ', error: ', e);
+              consoleWithTime('JSON.parse failed for examining user notes for user: ' + user.id + ', error: ', e);
             }
           }
           userShiftData[email] = { 'shiftData' : userShiftData[user.id], 'userData': user };

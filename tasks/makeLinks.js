@@ -16,7 +16,7 @@ function fromCSV(infile, outfile) {
 
 function generate(email) {
   var out = hash(email)
-  console.log(out);
+  consoleWithTime(out);
   return out;
 }
 
