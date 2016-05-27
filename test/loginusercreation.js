@@ -1,4 +1,4 @@
-var checkUser2 = require('../www/scheduling/controllers/loginusercreation.js');
+var checkUser2 = require('../www/scheduling/controllers/loginUserCreation.js');
 var sampleData = require('./sampleData.js');
 var assert = require('assert');
 var nock = require('nock');
@@ -23,7 +23,7 @@ describe('Login and user creation', function () {
           .reply(200, {users: [sampleData.user]});
 
     var apiMocker2 = nock('https://api.wheniwork.com/2')
-          .post('/users', newUser)
+          .post('/users')
           .query(true)
           .reply(203, newUser);
 
@@ -38,6 +38,10 @@ describe('Login and user creation', function () {
     });
 
     it('Creates a new user if one doesn\'t exist', function() {
+      var apiMocker3 = nock('https://api.wheniwork.com/2')
+        .post('/login')
+        .query(true)
+        .reply(203, {});
       checkUser2('test@test.com', 'Testy', 'McTesterson', function(user) {
         assert.equal(user.email, 'test@test.com');
       });

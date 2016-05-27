@@ -1,16 +1,13 @@
 var nock = require('nock')
   , WhenIWork = require('wheniwork-unofficial')
-  , config = require('../config')
   ;
-
-global.config = config // @TODO; A hack which prevents retrieveAndRenderShiftsToDelete from breaking, fix this with a initTest.js file which runs first and puts config in the global scope immediately
 
 var assert = require('assert')
   , sampleData = require('./sampleData')
-  , retrieveAndRenderShiftsToDelete = require(config.root_dir + '/www/scheduling/shifts/controllers/retrieveAndRenderShiftsToDelete');
+  var retrieveAndRenderShiftsToDelete = require(global.config.root_dir + '/www/scheduling/shifts/controllers/retrieveAndRenderShiftsToDelete');
 
 describe('retrieveAndRenderShiftsToDelete should retrieve shifts and render them when user navigates to shift deletion page', function() {
-  var api = new WhenIWork(config.wheniwork.api_key, config.wheniwork.username, config.wheniwork.password);
+  var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
 
   // Set up the API mock to send back data that we can pass in to our test.
   beforeEach(function() {
@@ -77,15 +74,11 @@ describe('retrieveAndRenderShiftsToDelete should retrieve shifts and render them
           assert.equal(message, 'Access denied.');
           done();
         }
-
       };
-
       retrieveAndRenderShiftsToDelete(request, response, api);
-
     });
 
     it('should sort regularShifts by when they occur on the weekly calendar', function (done) {
-
       // Dummy express request object
       var request = {
         query: {
@@ -93,24 +86,18 @@ describe('retrieveAndRenderShiftsToDelete should retrieve shifts and render them
           token: '9365583ac27c52684eb6efb8e9374c04823dce59'
         }
       };
-
       // Dummy Express response object
       var response = {
         status: function(code) {
           assert.equal(code, 403);
           return this;
         },
-
         render: function(routeToRender, templateData) {
           assert.equal(templateData.regularShifts[0].id, 277119037);
           done();
         }
-
-
       };
-
       retrieveAndRenderShiftsToDelete(request, response, api);
-
     });
 
     it('should sort makeupShifts by when they occur on the weekly calendar', function (done) {
@@ -122,28 +109,18 @@ describe('retrieveAndRenderShiftsToDelete should retrieve shifts and render them
           token: '9365583ac27c52684eb6efb8e9374c04823dce59'
         }
       };
-
       // Dummy Express response object
       var response = {
         status: function(code) {
           assert.equal(code, 403);
           return this;
         },
-
         render: function(routeToRender, templateData) {
           assert.equal(templateData.makeupShifts[0].id, 281883643);
           done();
         }
-
-
       };
-
       retrieveAndRenderShiftsToDelete(request, response, api);
-
     });
-
-
-
   });
-
 });

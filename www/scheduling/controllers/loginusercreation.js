@@ -3,14 +3,10 @@ var api = require('../../scheduling/initWhenIWorkAPI'),
 helpers = require(global.config.root_dir + '/www/scheduling/helpers');
 var stathat = require(global.config.root_dir + '/lib/stathat.js');
 var WhenIWork = require('wheniwork-unofficial');
-
-
 var data = require('../../../test/sampleData.js');
-
 
 var checkUser2 = function(email, first, last, callback) {
   var altEmail = helpers.generateAltEmail(email);
-
   api.get('users', function (users) {
     for (var i in users.users) {
       if (users.users[i].email == email || users.users[i].email == altEmail) {
@@ -18,9 +14,7 @@ var checkUser2 = function(email, first, last, callback) {
         return;
       }
     }
-
     stathat.increment('Scheduling - Accounts Created', 1);
-
     /**
       At this point, we didn't find the user so let's create it.
 
@@ -38,7 +32,6 @@ var checkUser2 = function(email, first, last, callback) {
       password: global.config.wheniwork.default_password,
       notes: JSON.stringify({ canonicalEmail: email })
     };
-
     api.post('users', newUser, function (data) {
       var api2 = new WhenIWork(global.config.wheniwork.api_key, altEmail, global.config.wheniwork.default_password, function (data) {
       });
@@ -52,17 +45,12 @@ var checkUser2 = function(email, first, last, callback) {
       }
 
       callback(data);
-
       api2.post('users/alerts', postBody, function () {});
-
       api2.post('users/profile', {email: email}, function (profile) {
-        console.log(profile);
         callback(profile.user);
       });
-
     });
   });
 };
 
 module.exports = checkUser2;
-
