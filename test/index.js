@@ -11,3 +11,5 @@ var retrieveAndRenderShiftsToDelete = require('./retrieveAndRenderShiftsToDelete
 var whenIWorkUnofficialAPI = require('./whenIWorkUnofficialAPI.js');
 var timezone = require('./timezone.js');
 var deleteShiftsAndRedirect = require('./deleteShiftsAndRedirect.js');
+var renderShiftDeleteSuccess = require('./renderShiftDeleteSuccess.js');
+

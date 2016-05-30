@@ -99,6 +99,44 @@ describe('delete shifts and redirect', function() {
 
       deleteShiftsAndRedirect(request, response, api);
     });
+
+    it('finds a makeup shift to be deleted', function (done) {
+
+      // Dummy express request object
+      var request = {
+        query: {
+          email: userEmail,
+          token: userToken,
+          makShift: 'on'
+        }
+      };
+      // Dummy Express response object
+      var response = {
+        status: function(code) {
+          console.log('Response code: ' + code);
+          return this;
+        },
+
+        json: function(response) {
+          assert.equal(response.redirect, '/scheduling/shifts/delete-success?deletedShiftInformation={"regShifts":{},"makShifts":{}}&email=amudantest%40test.com&token=9365583ac27c52684eb6efb8e9374c04823dce59&url=https://app.wheniwork.com/&');
+          done();
+        },
+
+        send: function(message) {
+          assert.equal(message, 'Access denied.');
+          done();
+        },
+
+        render: function(routeToRender, templateData) {
+          if (templateData.regularShifts.length > 0) {
+            done();
+          }
+        }
+      };
+
+      deleteShiftsAndRedirect(request, response, api);
+    });
+
   });
 
 });
