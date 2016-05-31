@@ -1,3 +1,4 @@
+
 var helpers = require(global.config.root_dir + '/www/scheduling/helpers')
   , moment = require('moment')
   , returnColorizedShift = require(global.config.root_dir + '/lib/ColorizeShift').go
@@ -52,7 +53,7 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
           }
           catch (e) {
             parentShiftID = null;
-            consoleWithTime('Error parsing JSON for shift: ', shift.id, ' error: ', e);
+            CONSOLE_WITH_TIME('Error parsing JSON for shift: ', shift.id, ' error: ', e);
           }
 
           if (parentShiftIDsOfRegularShiftsToBeDeleted.indexOf(parentShiftID) != -1) {

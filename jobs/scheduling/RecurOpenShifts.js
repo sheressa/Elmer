@@ -20,7 +20,7 @@ runJob();
 
 function recurOpenShifts(now) {
   if (now.hours() % 2 == 1) {
-    consoleWithTime('running at an odd hour. abort.');
+    CONSOLE_WITH_TIME('running at an odd hour. abort.');
     return;
   }
   // Each time this cron runs, we run this function over the previous four shift times for failsafe redundancy.
@@ -33,7 +33,7 @@ function recurOpenShifts(now) {
 
       // If we don't need to add any new open shifts, we return.
       if (correctNumberOfShiftsToSet === 0) {
-        consoleWithTime('No open shifts need to be added for time: ', targetTime.toString());
+        CONSOLE_WITH_TIME('No open shifts need to be added for time: ', targetTime.toString());
         return;
       }
       // If we need to add open shifts
@@ -70,7 +70,7 @@ function recurOpenShifts(now) {
       });
 
       if (correctNumberOfShiftsToSet < 0) { correctNumberOfShiftsToSet = 'no'; }
-      consoleWithTime('Adding ', correctNumberOfShiftsToSet, ' open shifts to the time: ', targetTime.toString(), '. Deleting incorrect count of open shifts--their shift IDs: ', extraOpenShiftsToDelete);
+      CONSOLE_WITH_TIME('Adding ', correctNumberOfShiftsToSet, ' open shifts to the time: ', targetTime.toString(), '. Deleting incorrect count of open shifts--their shift IDs: ', extraOpenShiftsToDelete);
       WhenIWork.post('batch', batchPayload);
     })
   }
@@ -117,7 +117,7 @@ function findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTimeMomentObj, c
     }
 
     var correctNumberOfShiftsToSet = returnMaxOpenShiftCountForTime(targetTimeMomentObj.clone()) - countOfOccupiedShifts;
-    consoleWithTime('Found ', countOfOpenShifts, ' open shifts, ', countOfOccupiedShifts, ' occupied shifts found for a time where we expect ', returnMaxOpenShiftCountForTime(targetTimeMomentObj.clone()), ' open shifts. Time: ', targetTimeMomentObj.toString());
+    CONSOLE_WITH_TIME('Found ', countOfOpenShifts, ' open shifts, ', countOfOccupiedShifts, ' occupied shifts found for a time where we expect ', returnMaxOpenShiftCountForTime(targetTimeMomentObj.clone()), ' open shifts. Time: ', targetTimeMomentObj.toString());
     callback(extraOpenShiftsToDelete, correctNumberOfShiftsToSet, targetTimeMomentObj);
     return;
   });

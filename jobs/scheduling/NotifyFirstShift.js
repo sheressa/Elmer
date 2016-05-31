@@ -62,7 +62,7 @@ function checkNewShifts() {
               };
 
               mandrill_client.messages.send({message: message, key: 'first_shift_scheduled'}, function (res) {
-                  consoleWithTime(res);
+                  CONSOLE_WITH_TIME(res);
               });
 
               WhenIWork.update('users/'+shifts.users[0].id, {notes: shifts.users[0].notes + 'first_shift_notified' + "\n"});

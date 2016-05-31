@@ -51,7 +51,7 @@ function mergeOpenShifts() {
     }
 
     WhenIWork.post('batch', batchPayload, function(response) {
-      consoleWithTime'Response from merge shift batch payload request: ', batchPayload);
+      CONSOLE_WITH_TIME('Response from merge shift batch payload request: ', batchPayload);
     })
   });
 }

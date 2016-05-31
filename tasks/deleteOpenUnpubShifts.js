@@ -24,7 +24,7 @@ module.exports.go = function() {
 			})
 
 			api.post('batch', batchRequest, function(response) {
-				consoleWithTime(response);
+				CONSOLE_WITH_TIME(response);
 			})
 		})
 	}

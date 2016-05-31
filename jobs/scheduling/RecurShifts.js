@@ -28,10 +28,10 @@ function recurNewlyCreatedShifts() {
   WhenIWork.get('shifts', postData, function(response) {
     var allShifts = response.shifts;
     if (typeof allShifts !== 'object') {
-      consoleWithTime('NO SHIFTS RETURNED.');
-      consoleWithTime('===================');
-      consoleWithTime('RESPONSE: ' + response);
-      consoleWithTime('POST: ' + postData);
+      CONSOLE_WITH_TIME('NO SHIFTS RETURNED.');
+      CONSOLE_WITH_TIME('===================');
+      CONSOLE_WITH_TIME('RESPONSE: ' + response);
+      CONSOLE_WITH_TIME('POST: ' + postData);
       return;
     }
     var newShifts = allShifts.filter(function(shift) {
