@@ -9,20 +9,6 @@ var mergeOpenShifts = mergeOpenShiftsObject.mergeOpenShifts;
 
 describe('merge open shifts', function() {
 
-  beforeEach(function() {
-
-    // var apiMocker = nock('https://api.wheniwork.com/2')
-    //       .get('/shifts')
-    //       .query(true)
-    //       .reply(200, {shifts: [sampleData.shifts]});
-
-    // var apiMocker2 = nock('https://api.wheniwork.com/2')
-    //       .post('/batch', {})
-    //       .query(true)
-    //       .reply(203, {});
-
-  });
-
   var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
 
   describe('batch payload creation', function() {

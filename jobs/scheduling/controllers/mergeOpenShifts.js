@@ -18,12 +18,10 @@ function mergeOpenShifts(options) {
     location_id: [ global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts ]
   };
 
-  var data;
-  
   if (options === 'regShifts') {
-    data = sampleData.shifts.shifts.slice(6, 8);
+    var data = sampleData.shifts.shifts.slice(6, 8);
   } else {
-    data = sampleData.shifts.shifts.slice(8);
+    var data = sampleData.shifts.shifts.slice(8);
   }
 
   function processData (data) {
@@ -59,10 +57,8 @@ function mergeOpenShifts(options) {
       batchPayload = makeBatchPayloadRequestsToMergeOpenShifts(openMakShifts[key], batchPayload);
     }
 
-    // WhenIWork.post('batch', batchPayload, function(response) {
-    //   console.log('Response from merge shift batch payload request: ', batchPayload);
-    // });
     return batchPayload;
+
   }
 
   return processData(data);
