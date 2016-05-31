@@ -28,6 +28,7 @@
     "newrelic": "^1.25.5",
     "request": "^2.72.0",
     "request-promise": "^3.0.0",
+    "node-fetch": "^1.5.3",
     "require-all": "^2.0.0",
     "sha1": "^1.1.1",
     "stathat": "0.0.8",

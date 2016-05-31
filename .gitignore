@@ -67,6 +67,7 @@ sftp-config.json
 logs
 *.log
 npm-debug.log*
+last-run.txt
 
 # Runtime data
 pids

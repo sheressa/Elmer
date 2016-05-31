@@ -2,6 +2,7 @@ var KEYS = {};
 
 KEYS.secret_key = 'SuperSecretKey';
 
+// @TODO: platform_secret_key and KEYS.secret_key are redundant. Remove one.
 KEYS.platform_secret_key = '';
 
 KEYS.new_relic_license_key = '';
@@ -30,6 +31,16 @@ KEYS.stathat = {
   enabled: false,
   email: 'todo'
 };
+
+KEYS.canvas = {
+  accountToken: 'TODO',
+  accountID: 'TODO',
+  coursesWeDoNotParseForGraduatedUsers: ["23", "16", "18", "21", "22", "19", "1", "39", "17", "2"]
+};
+
+KEYS.slackAccountURL = 'TODO';
+
+KEYS.platformUserCreationURL = 'TODO';
 
 //development test keys
 
