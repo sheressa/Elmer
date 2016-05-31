@@ -70,7 +70,7 @@ describe('delete shifts and redirect', function() {
         query: {
           email: userEmail,
           token: userToken,
-          regShift: 'on'
+          regShift284947012: 'on'
         }
       };
       // Dummy Express response object
@@ -107,7 +107,7 @@ describe('delete shifts and redirect', function() {
         query: {
           email: userEmail,
           token: userToken,
-          makShift: 'on'
+          makShift284947012: 'on'
         }
       };
       // Dummy Express response object

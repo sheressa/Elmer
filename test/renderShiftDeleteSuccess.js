@@ -7,7 +7,7 @@ describe('render successful shift deletion', function() {
   var userEmail = 'amudantest@test.com';
   var userToken = '9365583ac27c52684eb6efb8e9374c04823dce59';
   var userName = 'amudantest@test.com';
-  var deletedShiftInformation = '{"regShifts": {"a" : 4}, "makShifts": {"b" : 3}}';
+  var deletedShiftInformation = '{"regShifts284947012": {"a" : 4}, "makShifts284947012": {"b" : 3}}';
 
   describe('shift deletion', function() {
 
@@ -18,7 +18,7 @@ describe('render successful shift deletion', function() {
           email: userEmail,
           token: userToken,
           userName: userName,
-          regShift: 'on',
+          regShift284947012: 'on',
           deletedShiftInformation: deletedShiftInformation
         }
       };
@@ -40,7 +40,7 @@ describe('render successful shift deletion', function() {
           email: userEmail,
           token: userToken,
           userName: userName,
-          makShift: 'on',
+          makShift284947012: 'on',
           deletedShiftInformation: deletedShiftInformation
         }
       };
