@@ -1,6 +1,5 @@
 var nock = require('nock');
 var WhenIWork = require('wheniwork-unofficial');
-var config = require('../config');
 var assert = require('assert');
 
 describe('Authentication with wheniwork-unofficial API', function() {
@@ -10,7 +9,7 @@ describe('Authentication with wheniwork-unofficial API', function() {
     var errorResponse = {error: 'Authentication unsuccessful'};
     // Mock response to /login endpoint
     base.post('/login').reply(501, errorResponse);
-    var api = new WhenIWork(config.wheniwork.api_key, config.wheniwork.username, config.wheniwork.password, function(error) {
+    var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password, function(error) {
       if (error.error === errorResponse.error) {
         done();
       }
@@ -25,7 +24,7 @@ describe('Authentication with wheniwork-unofficial API', function() {
     };
     base.post('/login').reply(200, loginResponse);
     base.get('/shifts?').reply(200, {ninja: 'turtle'});
-    var api = new WhenIWork(config.wheniwork.api_key, config.wheniwork.username, config.wheniwork.password);
+    var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
     api.get('shifts', function (res) {
       assert.equal(res.ninja, 'turtle');
       done();

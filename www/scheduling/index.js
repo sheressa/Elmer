@@ -148,7 +148,7 @@ function checkUser(email, first, last, callback) {
 
       api2.post('users/profile', {email: email}, function (profile) {
         consoleWithTime(profile);
-        callback(profile.user);
+
       });
     });
   });
