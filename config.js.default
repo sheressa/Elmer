@@ -14,6 +14,32 @@ global.CONSOLE_WITH_TIME = function(){
   console.log('[' + new Date() + ']', message.slice(0, message.length-1));
 };
 
+/**
+  Accepts a string returned from WIW formatted like this:
+  "Wed, 01 Jun 2016, 12:00:00 -500"
+  And converts it to a string with the time zone formatted like this:
+  "Wed, 01 Jun 2016, 12:00:00 -0500"
+
+  So that it's Moment() parseable. Otherwise, Moment() fails to parse it,
+  and it defaults to creating a date based on the current time. Not good.
+  Moment wants this format:
+  "ddd, DD MMM YYYY HH:mm:ss ZZ"
+**/
+global.MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE = function(timestring) {
+  // Wed, 01 Jun 2016 12:00:00
+  var firstPart = timestring.slice(0, 25).trim();
+  // -500
+  var timeZonePart =  timestring.slice(-5).trim();
+  if (moment(firstPart, 'ddd, DD MMM YYYY HH:mm:ss', true).format() === 'Invalid date') {
+    CONSOLE_WITH_TIME('[ERROR] invalid date being parsed with MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE');
+    return false;
+  }
+  if (timeZonePart.length === 4) {
+    timeZonePart = timeZonePart.substr(0, 1) + '0' + timeZonePart.substr(1);
+  }
+  return firstPart + ' ' + timeZonePart;
+};
+
 var config = {};
 
 config.root_dir = __dirname;
@@ -61,7 +87,7 @@ config.time_interval = {
   years_to_recur_shift: 5,
 
   // In looking for newly created shifts to recur, we search 2 weeks from the present.
-  weeks_to_search_for_recurred_shifts: 2,
+  weeks_to_search_for_recurred_shifts: 3,
 
   // While we recur shifts for much longer, they're only published (viewable to the employee) 4 weeks from present.
   weeks_to_publish_recurred_shifts: 4,

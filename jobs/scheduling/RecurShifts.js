@@ -14,8 +14,10 @@ recurNewlyCreatedShifts();
 
 function recurNewlyCreatedShifts() {
   var batchPostRequestBody = [];
-  // Only searching for newly created shifts one day prior and two weeks out since counselors
-  // only can create a new shift in the next week.
+  /**
+    Only searching for newly created shifts one day prior and three weeks out since counselors
+    only can create a new shift in the next two weeks.
+  **/
   var startDateToRetrieveShifts = moment().add(-1, 'days').format('YYYY-MM-DD HH:mm:ss');
   var endDateToRetrieveShifts = moment().add(config.time_interval.weeks_to_search_for_recurred_shifts, 'weeks').format('YYYY-MM-DD HH:mm:ss');
   var postData = {
@@ -34,6 +36,12 @@ function recurNewlyCreatedShifts() {
       CONSOLE_WITH_TIME('POST: ' + postData);
       return;
     }
+
+    /**
+      If a shift has just been taken from the open shifts pool, then it won't have
+      any notes attached to it. We're only recurring shifts without notes.
+      Important to note this, in case we ever assign notes to an open shift.
+    **/
     var newShifts = allShifts.filter(function(shift) {
       return !shift.notes;
     });
@@ -47,6 +55,13 @@ function recurNewlyCreatedShifts() {
       also need to be deleted.
     **/
     newShifts.forEach(function(shift) {
+      /**
+        Reduces open shift count by 1 for previous week's and next week's open shifts
+        at same time slot. Note that this is happening asynchronously--nothing else in this
+        job relies on this completing at a specific time.
+      **/
+      decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift);
+
       shift.notes = '{"original_owner":' + shift.user_id + ', "parent_shift":' + shift.id + '}';
       var endDate = moment(shift.start_time, wiw_date_format).add(config.time_interval.max_shifts_in_chain - 1, 'weeks').format('L');
 
@@ -82,8 +97,8 @@ function recurNewlyCreatedShifts() {
           "method": "post",
           "url": "/2/shifts",
           "params": {
-            "start_time": moment(workingShift.start_time, wiw_date_format).add(config.time_interval.max_shifts_in_chain, 'weeks').format('ddd, DD MMM YYYY HH:mm:ss ZZ'),
-            "end_time": moment(workingShift.end_time, wiw_date_format).add(config.time_interval.max_shifts_in_chain, 'weeks').format('ddd, DD MMM YYYY HH:mm:ss ZZ'),
+            "start_time": moment(workingShift.start_time, wiw_date_format).add(config.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
+            "end_time": moment(workingShift.end_time, wiw_date_format).add(config.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
             "notes": workingShift.notes,
             "acknowledged": workingShift.acknowledged,
             "chain": {"week": "1", "until": moment(workingShift.chain.until, wiw_date_format).add(config.time_interval.max_shifts_in_chain, 'weeks').format('L')},
@@ -97,8 +112,10 @@ function recurNewlyCreatedShifts() {
     });
 
     WhenIWork.post('batch', batchPostRequestBody, function(response) {
-      // After batch of shifts is created, we want to publish all shifts. (Note that passing in the `published` param
-      // in the requests that are batched doesn't actually publish them; we need to make a separate request to another route.)
+      /**
+        After batch of shifts is created, we want to publish all shifts. (Note that passing in the `published` param
+        in the requests that are batched doesn't actually publish them; we need to make a separate request to another route.)
+      **/
 
       var startDateToRetrieveUnpublishedShifts = moment().add(-12, 'hours').format('YYYY-MM-DD HH:mm:ss');
       var endDateToRetrieveUnpublishedShifts = moment().add(12, 'hours').format('YYYY-MM-DD HH:mm:ss');
@@ -187,4 +204,67 @@ function recurNewlyCreatedShifts() {
   });
 }
 
-module.exports = recurNewlyCreatedShifts;
+function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
+  shift.start_time = MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE(shift.start_time);
+  var prevWeekShiftStartTime =  moment(shift.start_time, wiw_date_format, true).add(-1, 'weeks').format(wiw_date_format);
+  var nextWeekShiftStartTime = moment(shift.start_time, wiw_date_format, true).add(1, 'weeks').format(wiw_date_format);
+  var nextWeekShiftEndTime = moment(shift.start_time, wiw_date_format, true).add(1, 'weeks').add(2, 'hours').format(wiw_date_format);
+  var prevWeekOpenShiftDecremented = false;
+  var nextWeekOpenShiftDecremented = false;
+
+  var openShiftQuery = {
+    include_open: true,
+    include_allopen: true,
+    location_id: config.locationID.regular_shifts,
+    start: prevWeekShiftStartTime,
+    end: nextWeekShiftEndTime
+  };
+
+  WhenIWork.get('shifts', openShiftQuery, function(response) {
+    var batchPayload = [];
+    var openShifts = response.shifts;
+    if (typeof response !== 'object') {
+      CONSOLE_WITH_TIME('NO OPEN SHIFTS RETURNED TO DECREMENT.');
+      CONSOLE_WITH_TIME('===================');
+      CONSOLE_WITH_TIME('RESPONSE: ' + response);
+      CONSOLE_WITH_TIME('POST: ' + postData);
+      return;
+    }
+
+    openShifts.forEach(function(shift) {
+      /**
+        If the shift is indeed an open shift, and it's the shift that occurs exactly one week
+        or after the shift that was just taken, we decrement its instances by one.
+      **/
+      if (shift.is_open && (shift.start_time === prevWeekShiftStartTime || shift.start_time === nextWeekShiftStartTime)) {
+        var instances = parseInt(shift.instances);
+        if (instances === 1) {
+          var shiftDeleteRequest = {
+            'method': 'delete',
+            'url': '/2/shifts/' + shift.id,
+            'params': {}
+          };
+          batchPayload.push(shiftDeleteRequest);
+        }
+        else {
+          instances = instances - 1;
+          var shiftUpdateRequest = {
+            'method': 'PUT',
+            'url': '/2/shifts/' + shift.id,
+            'params': {instances: instances}
+          };
+          batchPayload.push(shiftUpdateRequest);
+        }
+      }
+    });
+
+    WhenIWork.post('batch', batchPayload, function(response) {
+      CONSOLE_WITH_TIME('Response from decrementing week prior\'s shifts by one, and week after\'s open shifts by one: ', response);
+    });
+  });
+}
+
+module.exports = {
+  recurNewlyCreatedShifts: recurNewlyCreatedShifts,
+  decrementPrevWeeksAndNextWeeksOpenShiftsByOne: decrementPrevWeeksAndNextWeeksOpenShiftsByOne
+};
