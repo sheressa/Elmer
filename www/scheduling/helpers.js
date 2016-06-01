@@ -35,7 +35,7 @@ function areShiftsDuplicate(shiftA, shiftB) {
       shiftsAreDuplicate = JSON.parse(shiftA.notes).parent_shift === JSON.parse(shiftB.notes).parent_shift;
   }
   catch (err) {
-      console.log('JSON.parse failed to parse ' + shiftA + ' or ' + shiftB);
+      CONSOLE_WITH_TIME('JSON.parse failed to parse ' + shiftA + ' or ' + shiftB);
   }
   return shiftsAreDuplicate;
 }

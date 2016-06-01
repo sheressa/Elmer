@@ -57,7 +57,7 @@ function handleTimeOffRequests() {
         var batchPayload = [timeOffApprovalRequest];
 
         if (!response.shifts || response.shifts.length === 0) {
-          console.log('No shifts found that fall within the range of that timeoff request, but we\'re still approving that request.');
+          CONSOLE_WITH_TIME('No shifts found that fall within the range of that timeoff request, but we\'re still approving that request.');
         }
         else {
           //For each shift, create a delete request and an open shift to replace it
@@ -91,7 +91,7 @@ function handleTimeOffRequests() {
         }
         //Send the time off request approval and all shift deletions/open shift creations to batch
         WhenIWork.post('batch', batchPayload, function(response) {
-          console.log(response);
+          CONSOLE_WITH_TIME(response);
         });
       });
     });

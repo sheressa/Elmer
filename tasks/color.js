@@ -31,7 +31,7 @@ module.exports.go = function () {
     });
 
     api.post('batch', batchRequest, function(response) {
-      console.log(response);
+      CONSOLE_WITH_TIME(response);
     })
 
   });

@@ -56,14 +56,14 @@ module.exports.dumpSchedules = function () {
         }
 
         // print the shit
-        console.log(line);
+        CONSOLE_WITH_TIME(line);
       }
     });
   });
 };
 
 module.exports.clearProd = function() {
-  console.log('This function must first be enabled before it will run.');
+  CONSOLE_WITH_TIME('This function must first be enabled before it will run.');
   return false;
   for (var year = -1; year < 50; year++) {
     var start_time = moment().add(year, 'year').format(wiw_date_format);
@@ -86,7 +86,7 @@ module.exports.clearProd = function() {
       var subsections = Math.ceil(shifts_to_delete.length / 500);
       for (var i = 0; i < subsections; i++) {
         api.delete('shifts', {ids: shifts_to_delete.slice(i*500, (i*500) + 500).join(',')}, function (resp) {
-          console.log(resp);
+          CONSOLE_WITH_TIME(resp);
         });
       }
     });

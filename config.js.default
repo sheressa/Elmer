@@ -1,6 +1,19 @@
 var moment = require('moment-timezone');
 moment.tz.setDefault("America/New_York");
 
+global.CONSOLE_WITH_TIME = function(){
+  var message = '';
+
+  for(var key in arguments){
+    if(typeof arguments[key]==='object'){
+      message+=JSON.stringify(arguments[key])+ " ";
+    } else{
+      message+=arguments[key]+ " ";
+    }
+  }
+  console.log('[' + new Date() + ']', message.slice(0, message.length-1));
+};
+
 var config = {};
 
 config.root_dir = __dirname;
