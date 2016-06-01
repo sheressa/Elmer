@@ -7,7 +7,7 @@ describe('render successful shift deletion', function() {
   var userEmail = 'amudantest@test.com';
   var userToken = '9365583ac27c52684eb6efb8e9374c04823dce59';
   var userName = 'amudantest@test.com';
-  var deletedShiftInformation = '{"regShifts": {"a" : 4}, "makShifts": {"b" : 3}}';
+  var deletedShiftInformation = '{"regShifts": {"regShift284947012" : 4}, "makShifts": {"makShift284947012" : 3}}';
 
   describe('shift deletion', function() {
 

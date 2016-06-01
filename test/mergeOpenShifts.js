@@ -14,7 +14,10 @@ describe('merge open shifts', function() {
   describe('batch payload creation', function() {
 
     it('adds open regular shifts to batch', function (done) {
-
+          var apiMocker = nock('https://api.wheniwork.com/2')
+          .post('/batch')
+          .query(true)
+          .reply(203, {});
       var result = mergeOpenShifts('regShifts');
       assert.equal(result.length, 2);
       done();
@@ -22,7 +25,10 @@ describe('merge open shifts', function() {
     });
 
     it('adds open makeup shifts to batch', function (done) {
-
+          var apiMocker2 = nock('https://api.wheniwork.com/2')
+          .post('/batch')
+          .query(true)
+          .reply(203, {});
       var result = mergeOpenShifts('makShifts');
       assert.equal(result.length, 2);
       done();

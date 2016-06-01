@@ -57,6 +57,10 @@ function mergeOpenShifts(options) {
       batchPayload = makeBatchPayloadRequestsToMergeOpenShifts(openMakShifts[key], batchPayload);
     }
 
+    WhenIWork.post('batch', batchPayload, function(response) {
+      console.log('Response from merge shift batch payload request: ', batchPayload);
+    });
+
     return batchPayload;
 
   }
