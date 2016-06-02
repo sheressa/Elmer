@@ -101,12 +101,6 @@ config.time_interval = {
   // Used to search for requests to be auto-approved.
   months_to_search_for_time_off_requests: 6,
 
-  // Used to search for users in order to notify them via email.
-  days_to_search_for_new_users_who_have_scheduled_their_first_shift: 7,
-
-  // How often we repeat open shifts
-  days_in_interval_to_repeat_open_shifts: 7,
-
   // How many days in advance we show open shifts
   days_of_open_shift_display: 14
 };
