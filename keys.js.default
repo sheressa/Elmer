@@ -1,0 +1,49 @@
+//production keys
+global.keys = {};
+
+keys.secret_key = 'SuperSecretKey';
+
+keys.platform_secret_key = '';
+
+keys.new_relic_license_key = '';
+
+keys.wheniwork = {
+  api_key: 'TODO',
+  username: 'TODO',
+  password: 'TODO',
+  default_password: 'TODO'
+};
+
+keys.mandrill = {
+  api_key: 'TODO'
+};
+
+keys.stathat = {
+  enabled: false,
+  email: 'todo'
+};
+
+//development test keys
+global.keys_test = {}
+
+keys_test.secret_key = 'SuperSecretKey';
+
+keys_test.platform_secret_key = '';
+
+keys_test.new_relic_license_key = '';
+
+keys_test.wheniwork = {
+  api_key: 'TODO',
+  username: 'TODO',
+  password: 'TODO',
+  default_password: 'TODO'
+};
+
+keys_test.mandrill = {
+  api_key: 'TODO'
+};
+
+keys_test.stathat = {
+  enabled: false,
+  email: 'todo'
+};

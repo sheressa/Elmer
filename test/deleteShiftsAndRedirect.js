@@ -6,7 +6,6 @@ var assert = require('assert')
   , sampleData = require('./sampleData')
   var deleteShiftsAndRedirect = require(global.config.root_dir + '/www/scheduling/shifts/controllers/deleteShiftsAndRedirect')
   ;
-
 describe('delete shifts and redirect', function() {
   var base = nock('https://api.wheniwork.com/2');
   var userEmail = 'amudantest@test.com';
@@ -26,7 +25,7 @@ describe('delete shifts and redirect', function() {
 
   });
 
-  var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
+  var api = new WhenIWork(keys_test.wheniwork.api_key, keys_test.wheniwork.username, keys_test.wheniwork.password);
 
   describe('shift deletion', function() {
 

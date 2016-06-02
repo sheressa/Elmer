@@ -56,7 +56,7 @@ router.get('/login', function (req, res) {
 
     // Try to log in as the user using our global password.
     // If we can't, immediately redirect to When I Work and don't try to do anything else.
-    var api2 = new WhenIWork(global.config.wheniwork.api_key, user.email, global.config.wheniwork.default_password, function (resp) {
+    var api2 = new WhenIWork(keys.wheniwork.api_key, user.email, keys.wheniwork.default_password, function (resp) {
         res.redirect('https://app.wheniwork.com/login/?redirect=myschedule');
     });
 
@@ -128,12 +128,12 @@ function checkUser(email, first, last, callback) {
       last_name: last,
       activated: true,
       locations: [global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts],
-      password: global.config.wheniwork.default_password,
+      password: keys.wheniwork.default_password,
       notes: JSON.stringify({ canonicalEmail: email })
     };
 
     api.post('users', newUser, function (data) {
-      var api2 = new WhenIWork(global.config.wheniwork.api_key, altEmail, global.config.wheniwork.default_password, function (data) {
+      var api2 = new WhenIWork(keys.wheniwork.api_key, altEmail, keys.wheniwork.default_password, function (data) {
       });
 
       var alert = {sms: false, email: false};

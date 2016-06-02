@@ -4,7 +4,7 @@ var moment = require('moment');
 var fs = require('fs');
 
 var mandrill = require('mandrill-api/mandrill');
-var mandrill_client = new mandrill.Mandrill(global.config.mandrill.api_key);
+var mandrill_client = new mandrill.Mandrill(keys.mandrill.api_key);
 
 var date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 

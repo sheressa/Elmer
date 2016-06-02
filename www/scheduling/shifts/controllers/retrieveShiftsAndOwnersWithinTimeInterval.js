@@ -26,7 +26,7 @@ function retrieveShiftsAndOwnersWithinTimeInterval(req, res, whenIWorkAPI) {
     , token = req.query.token
     ;
 
-  if (req.query.token !== sha1(global.config.platform_secret_key)) {
+  if (req.query.token !== sha1(keys.platform_secret_key)) {
     res.status(403).send('Access denied.');
     return;
   }

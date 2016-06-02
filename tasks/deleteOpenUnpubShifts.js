@@ -1,5 +1,5 @@
 var WhenIWork = require('wheniwork-unofficial');
-var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
+var api = new WhenIWork(keys.wheniwork.api_key, keys.wheniwork.username, keys.wheniwork.password);
 
 module.exports.go = function() {
 	for (var i = 0; i < 365; i+=7) {

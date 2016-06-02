@@ -1,4 +1,3 @@
-
 var CronJob = require('cron').CronJob;
 var WhenIWork = require('./base');
 var returnColorizedShift = require('../../lib/ColorizeShift').go;

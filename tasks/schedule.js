@@ -1,6 +1,6 @@
 var moment = require('moment');
 var WhenIWork = require('wheniwork-unofficial');
-var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
+var api = new WhenIWork(keys.wheniwork.api_key, keys.wheniwork.username, keys.wheniwork.password);
 // Sat, 16 Jan 2016 14:00:00 -0500
 var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var out_format = 'ddd h:mm A';

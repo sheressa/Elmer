@@ -1,4 +1,5 @@
 global.config = require('../config');
+require('../keys.js');
 
 if (process.env.NODE_ENV !== 'production') {
   global.config.locationID.regular_shifts = global.config.locationID.test;

@@ -5,7 +5,7 @@ var sha1 = require('sha1');
   Returns true if the provided email, once hashed with the secret, matches the hash.
 **/
 function validate(email, hash) {
-  var check = email + global.config.secret_key;
+  var check = email + keys.secret_key;
   return sha1(check) == hash;
 }
 

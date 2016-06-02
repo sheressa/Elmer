@@ -1,6 +1,6 @@
 var moment = require('moment');
 var WhenIWork = require('wheniwork-unofficial');
-var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
+var api = new WhenIWork(keys.wheniwork.api_key, keys.wheniwork.username, keys.wheniwork.password);
 var colorize = require('../lib/ColorizeShift').go;
 
 module.exports.go = function () {

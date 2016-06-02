@@ -9,7 +9,7 @@ var mergeOpenShifts = mergeOpenShiftsObject.mergeOpenShifts;
 
 describe('merge open shifts', function() {
 
-  var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
+  var api = new WhenIWork(keys_test.wheniwork.api_key, keys_test.wheniwork.username, keys_test.wheniwork.password);
 
   describe('batch payload creation', function() {
 

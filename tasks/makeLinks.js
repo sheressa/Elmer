@@ -29,7 +29,7 @@ function getFullPath(filename) {
 }
 
 function hash(email, hash) {
-  return sha1(email + global.config.secret_key);
+  return sha1(email + keys.secret_key);
 }
 
 module.exports = {

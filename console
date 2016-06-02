@@ -1,4 +1,5 @@
 global.config = require('./config');
+require('./keys');
 
 var args = process.argv.slice(2);
 
