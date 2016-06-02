@@ -77,6 +77,12 @@ config.time_interval = {
   // runs every five mins.
   time_off_requests_cron_job_string: '0 */5 * * * *',
 
+  // How often do we create new openshifts and merge duplicate openshifts
+  open_shifts: '0 0 */2 * * *', // every two hours
+
+  // How often do we notify users to take more shifts
+  take_more_shifts_cron_job_string: '30 5 18 * * *', // Every day at 6:05:30 pm
+
   // Each recurrence chain is 1 year long.
   max_shifts_in_chain: 52,
 
@@ -98,11 +104,11 @@ config.time_interval = {
   // Used to search for users in order to notify them via email.
   days_to_search_for_new_users_who_have_scheduled_their_first_shift: 7,
 
-  // How often do we create new openshifts and merge duplicate openshifts
-  open_shifts: '0 0 */2 * * *', // every two hours
-
   // How often we repeat open shifts
-  days_in_interval_to_repeat_open_shifts: 7
+  days_in_interval_to_repeat_open_shifts: 7,
+
+  // How many days in advance we show open shifts
+  days_of_open_shift_display: 14
 };
 
 config.mandrill = {
