@@ -19,8 +19,8 @@ module.exports.dumpSchedules = function () {
     // Loop through each shift and put them into an object
     // indexed by user id. Ex:
     // { 123: [MomentObject, MomentObject, MomentObject] }
-    for (var i in data['shifts']) {
-      shift = data['shifts'][i];
+    for (var i in data.shifts) {
+      shift = data.shifts[i];
 
       // Create the entry in the object if no exist
       if (typeof user_shifts[shift.user_id] == 'undefined') {
@@ -33,8 +33,8 @@ module.exports.dumpSchedules = function () {
     // Now we need to get the email addresses
     api.get('users', function (data) {
       var user;
-      for (var i in data['users']) {
-        user = data['users'][i];
+      for (var i in data.users) {
+        user = data.users[i];
 
         if (typeof user_shifts[user.id] !== 'undefined') {
           // Switch to email-indexed array
@@ -56,7 +56,7 @@ module.exports.dumpSchedules = function () {
         }
 
         // print the shit
-        CONSOLE_WITH_TIME(line);
+        console.log(line);
       }
     });
   });

@@ -30,7 +30,7 @@ describe('Login and user creation', function () {
   });
 
   describe('checkUser function', function() {
-    
+
     it('Doesn\'t create a user that already exists', function() {
       checkUser2('amudantest@test.com', 'Amudan', 'Test', function(user) {
         assert.equal(user.email, 'amudantest@test.com');
