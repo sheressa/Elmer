@@ -92,7 +92,7 @@ config.time_interval = {
   // Each shift is recurred for 5 years.
   years_to_recur_shift: 5,
 
-  // In looking for newly created shifts to recur, we search 2 weeks from the present.
+  // In looking for newly created shifts to recur, we search 3 weeks from the present.
   weeks_to_search_for_recurred_shifts: 3,
 
   // While we recur shifts for much longer, they're only published (viewable to the employee) 4 weeks from present.
@@ -102,7 +102,7 @@ config.time_interval = {
   months_to_search_for_time_off_requests: 6,
 
   // How many days in advance we show open shifts
-  days_of_open_shift_display: 14
+  days_of_open_shift_display: 15
 };
 
 config.mandrill = {
