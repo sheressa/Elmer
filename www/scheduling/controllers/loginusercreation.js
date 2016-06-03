@@ -1,7 +1,7 @@
-global.config = require('../../../config.js');
+global.CONFIG = require('../../../config.js');
 var api = require('../../scheduling/initWhenIWorkAPI'),
-helpers = require(global.config.root_dir + '/www/scheduling/helpers');
-var stathat = require(global.config.root_dir + '/lib/stathat.js');
+helpers = require(global.CONFIG.root_dir + '/www/scheduling/helpers');
+var stathat = require(global.CONFIG.root_dir + '/lib/stathat.js');
 var WhenIWork = require('wheniwork-unofficial');
 var data = require('../../../test/sampleData.js');
 
@@ -28,12 +28,12 @@ var checkUser2 = function(email, first, last, callback) {
       first_name: first,
       last_name: last,
       activated: true,
-      locations: [global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts],
-      password: keys.wheniwork.default_password,
+      locations: [global.CONFIG.locationID.regular_shifts, global.CONFIG.locationID.makeup_and_extra_shifts],
+      password: global.KEYS.wheniwork.default_password,
       notes: JSON.stringify({ canonicalEmail: email })
     };
     api.post('users', newUser, function (data) {
-      var api2 = new WhenIWork(keys.wheniwork.api_key, altEmail, keys.wheniwork.default_password, function (data) {
+      var api2 = new WhenIWork(global.KEYS.wheniwork.api_key, altEmail, global.KEYS.wheniwork.default_password, function (data) {
       });
 
       var alert = {sms: false, email: false};

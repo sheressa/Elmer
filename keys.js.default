@@ -1,49 +1,47 @@
-//production keys
-global.keys = {};
+var KEYS = {};
 
-keys.secret_key = 'SuperSecretKey';
+KEYS.secret_key = 'SuperSecretKey';
 
-keys.platform_secret_key = '';
+KEYS.platform_secret_key = '';
 
-keys.new_relic_license_key = '';
+KEYS.new_relic_license_key = '';
 
-keys.wheniwork = {
+KEYS.wheniwork = {
   api_key: 'TODO',
   username: 'TODO',
   password: 'TODO',
   default_password: 'TODO'
 };
 
-keys.mandrill = {
+KEYS.mandrill = {
   api_key: 'TODO'
 };
 
-keys.stathat = {
+KEYS.stathat = {
   enabled: false,
   email: 'todo'
 };
 
 //development test keys
-global.keys_test = {}
+KEYS.test.secret_key = 'SuperSecretKey';
 
-keys_test.secret_key = 'SuperSecretKey';
+KEYS.test.platform_secret_key = '';
 
-keys_test.platform_secret_key = '';
+KEYS.test.new_relic_license_key = '';
 
-keys_test.new_relic_license_key = '';
-
-keys_test.wheniwork = {
+KEYS.test.wheniwork = {
   api_key: 'TODO',
   username: 'TODO',
   password: 'TODO',
   default_password: 'TODO'
 };
 
-keys_test.mandrill = {
+KEYS.test.mandrill = {
   api_key: 'TODO'
 };
 
-keys_test.stathat = {
+KEYS.test.stathat = {
   enabled: false,
   email: 'todo'
 };
+module.exports = KEYS;

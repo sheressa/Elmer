@@ -99,7 +99,6 @@ node_modules
 .node_repl_history
 
 # Customizations
-config.js
 keys.js
 
 # Elastic Beanstalk Files

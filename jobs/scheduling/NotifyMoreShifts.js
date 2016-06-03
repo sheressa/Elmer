@@ -1,7 +1,7 @@
 var CronJob = require('cron').CronJob;
 var WhenIWork = require('./base');
 var fs = require('fs');
-var stathat = require(global.config.root_dir + '/lib/stathat');
+var stathat = require(global.CONFIG.root_dir + '/lib/stathat');
 
 new CronJob('30 5 18 * * *', function () {
   notifyMoreShifts();
@@ -9,7 +9,7 @@ new CronJob('30 5 18 * * *', function () {
 
 function notifyMoreShifts() {
   var query = {
-    location_id: global.config.locationID.regular_shifts,
+    location_id: global.CONFIG.locationID.regular_shifts,
     end: '+7 days'
   };
 
@@ -58,7 +58,7 @@ function processUsers(users) {
     // Now we're going to notify these people once. So the logic is more complicated.
     if (only_two.length > 0) {
       var req = {
-        location_id: global.config.locationID.regular_shifts
+        location_id: global.CONFIG.locationID.regular_shifts
       };
 
       WhenIWork.get('users', req, function (data) {

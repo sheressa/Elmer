@@ -1,6 +1,6 @@
 var moment = require('moment');
 var WhenIWork = require('wheniwork-unofficial');
-var api = new WhenIWork(keys.wheniwork.api_key, keys.wheniwork.username, keys.wheniwork.password);
+var api = new WhenIWork(global.KEYS.wheniwork.api_key, global.KEYS.wheniwork.username, global.KEYS.wheniwork.password);
 // Sat, 16 Jan 2016 14:00:00 -0500
 var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var out_format = 'ddd h:mm A';
@@ -8,7 +8,7 @@ var out_format = 'ddd h:mm A';
 module.exports.dumpSchedules = function () {
   // We want to see shifts 8 days out from now.
   var params = {
-    location_id: global.config.locationID.regular_shifts,
+    location_id: global.CONFIG.locationID.regular_shifts,
     end: '+8 days'
   };
 
@@ -72,7 +72,7 @@ module.exports.clearProd = function() {
     var query = {
       start: start_time,
       end: end_time,
-      location_id: global.config.locationID.test,
+      location_id: global.CONFIG.locationID.test,
       unpublished: true,
       include_allopen: true
     };

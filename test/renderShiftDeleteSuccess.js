@@ -1,6 +1,6 @@
 var assert = require('assert')
   , sampleData = require('./sampleData')
-  var renderShiftDeleteSuccess = require(global.config.root_dir + '/www/scheduling/shifts/controllers/renderShiftDeleteSuccess')
+  var renderShiftDeleteSuccess = require(global.CONFIG.root_dir + '/www/scheduling/shifts/controllers/renderShiftDeleteSuccess')
   ;
 
 describe('render successful shift deletion', function() {

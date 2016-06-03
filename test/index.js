@@ -3,8 +3,8 @@
 //It is meant to run with npm test.
 //This file will run before all other test files, as the console.log shows.
 console.log('index file running');
-require('../keys.js');
-global.config = require('../config.js');
+global.KEYS = require('../keys.js');
+global.CONFIG = require('../config.js');
 //tests
 var colorize = require('./colorize.js');
 var loginUserCreation = require('./loginUserCreation.js');

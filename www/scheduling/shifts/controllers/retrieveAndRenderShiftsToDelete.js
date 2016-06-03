@@ -1,4 +1,4 @@
-var helpers = require(global.config.root_dir + '/www/scheduling/helpers')
+var helpers = require(global.CONFIG.root_dir + '/www/scheduling/helpers')
   , moment = require('moment')
   ;
 
@@ -35,7 +35,7 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
           user_id: userID,
           start: '-1 day',
           end: '+180 days',
-          location_id: [global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts]
+          location_id: [global.CONFIG.locationID.regular_shifts, global.CONFIG.locationID.makeup_and_extra_shifts]
         };
 
         whenIWorkAPI.get('shifts', query, function(response) {
@@ -64,10 +64,10 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
           // Filter makeup shifts from regular shifts
           for (var i = 0 ; i < shifts.length; i++) {
             targetShift = shifts[i];
-            if (targetShift.location_id === global.config.locationID.regular_shifts) {
+            if (targetShift.location_id === global.CONFIG.locationID.regular_shifts) {
                 regularShifts.push(targetShift);
             }
-            else if (targetShift.location_id === global.config.locationID.makeup_and_extra_shifts) {
+            else if (targetShift.location_id === global.CONFIG.locationID.makeup_and_extra_shifts) {
                 makeupShifts.push(targetShift);
             }
           }

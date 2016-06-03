@@ -4,7 +4,7 @@ var returnColorizedShift = require('../../../lib/ColorizeShift').go;
 var sampleData = require('../../../test/sampleData.js')
 var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 
-new CronJob(global.config.time_interval.open_shifts, function () {
+new CronJob(global.CONFIG.time_interval.open_shifts, function () {
     mergeOpenShifts();
 }, null, true);
 
@@ -15,7 +15,7 @@ function mergeOpenShifts(options) {
     include_allopen: true,
     start: '-1 day',
     end: '+7 days',
-    location_id: [ global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts ]
+    location_id: [ global.CONFIG.locationID.regular_shifts, global.CONFIG.locationID.makeup_and_extra_shifts ]
   };
 
   if (options === 'regShifts') {
@@ -35,13 +35,13 @@ function mergeOpenShifts(options) {
       //instead of var i in data.shifts, it should be var i in data.shifts[0].shifts,
       //due to how we're exporting the data from sampleData.js
       shift = data[i];
-      if (shift.is_open && shift.location_id == global.config.locationID.regular_shifts) {
+      if (shift.is_open && shift.location_id == global.CONFIG.locationID.regular_shifts) {
         if (typeof openRegShifts[shift.start_time] == 'undefined') {
           openRegShifts[shift.start_time] = [];
         }
         openRegShifts[shift.start_time].push(shift);
       }
-      else if (shift.is_open && shift.location_id == global.config.locationID.makeup_and_extra_shifts) {
+      else if (shift.is_open && shift.location_id == global.CONFIG.locationID.makeup_and_extra_shifts) {
         if (typeof openMakShifts[shift.start_time] == 'undefined') {
           openMakShifts[shift.start_time] = [];
         }
@@ -92,7 +92,7 @@ function makeBatchPayloadRequestsToMergeOpenShifts(arrayOfShiftsForSameTimeInt, 
     for (var j in arrayOfShiftsForSameTimeInt) {
       if (arrayOfShiftsForSameTimeInt[j].instances !== undefined && arrayOfShiftsForSameTimeInt[j].instances == max && !remainingShiftUpdated) {
         var update = {instances: instances};
-        var isMakeupShift = arrayOfShiftsForSameTimeInt[j].location_id === global.config.locationID.makeup_and_extra_shifts;
+        var isMakeupShift = arrayOfShiftsForSameTimeInt[j].location_id === global.CONFIG.locationID.makeup_and_extra_shifts;
         update = returnColorizedShift(update, arrayOfShiftsForSameTimeInt[j].start_time, isMakeupShift);
 
         var shiftUpdateRequest = {

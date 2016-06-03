@@ -1,7 +1,7 @@
 
-var helpers = require(global.config.root_dir + '/www/scheduling/helpers')
+var helpers = require(global.CONFIG.root_dir + '/www/scheduling/helpers')
   , moment = require('moment')
-  , returnColorizedShift = require(global.config.root_dir + '/lib/ColorizeShift').go
+  , returnColorizedShift = require(global.CONFIG.root_dir + '/lib/ColorizeShift').go
   ;
 
 var wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ'
@@ -36,7 +36,7 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
     start: '-1 day',
     end: '+50 years',
     unpublished: true,
-    location_id: [ global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts ]
+    location_id: [ global.CONFIG.locationID.regular_shifts, global.CONFIG.locationID.makeup_and_extra_shifts ]
   };
 
   whenIWorkAPI.get('shifts', query, function (data) {
@@ -47,7 +47,7 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
       ;
 
     data.shifts.forEach(function(shift) {
-        if (shift.location_id === global.config.locationID.regular_shifts) {
+        if (shift.location_id === global.CONFIG.locationID.regular_shifts) {
           try {
             parentShiftID = JSON.parse(shift.notes).parent_shift;
           }
@@ -59,7 +59,7 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
           if (parentShiftIDsOfRegularShiftsToBeDeleted.indexOf(parentShiftID) != -1) {
             // If the shift starts within a week, it's a shift that needs to be converted to an
             // open shift because the open shift job has already run and passed that day.
-            if (Math.abs(moment().diff(moment(shift.start_time, wiwDateFormat), 'days')) < global.config.time_interval.days_in_interval_to_repeat_open_shifts) {
+            if (Math.abs(moment().diff(moment(shift.start_time, wiwDateFormat), 'days')) < global.CONFIG.time_interval.days_in_interval_to_repeat_open_shifts) {
               var updatedShiftParams = {
                 user_id: 0,
                 notes: ''
@@ -89,7 +89,7 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
             }
           }
         }
-        else if (shift.location_id === global.config.locationID.makeup_and_extra_shifts && shiftIDsOfMakeupShiftsToBeDeleted.indexOf(shift.id) != -1) {
+        else if (shift.location_id === global.CONFIG.locationID.makeup_and_extra_shifts && shiftIDsOfMakeupShiftsToBeDeleted.indexOf(shift.id) != -1) {
           var params = {
             user_id : 0
           };

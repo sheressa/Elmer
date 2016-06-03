@@ -1,11 +1,11 @@
 var WhenIWork = require('wheniwork-unofficial');
-var api = new WhenIWork(keys.wheniwork.api_key, keys.wheniwork.username, keys.wheniwork.password);
+var api = new WhenIWork(global.KEYS.wheniwork.api_key, global.KEYS.wheniwork.username, global.KEYS.wheniwork.password);
 
 module.exports.go = function() {
 	for (var i = 0; i < 365; i+=7) {
 		var postData = {
 			"include_open": true,
-			"location_id": global.config.locationID.regular_shifts,
+			"location_id": global.CONFIG.locationID.regular_shifts,
 			"start": '+' + i + ' days',
 			"end": '+' + (i+7) + ' days',
 			"unpublished": true

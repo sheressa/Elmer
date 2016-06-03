@@ -6,7 +6,7 @@ var colorizeShift = require('../../lib/ColorizeShift').go;
 var WIWDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var shiftQueryDateFormat = 'YYYY-MM-DD HH:mm:ss';
 
-var cronJob = new CronJob(global.config.time_interval.open_shifts, function () {
+var cronJob = new CronJob(global.CONFIG.time_interval.open_shifts, function () {
   runJob();
 }, null, true);
 
@@ -41,7 +41,7 @@ function recurOpenShifts(now) {
         var newOpenShiftParams = {
           start_time: targetTime.clone().minute(0).second(0).add(1, 'week').format(WIWDateFormat),
           end_time: targetTime.clone().minute(0).second(0).add(2, 'hour').add(1, 'week').format(WIWDateFormat),
-          location_id: global.config.locationID.regular_shifts,
+          location_id: global.CONFIG.locationID.regular_shifts,
           instances: correctNumberOfShiftsToSet,
           published: true
         };
@@ -96,7 +96,7 @@ function findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTimeMomentObj, c
     start: targetTimeMomentObj.clone().add(1, 'week').format(shiftQueryDateFormat),
     end: targetTimeMomentObj.clone().add(1, 'minute').add(1, 'week').format(shiftQueryDateFormat),
     include_allopen: true,
-    location_id: global.config.locationID.regular_shifts
+    location_id: global.CONFIG.locationID.regular_shifts
   };
 
   WhenIWork.get('shifts', filter, function(data) {
@@ -126,7 +126,7 @@ function findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTimeMomentObj, c
 function returnMaxOpenShiftCountForTime(targetTimeMomentObj) {
   var dayStr = targetTimeMomentObj.format('ddd'); // a string like "Thu"
   var hourStr = targetTimeMomentObj.format('ha'); // a string like "4pm"
-  return global.config.numberOfCounselorsPerShift[dayStr][hourStr];
+  return global.CONFIG.numberOfCounselorsPerShift[dayStr][hourStr];
 }
 
 // Exporting modularized functions for testability
