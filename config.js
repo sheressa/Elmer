@@ -15,6 +15,31 @@ global.CONSOLE_WITH_TIME = function(){
 };
 
 var CONFIG = {};
+/**
+  Accepts a string returned from WIW formatted like this:
+  "Wed, 01 Jun 2016, 12:00:00 -500"
+  And converts it to a string with the time zone formatted like this:
+  "Wed, 01 Jun 2016, 12:00:00 -0500"
+
+  So that it's Moment() parseable. Otherwise, Moment() fails to parse it,
+  and it defaults to creating a date based on the current time. Not good.
+  Moment wants this format:
+  "ddd, DD MMM YYYY HH:mm:ss ZZ"
+**/
+global.MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE = function(timestring) {
+  // Wed, 01 Jun 2016 12:00:00
+  var firstPart = timestring.slice(0, 25).trim();
+  // -500
+  var timeZonePart =  timestring.slice(-5).trim();
+  if (moment(firstPart, 'ddd, DD MMM YYYY HH:mm:ss', true).format() === 'Invalid date') {
+    CONSOLE_WITH_TIME('[ERROR] invalid date being parsed with MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE');
+    return false;
+  }
+  if (timeZonePart.length === 4) {
+    timeZonePart = timeZonePart.substr(0, 1) + '0' + timeZonePart.substr(1);
+  }
+  return firstPart + ' ' + timeZonePart;
+};
 
 CONFIG.root_dir = __dirname;
 
@@ -38,6 +63,12 @@ CONFIG.time_interval = {
   // runs every five mins.
   time_off_requests_cron_job_string: '0 */5 * * * *',
 
+  // How often do we create new openshifts and merge duplicate openshifts
+  open_shifts: '0 0 */2 * * *', // every two hours
+
+  // How often do we notify users to take more shifts
+  take_more_shifts_cron_job_string: '30 5 18 * * *', // Every day at 6:05:30 pm
+
   // Each recurrence chain is 1 year long.
   max_shifts_in_chain: 52,
 
@@ -47,8 +78,8 @@ CONFIG.time_interval = {
   // Each shift is recurred for 5 years.
   years_to_recur_shift: 5,
 
-  // In looking for newly created shifts to recur, we search 2 weeks from the present.
-  weeks_to_search_for_recurred_shifts: 2,
+  // In looking for newly created shifts to recur, we search 3 weeks from the present.
+  weeks_to_search_for_recurred_shifts: 3,
 
   // While we recur shifts for much longer, they're only published (viewable to the employee) 4 weeks from present.
   weeks_to_publish_recurred_shifts: 4,
@@ -56,14 +87,8 @@ CONFIG.time_interval = {
   // Used to search for requests to be auto-approved.
   months_to_search_for_time_off_requests: 6,
 
-  // Used to search for users in order to notify them via email.
-  days_to_search_for_new_users_who_have_scheduled_their_first_shift: 7,
-
-  // How often do we create new openshifts and merge duplicate openshifts
-  open_shifts: '0 0 */2 * * *', // every two hours
-
-  // How often we repeat open shifts
-  days_in_interval_to_repeat_open_shifts: 7
+  // How many days in advance we show open shifts
+  days_of_open_shift_display: 15
 };
 
 CONFIG.numberOfCounselorsPerShift = {

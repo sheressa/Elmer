@@ -4,11 +4,19 @@ var moment = require('moment');
 var fs = require('fs');
 
 var mandrill = require('mandrill-api/mandrill');
+<<<<<<< HEAD
 var mandrill_client = new mandrill.Mandrill(global.KEYS.mandrill.api_key);
 
 var date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 
 new CronJob(global.CONFIG.time_interval.notify_first_shift_cron_job_string, function () {
+=======
+var mandrill_client = new mandrill.Mandrill(config.mandrill.api_key);
+
+var date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
+
+new CronJob(config.time_interval.notify_first_shift_cron_job_string, function () {
+>>>>>>> master
   checkNewShifts();
 }, null, true);
 
@@ -18,7 +26,11 @@ function checkNewShifts() {
   // TODO: Re-enable this.
   return;
 
+<<<<<<< HEAD
   WhenIWork.get('users', {location_id: global.CONFIG.locationID.new_graduate}, function (users) {
+=======
+  WhenIWork.get('users', {location_id: config.locationID.new_graduate}, function (users) {
+>>>>>>> master
     var now = moment();
     var template = fs.readFileSync('./email_templates/shift_welcome.txt', {encoding: 'utf-8'});
 
@@ -26,11 +38,19 @@ function checkNewShifts() {
       var u = users.users[i];
       var created = moment(u.created_at, date_format);
 
+<<<<<<< HEAD
       if (u.notes.indexOf('first_shift_notified') < 0 && now.diff(created, 'days') < global.CONFIG.days_to_search_for_new_users_who_have_scheduled_their_first_shift) {
         var q = {
           user_id: u.id,
           start: moment().format(date_format),
           end: moment().add(global.CONFIG.days_to_search_for_new_users_who_have_scheduled_their_first_shift, 'days').format(date_format)
+=======
+      if (u.notes.indexOf('first_shift_notified') < 0 && now.diff(created, 'days') < config.days_of_open_shift_display) {
+        var q = {
+          user_id: u.id,
+          start: moment().format(date_format),
+          end: moment().add(config.days_of_open_shift_display, 'days').format(date_format)
+>>>>>>> master
         };
 
         WhenIWork.get('shifts', q, function (shifts) {
@@ -41,7 +61,7 @@ function checkNewShifts() {
             var created = moment(s.created_at, date_format);
 
             if (now.diff(created, 'minutes') <= interval && !sent) {
-              var sent = true;
+              sent = true;
               var shift_start = moment(s.start_time, date_format).format('MMM D, YYYY HH:mm');
 
               var content = template.replace('%name', shifts.users[0].first_name).replace('%date', shift_start);
