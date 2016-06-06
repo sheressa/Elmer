@@ -4,7 +4,7 @@ var nock = require('nock')
 
 var assert = require('assert')
   , sampleData = require('./sampleData');
-var mergeOpenShiftsObject = require(global.config.root_dir + '/jobs/scheduling/controllers/mergeOpenShifts.js');
+var mergeOpenShiftsObject = require(global.config.root_dir + '/jobs/scheduling/mergeOpenShifts.js');
 var mergeOpenShifts = mergeOpenShiftsObject.mergeOpenShifts;
 
 describe('merge open shifts', function() {
