@@ -9,7 +9,7 @@ describe('Authentication with wheniwork-unofficial API', function() {
     var errorResponse = {error: 'Authentication unsuccessful'};
     // Mock response to /login endpoint
     base.post('/login').reply(501, errorResponse).log(console.log);
-    var api = new WhenIWork(global.KEYS.test.wheniwork.api_key, global.KEYS.test.wheniwork.username, global.KEYS.test.wheniwork.password, function(error) {
+    var api = new WhenIWork(KEYS.test.wheniwork.api_key, KEYS.test.wheniwork.username, KEYS.test.wheniwork.password, function(error) {
       if (error.error === errorResponse.error) {
         done();
       }
@@ -24,7 +24,7 @@ describe('Authentication with wheniwork-unofficial API', function() {
     };
     base.post('/login').reply(200, loginResponse).log(console.log);
     base.get('/shifts?').reply(200, {ninja: 'turtle'}).log(console.log);
-    var api = new WhenIWork(global.KEYS.test.wheniwork.api_key, global.KEYS.test.wheniwork.username, global.KEYS.test.wheniwork.password);
+    var api = new WhenIWork(KEYS.test.wheniwork.api_key, KEYS.test.wheniwork.username, KEYS.test.wheniwork.password);
     api.get('shifts', function (res) {
       assert.equal(res.ninja, 'turtle');
       done();

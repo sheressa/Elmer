@@ -1,28 +1,13 @@
-var helpers = require(config.root_dir + '/www/scheduling/helpers');
+var helpers = require(CONFIG.root_dir + '/www/scheduling/helpers');
 var moment = require('moment');
-var returnColorizedShift = require(config.root_dir + '/lib/ColorizeShift').go;
-
-<<<<<<< HEAD
-var helpers = require(global.CONFIG.root_dir + '/www/scheduling/helpers')
-  , moment = require('moment')
-  , returnColorizedShift = require(global.CONFIG.root_dir + '/lib/ColorizeShift').go
-  ;
-
-var wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ'
-  , chooseRegShiftToCancelPageStartDateFormat = 'dddd h:mm a' // Wednesday 4:00 p
-  , chooseRegShiftToCancelPageEndDateFormat = 'h:mm a z' // 6:00 pm ES
-  , chooseMakeupShiftToCancelPageStartDateFormat = 'dddd, MMM Do YYYY - h:mm a' // Wednesday, Mar 30th 2016 - 4:00 p
-  , chooseMakeupShiftToCancelPageEndDateFormat = 'h:mm a z' // 6:00 pm ES
-  , scheduleShiftsURL = '/scheduling/login?'
-  ;
-=======
+var returnColorizedShift = require(CONFIG.root_dir + '/lib/ColorizeShift').go;
 var wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var chooseRegShiftToCancelPageStartDateFormat = 'dddd h:mm a'; // Wednesday 4:00 p
 var chooseRegShiftToCancelPageEndDateFormat = 'h:mm a z'; // 6:00 pm ES
 var chooseMakeupShiftToCancelPageStartDateFormat = 'dddd, MMM Do YYYY - h:mm a'; // Wednesday, Mar 30th 2016 - 4:00 p
 var chooseMakeupShiftToCancelPageEndDateFormat = 'h:mm a z'; // 6:00 pm ES
 var scheduleShiftsURL = '/scheduling/login?';
->>>>>>> master
+
 
 function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
   if (!helpers.validate(req.query.email, req.query.token)) {
@@ -47,11 +32,7 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
     start: '-1 day',
     end: '+50 years',
     unpublished: true,
-<<<<<<< HEAD
-    location_id: [ global.CONFIG.locationID.regular_shifts, global.CONFIG.locationID.makeup_and_extra_shifts ]
-=======
-    location_id: [ config.locationID.regular_shifts, config.locationID.makeup_and_extra_shifts ]
->>>>>>> master
+    location_id: [ CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts ]
   };
 
   whenIWorkAPI.get('shifts', query, function (data) {
@@ -61,11 +42,7 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
     var deletedShiftInformation = {regShifts : {}, makShifts : {}};
 
     data.shifts.forEach(function(shift) {
-<<<<<<< HEAD
-        if (shift.location_id === global.CONFIG.locationID.regular_shifts) {
-=======
-        if (shift.location_id === config.locationID.regular_shifts) {
->>>>>>> master
+        if (shift.location_id === CONFIG.locationID.regular_shifts) {
           try {
             parentShiftID = JSON.parse(shift.notes).parent_shift;
           }
@@ -75,17 +52,11 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
           }
 
           if (parentShiftIDsOfRegularShiftsToBeDeleted.indexOf(parentShiftID) != -1) {
-<<<<<<< HEAD
-            // If the shift starts within a week, it's a shift that needs to be converted to an
-            // open shift because the open shift job has already run and passed that day.
-            if (Math.abs(moment().diff(moment(shift.start_time, wiwDateFormat), 'days')) < global.CONFIG.time_interval.days_in_interval_to_repeat_open_shifts) {
-=======
             /**
               If the shift starts within two weeks, it's a shift that needs to be converted to an
               open shift because the open shift job has already run and passed that day.
             **/
-            if (Math.abs(moment().diff(moment(shift.start_time, wiwDateFormat), 'days')) < config.time_interval.days_of_open_shift_display) {
->>>>>>> master
+            if (Math.abs(moment().diff(moment(shift.start_time, wiwDateFormat), 'days')) < CONFIG.time_interval.days_of_open_shift_display) {
               var updatedShiftParams = {
                 user_id: 0,
                 notes: ''
@@ -115,11 +86,7 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
             }
           }
         }
-<<<<<<< HEAD
-        else if (shift.location_id === global.CONFIG.locationID.makeup_and_extra_shifts && shiftIDsOfMakeupShiftsToBeDeleted.indexOf(shift.id) != -1) {
-=======
-        else if (shift.location_id === config.locationID.makeup_and_extra_shifts && shiftIDsOfMakeupShiftsToBeDeleted.indexOf(shift.id) != -1) {
->>>>>>> master
+        else if (shift.location_id === CONFIG.locationID.makeup_and_extra_shifts && shiftIDsOfMakeupShiftsToBeDeleted.indexOf(shift.id) != -1) {
           var params = {
             user_id : 0
           };

@@ -4,12 +4,12 @@ var nock = require('nock')
 
 var assert = require('assert')
   , sampleData = require('./sampleData');
-var mergeOpenShiftsObject = require(global.CONFIG.root_dir + '/jobs/scheduling/controllers/mergeOpenShifts.js');
+var mergeOpenShiftsObject = require(CONFIG.root_dir + '/jobs/scheduling/controllers/mergeOpenShifts.js');
 var mergeOpenShifts = mergeOpenShiftsObject.mergeOpenShifts;
 
 describe('merge open shifts', function() {
 
-  var api = new WhenIWork(global.KEYS.test.wheniwork.api_key, global.KEYS.test.wheniwork.username, global.KEYS.test.wheniwork.password);
+  var api = new WhenIWork(KEYS.test.wheniwork.api_key, KEYS.test.wheniwork.username, KEYS.test.wheniwork.password);
 
   describe('batch payload creation', function() {
 

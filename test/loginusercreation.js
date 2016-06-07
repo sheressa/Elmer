@@ -9,8 +9,8 @@ var newUser = {
             first_name: 'Testy',
             last_name: 'McTesterson',
             activated: true,
-            locations: [global.CONFIG.locationID.regular_shifts, global.CONFIG.locationID.makeup_and_extra_shifts],
-            password: global.KEYS.test.wheniwork.default_password,
+            locations: [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts],
+            password: KEYS.test.wheniwork.default_password,
             notes: JSON.stringify({ canonicalEmail: 'test@test.com' })
           };
 

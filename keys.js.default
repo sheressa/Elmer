@@ -23,6 +23,7 @@ KEYS.stathat = {
 };
 
 //development test keys
+KEYS.test = {};
 KEYS.test.secret_key = 'SuperSecretKey';
 
 KEYS.test.platform_secret_key = '';

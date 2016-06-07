@@ -3,7 +3,7 @@ var nock = require('nock'),
 
 var assert = require('assert')
   , sampleData = require('./sampleData')
-  var deleteShiftsAndRedirect = require(global.CONFIG.root_dir + '/www/scheduling/shifts/controllers/deleteShiftsAndRedirect')
+  var deleteShiftsAndRedirect = require(CONFIG.root_dir + '/www/scheduling/shifts/controllers/deleteShiftsAndRedirect')
   ;
 describe('delete shifts and redirect', function() {
   var base = nock('https://api.wheniwork.com/2');
@@ -24,7 +24,7 @@ describe('delete shifts and redirect', function() {
 
   });
 
-  var api = new WhenIWork(global.KEYS.test.wheniwork.api_key, global.KEYS.test.wheniwork.username, global.KEYS.test.wheniwork.password);
+  var api = new WhenIWork(KEYS.test.wheniwork.api_key, KEYS.test.wheniwork.username, KEYS.test.wheniwork.password);
 
   describe('shift deletion', function() {
 

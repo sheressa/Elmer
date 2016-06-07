@@ -3,10 +3,10 @@ var express   = require('express')
   , api = require('./initWhenIWorkAPI')
   , moment    = require('moment')
   , sha1      = require('sha1')
-  , stathat   = require(global.CONFIG.root_dir + '/lib/stathat')
-  , returnColorizedShift = require(global.CONFIG.root_dir + '/lib/ColorizeShift').go
+  , stathat   = require(CONFIG.root_dir + '/lib/stathat')
+  , returnColorizedShift = require(CONFIG.root_dir + '/lib/ColorizeShift').go
   , querystring = require('querystring')
-  , helpers = require(global.CONFIG.root_dir + '/www/scheduling/helpers')
+  , helpers = require(CONFIG.root_dir + '/www/scheduling/helpers')
   , shiftSchedulingRouter = require('./shifts')
   ;
 
@@ -56,7 +56,7 @@ router.get('/login', function (req, res) {
 
     // Try to log in as the user using our global password.
     // If we can't, immediately redirect to When I Work and don't try to do anything else.
-    var api2 = new WhenIWork(global.KEYS.wheniwork.api_key, user.email, global.KEYS.wheniwork.default_password, function (resp) {
+    var api2 = new WhenIWork(KEYS.wheniwork.api_key, user.email, KEYS.wheniwork.default_password, function (resp) {
         res.redirect('https://app.wheniwork.com/login/?redirect=myschedule');
     });
 
@@ -127,13 +127,13 @@ function checkUser(email, first, last, callback) {
       first_name: first,
       last_name: last,
       activated: true,
-      locations: [global.CONFIG.locationID.regular_shifts, global.CONFIG.locationID.makeup_and_extra_shifts],
-      password: global.KEYS.wheniwork.default_password,
+      locations: [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts],
+      password: KEYS.wheniwork.default_password,
       notes: JSON.stringify({ canonicalEmail: email })
     };
 
     api.post('users', newUser, function (data) {
-      var api2 = new WhenIWork(global.KEYS.wheniwork.api_key, altEmail, global.KEYS.wheniwork.default_password, function (data) {
+      var api2 = new WhenIWork(KEYS.wheniwork.api_key, altEmail, KEYS.wheniwork.default_password, function (data) {
       });
 
       var alert = {sms: false, email: false};

@@ -26,7 +26,7 @@ function retrieveShiftsAndOwnersWithinTimeInterval(req, res, whenIWorkAPI) {
     , token = req.query.token
     ;
 
-  if (req.query.token !== sha1(global.KEYS.platform_secret_key)) {
+  if (req.query.token !== sha1(KEYS.platform_secret_key)) {
     res.status(403).send('Access denied.');
     return;
   }
@@ -34,7 +34,7 @@ function retrieveShiftsAndOwnersWithinTimeInterval(req, res, whenIWorkAPI) {
   var query = {
     start: moment.unix(startTime).format(wiwDateFormat),
     end: moment.unix(endTime).format(wiwDateFormat),
-    location_id: [ global.CONFIG.locationID.regular_shifts, global.CONFIG.locationID.makeup_and_extra_shifts ]
+    location_id: [ CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts ]
   };
 
   whenIWorkAPI.get('shifts', query, function(response) {

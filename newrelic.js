@@ -1,4 +1,3 @@
-global.KEYS = require('./keys.js');
 /**
  * New Relic agent configuration.
  *
