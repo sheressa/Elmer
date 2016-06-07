@@ -1,5 +1,4 @@
 var helpers = require('../helpers.js');
-global.config = require('../../../config.js');
 
 function timezone(req) {
 

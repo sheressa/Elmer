@@ -3,7 +3,7 @@ var express = require('express')
   , api = require('../initWhenIWorkAPI')
   , moment = require('moment')
   , sha1 = require('sha1')
-  , helpers = require(global.config.root_dir + '/www/scheduling/helpers')
+  , helpers = require(CONFIG.root_dir + '/www/scheduling/helpers')
   ;
 
 var retrieveAndRenderShiftsToDelete = require('./controllers/retrieveAndRenderShiftsToDelete')

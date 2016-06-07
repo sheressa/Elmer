@@ -8,7 +8,7 @@ Elmer, like da glue, holds everything together. Currently, it extends the functi
 5. deleting shifts
 
 ## Running on local
-Run `npm install`. In your main directory, `touch config.js`. Copy-and-paste the contents of `config.js.default` into this new config file. Add requisite API keys.
+Run `npm install`. In your main directory, `touch keys.js`. Copy-and-paste the contents of `keys.js.default` into the new key file. Add requisite API keys.
 
 Check out `package.json`. Note that `npm start` runs the app when in production, which really runs two separate processes:
 

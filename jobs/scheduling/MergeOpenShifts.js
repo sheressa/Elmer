@@ -4,7 +4,7 @@ var returnColorizedShift = require('../../lib/ColorizeShift').go;
 
 var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 
-new CronJob(config.time_interval.open_shifts, function () {
+new CronJob(CONFIG.time_interval.open_shifts, function () {
     mergeOpenShifts();
 }, null, true);
 
@@ -14,8 +14,8 @@ function mergeOpenShifts() {
   var query = {
     include_allopen: true,
     start: '-1 day',
-    end: '+' + config.time_interval.days_of_open_shift_display + ' days',
-    location_id: [ config.locationID.regular_shifts, config.locationID.makeup_and_extra_shifts ]
+    end: '+' + CONFIG.time_interval.days_of_open_shift_display + ' days',
+    location_id: [ CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts ]
   };
 
   WhenIWork.get('shifts', query, function (data) {
@@ -31,13 +31,13 @@ function processDataAndMakeMergeAPICalls(data) {
 
   for (var i in data.shifts) {
     shift = data.shifts[i];
-    if (shift.is_open && shift.location_id == config.locationID.regular_shifts) {
+    if (shift.is_open && shift.location_id == CONFIG.locationID.regular_shifts) {
       if (typeof openRegShifts[shift.start_time] == 'undefined') {
         openRegShifts[shift.start_time] = [];
       }
       openRegShifts[shift.start_time].push(shift);
     }
-    else if (shift.is_open && shift.location_id == config.locationID.makeup_and_extra_shifts) {
+    else if (shift.is_open && shift.location_id == CONFIG.locationID.makeup_and_extra_shifts) {
       if (typeof openMakShifts[shift.start_time] == 'undefined') {
         openMakShifts[shift.start_time] = [];
       }
@@ -83,7 +83,7 @@ function makeBatchPayloadRequestsToMergeOpenShifts(arrayOfShiftsForSameTimeInt, 
     for (var j in arrayOfShiftsForSameTimeInt) {
       if (arrayOfShiftsForSameTimeInt[j].instances !== undefined && arrayOfShiftsForSameTimeInt[j].instances == max && !remainingShiftUpdated) {
         var update = {instances: instances};
-        var isMakeupShift = arrayOfShiftsForSameTimeInt[j].location_id === config.locationID.makeup_and_extra_shifts;
+        var isMakeupShift = arrayOfShiftsForSameTimeInt[j].location_id === CONFIG.locationID.makeup_and_extra_shifts;
         update = returnColorizedShift(update, arrayOfShiftsForSameTimeInt[j].start_time, isMakeupShift);
 
 

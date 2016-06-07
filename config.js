@@ -14,6 +14,7 @@ global.CONSOLE_WITH_TIME = function(){
   console.log('[' + new Date() + ']', message.slice(0, message.length-1));
 };
 
+var CONFIG = {};
 /**
   Accepts a string returned from WIW formatted like this:
   "Wed, 01 Jun 2016, 12:00:00 -500"
@@ -40,24 +41,9 @@ global.MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE = function(timestring) {
   return firstPart + ' ' + timeZonePart;
 };
 
-var config = {};
+CONFIG.root_dir = __dirname;
 
-config.root_dir = __dirname;
-
-config.secret_key = 'SuperSecretKey';
-
-config.platform_secret_key = '';
-
-config.new_relic_license_key = '';
-
-config.wheniwork = {
-  api_key: 'TODO',
-  username: 'TODO',
-  password: 'TODO',
-  default_password: 'TODO'
-};
-
-config.locationID = {
+CONFIG.locationID = {
   new_graduate: 959290,
   makeup_and_extra_shifts: 1003762,
   regular_shifts: 1003765,
@@ -67,7 +53,7 @@ config.locationID = {
   crisis_counselors_demo: 1004215
 };
 
-config.time_interval = {
+CONFIG.time_interval = {
   // runs every 1 min.
   recur_and_publish_shifts_cron_job_string: '0 */1 * * * *',
 
@@ -105,16 +91,7 @@ config.time_interval = {
   days_of_open_shift_display: 15
 };
 
-config.mandrill = {
-  api_key: 'TODO'
-};
-
-config.stathat = {
-  enabled: false,
-  email: 'todo'
-};
-
-config.numberOfCounselorsPerShift = {
+CONFIG.numberOfCounselorsPerShift = {
   'Sun' : { '12am': 64, '2am': 42, '4am': 22, '6am': 10, '8am': 14, '10am': 22, '12pm': 35, '2pm': 34, '4pm': 44, '6pm': 53, '8pm': 74, '10pm': 96},
 
   'Mon' : { '12am': 84, '2am': 32, '4am': 16, '6am': 11, '8am': 20, '10am': 37, '12pm': 42, '2pm': 45, '4pm': 48, '6pm': 59, '8pm': 96, '10pm': 103},
@@ -130,7 +107,7 @@ config.numberOfCounselorsPerShift = {
   'Sat' : { '12am': 58, '2am': 37, '4am': 17, '6am': 8, '8am': 12, '10am': 25, '12pm': 29, '2pm': 33, '4pm': 42, '6pm': 44, '8pm': 61, '10pm': 80}
 };
 
-config.shiftColors = {
+CONFIG.shiftColors = {
   'Sun': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'red', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'red' },
 
   'Mon': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'red', '4pm': 'red', '6pm': 'red', '8pm': 'red', '10pm': 'red' },
@@ -146,5 +123,4 @@ config.shiftColors = {
   'Sat': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'red', '6pm': 'red', '8pm': 'red', '10pm': 'red' }
 };
 
-
-module.exports = config;
+module.exports = CONFIG;

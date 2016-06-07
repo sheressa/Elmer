@@ -1,7 +1,8 @@
-global.config = require('../config');
+global.CONFIG = require('../config');
+global.KEYS = require('../keys.js');
 
 if (process.env.NODE_ENV !== 'production') {
-  global.config.locationID.regular_shifts = global.config.locationID.test;
+  CONFIG.locationID.regular_shifts = CONFIG.locationID.test;
 }
 else {
   require('newrelic');

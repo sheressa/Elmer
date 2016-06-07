@@ -2,12 +2,12 @@ var CronJob = require('cron').CronJob
   , WhenIWork = require('./base')
   , moment = require('moment-timezone')
   , fs = require('fs')
-  , returnColorizedShift = require(global.config.root_dir + '/lib/ColorizeShift').go
+  , returnColorizedShift = require(CONFIG.root_dir + '/lib/ColorizeShift').go
   ;
 
 var date_format = 'YYYY-MM-DD HH:mm:ss';
 
-new CronJob(global.config.time_interval.time_off_requests_cron_job_string, function () {
+new CronJob(CONFIG.time_interval.time_off_requests_cron_job_string, function () {
     handleTimeOffRequests();
 }, null, true);
 
@@ -17,7 +17,7 @@ function handleTimeOffRequests() {
   //Using moment.js to format time as WIW expects
   var startDateToRetrieveRequests = moment().format(date_format);
   var endDateToRetrieveRequests = moment()
-    .add(global.config.time_interval.months_to_search_for_time_off_requests, 'months')
+    .add(CONFIG.time_interval.months_to_search_for_time_off_requests, 'months')
     .format(date_format);
   var timeOffSearchParams = {
     "start": startDateToRetrieveRequests,
@@ -39,7 +39,7 @@ function handleTimeOffRequests() {
         "start": request.start_time,
         "end": request.end_time,
         "user_id": request.user_id,
-        "location_id": [global.config.locationID.regular_shifts, global.config.locationID.makeup_and_extra_shifts],
+        "location_id": [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts],
         "unpublished": true
       };
 
@@ -75,7 +75,7 @@ function handleTimeOffRequests() {
               "end_time": shift.end_time,
               "notes": "SHIFT COVERAGE",
               "published": true,
-              "location_id": global.config.locationID
+              "location_id": CONFIG.locationID
                                    .makeup_and_extra_shifts,
             };
 

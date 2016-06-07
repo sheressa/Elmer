@@ -4,10 +4,10 @@ var nock = require('nock')
 
 var assert = require('assert')
   , sampleData = require('./sampleData')
-  var retrieveAndRenderShiftsToDelete = require(global.config.root_dir + '/www/scheduling/shifts/controllers/retrieveAndRenderShiftsToDelete');
+  var retrieveAndRenderShiftsToDelete = require(CONFIG.root_dir + '/www/scheduling/shifts/controllers/retrieveAndRenderShiftsToDelete');
 
 describe('retrieveAndRenderShiftsToDelete should retrieve shifts and render them when user navigates to shift deletion page', function() {
-  var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
+  var api = new WhenIWork(KEYS.test.wheniwork.api_key, KEYS.test.wheniwork.username, KEYS.test.wheniwork.password);
 
   // Set up the API mock to send back data that we can pass in to our test.
   beforeEach(function() {

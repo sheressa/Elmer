@@ -2,11 +2,11 @@ var WhenIWork = require('wheniwork-unofficial');
 
 var assert = require('assert')
   , sampleData = require('./sampleData');
-var mergeOpenShiftsExportObject = require(global.config.root_dir + '/jobs/scheduling/MergeOpenShifts.js');
+var mergeOpenShiftsExportObject = require(CONFIG.root_dir + '/jobs/scheduling/MergeOpenShifts.js');
 
 describe('merge open shifts', function() {
 
-  var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
+  var api = new WhenIWork(KEYS.test.wheniwork.api_key, KEYS.test.wheniwork.username, KEYS.test.wheniwork.password);
 
   describe('batch payload creation', function() {
 
@@ -47,8 +47,5 @@ describe('merge open shifts', function() {
       }
 
     });
-
   });
-
 });
-

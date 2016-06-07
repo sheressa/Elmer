@@ -8,8 +8,8 @@ describe('Authentication with wheniwork-unofficial API', function() {
   it('should return an error if WhenIWork doesn\'t respond with auth token', function(done) {
     var errorResponse = {error: 'Authentication unsuccessful'};
     // Mock response to /login endpoint
-    base.post('/login').reply(501, errorResponse);
-    var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password, function(error) {
+    base.post('/login').reply(501, errorResponse).log(console.log);
+    var api = new WhenIWork(KEYS.test.wheniwork.api_key, KEYS.test.wheniwork.username, KEYS.test.wheniwork.password, function(error) {
       if (error.error === errorResponse.error) {
         done();
       }
@@ -22,9 +22,9 @@ describe('Authentication with wheniwork-unofficial API', function() {
         token: 'FAKETOKEN'
       }
     };
-    base.post('/login').reply(200, loginResponse);
-    base.get('/shifts?').reply(200, {ninja: 'turtle'});
-    var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
+    base.post('/login').reply(200, loginResponse).log(console.log);
+    base.get('/shifts?').reply(200, {ninja: 'turtle'}).log(console.log);
+    var api = new WhenIWork(KEYS.test.wheniwork.api_key, KEYS.test.wheniwork.username, KEYS.test.wheniwork.password);
     api.get('shifts', function (res) {
       assert.equal(res.ninja, 'turtle');
       done();

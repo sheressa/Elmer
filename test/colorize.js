@@ -3,7 +3,6 @@ var colorize = require('../lib/ColorizeShift').go
   , moment = require('moment')
   , assert = require('assert')
   ;
-
 var red = require('../lib/ColorizeShift').red
   , darkGray = require('../lib/ColorizeShift').darkGray
   , lightGray = require('../lib/ColorizeShift').lightGray
@@ -22,7 +21,7 @@ describe('ColorizeShift.go', function () {
       var shift = {};
       shift = colorize(shift, time, isOneTime);
       assert.equal(shift.color, lightGray);
-    })
+    });
 
     it('should not make a weekly 10am shift light gray', function() {
       var time = moment(unixTimeForThursday10am).format(dateFormat);
@@ -31,7 +30,7 @@ describe('ColorizeShift.go', function () {
       shift = colorize(shift, time, isOneTime);
       assert.notEqual(shift.color, lightGray);
 
-    })
+    });
   });
 
   describe('colorize(obj, timestamp)', function () {
@@ -41,7 +40,7 @@ describe('ColorizeShift.go', function () {
       var shift = {};
       shift = colorize(shift, time, isOneTime);
       assert.equal(shift.color, red);
-    })
+    });
 
     it('should make a weekly 10am shift dark gray', function() {
       var time = moment(unixTimeForThursday10am).format(dateFormat);
@@ -49,14 +48,14 @@ describe('ColorizeShift.go', function () {
       var shift = {};
       shift = colorize(shift, time, isOneTime);
       assert.equal(shift.color, darkGray);
-    })
+    });
 
     it('doesn\'t require a third isMakeup param to run', function() {
       var time = moment(unixTimeForThursday10am).format(dateFormat);
       var shift = {};
       shift = colorize(shift, time);
       assert.equal(shift.color, darkGray);
-    })
+    });
   });
 
   describe('colorize(obj)', function () {
@@ -65,14 +64,14 @@ describe('ColorizeShift.go', function () {
       shift.start_time = moment(unixTimeForThursday4am).format(dateFormat);
       shift = colorize(shift);
       assert.equal(shift.color, red);
-    })
+    });
 
     it('should make a weekly 10am shift dark gray', function() {
       var shift = {};
       shift.start_time = moment(unixTimeForThursday10am).format(dateFormat);
       shift = colorize(shift);
       assert.equal(shift.color, darkGray);
-    })
+    });
   });
 });
 
