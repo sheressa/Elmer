@@ -1,11 +1,8 @@
-var nock = require('nock')
-  , WhenIWork = require('wheniwork-unofficial')
-  ;
+var WhenIWork = require('wheniwork-unofficial');
 
 var assert = require('assert')
   , sampleData = require('./sampleData');
-var mergeOpenShiftsObject = require(CONFIG.root_dir + '/jobs/scheduling/controllers/mergeOpenShifts.js');
-var mergeOpenShifts = mergeOpenShiftsObject.mergeOpenShifts;
+var mergeOpenShiftsExportObject = require(CONFIG.root_dir + '/jobs/scheduling/MergeOpenShifts.js');
 
 describe('merge open shifts', function() {
 
@@ -13,25 +10,41 @@ describe('merge open shifts', function() {
 
   describe('batch payload creation', function() {
 
-    it('adds open regular shifts to batch', function (done) {
-          var apiMocker = nock('https://api.wheniwork.com/2')
-          .post('/batch')
-          .query(true)
-          .reply(203, {});
-      var result = mergeOpenShifts('regShifts');
-      assert.equal(result.length, 2);
-      done();
+    it('adds open regular and makeup shifts to batch', function (done) {
+      var result = mergeOpenShiftsExportObject.processDataAndMakeMergeAPICalls(sampleData.shifts);
+      var putRequests = 0;
+      var deleteRequests = 0;
+
+      result.forEach(function(shift) {
+        if (shift.method === 'PUT' && shift.params.instances === 2) {
+          putRequests ++;
+        } else if (shift.method === 'delete') {
+          deleteRequests ++;
+        }
+      });
+
+      if (putRequests === 2 && deleteRequests === 2) {
+        done();
+      }
 
     });
 
-    it('adds open makeup shifts to batch', function (done) {
-          var apiMocker2 = nock('https://api.wheniwork.com/2')
-          .post('/batch')
-          .query(true)
-          .reply(203, {});
-      var result = mergeOpenShifts('makShifts');
-      assert.equal(result.length, 2);
-      done();
+    it('does not merge shifts at different times', function (done) {
+      var result = mergeOpenShiftsExportObject.processDataAndMakeMergeAPICalls(sampleData.separateShifts);
+      var putRequests = 0;
+      var deleteRequests = 0;
+
+      result.forEach(function(shift) {
+        if (shift.method === 'PUT' && shift.params.instances === 2) {
+          putRequests ++;
+        } else if (shift.method === 'delete') {
+          deleteRequests ++;
+        }
+      });
+
+      if (putRequests === 0 && deleteRequests === 0) {
+        done();
+      }
 
     });
   });

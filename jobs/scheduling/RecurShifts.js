@@ -209,8 +209,6 @@ function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
   var prevWeekShiftStartTime =  moment(shift.start_time, wiw_date_format, true).add(-1, 'weeks').format(wiw_date_format);
   var nextWeekShiftStartTime = moment(shift.start_time, wiw_date_format, true).add(1, 'weeks').format(wiw_date_format);
   var nextWeekShiftEndTime = moment(shift.start_time, wiw_date_format, true).add(1, 'weeks').add(2, 'hours').format(wiw_date_format);
-  var prevWeekOpenShiftDecremented = false;
-  var nextWeekOpenShiftDecremented = false;
 
   var openShiftQuery = {
     include_open: true,
@@ -223,7 +221,7 @@ function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
   WhenIWork.get('shifts', openShiftQuery, function(response) {
     var batchPayload = [];
     var openShifts = response.shifts;
-    if (typeof response !== 'object') {
+    if (typeof openShifts !== 'object' || openShifts.length === 0) {
       CONSOLE_WITH_TIME('NO OPEN SHIFTS RETURNED TO DECREMENT.');
       CONSOLE_WITH_TIME('===================');
       CONSOLE_WITH_TIME('RESPONSE: ' + response);
@@ -233,10 +231,15 @@ function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
 
     openShifts.forEach(function(shift) {
       /**
+        Converting every shift's start_time, since prod returns shifts in UTC -700 and our moment is configured for UTC -400. (Testing string equality failed previously.)
+      **/
+      shift.start_time = MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE(shift.start_time);
+      var convertedShiftStartTime = moment(shift.start_time, wiw_date_format, true).format(wiw_date_format);
+      /**
         If the shift is indeed an open shift, and it's the shift that occurs exactly one week
         or after the shift that was just taken, we decrement its instances by one.
       **/
-      if (shift.is_open && (shift.start_time === prevWeekShiftStartTime || shift.start_time === nextWeekShiftStartTime)) {
+      if (shift.is_open && (convertedShiftStartTime === prevWeekShiftStartTime || convertedShiftStartTime === nextWeekShiftStartTime)) {
         var instances = parseInt(shift.instances);
         if (instances === 1) {
           var shiftDeleteRequest = {

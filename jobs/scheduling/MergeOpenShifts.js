@@ -15,43 +15,51 @@ function mergeOpenShifts() {
     include_allopen: true,
     start: '-1 day',
     end: '+' + CONFIG.time_interval.days_of_open_shift_display + ' days',
-    location_id: [ CONFIG.locationID.regular_shifts, config.locationID.makeup_and_extra_shifts ]
+    location_id: [ CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts ]
   };
 
   WhenIWork.get('shifts', query, function (data) {
-    var openRegShifts = {};
-    var openMakShifts = {};
-    var shift;
-    var batchPayload = [];
+    processDataAndMakeMergeAPICalls(data);
+  });
+}
 
-    for (var i in data.shifts) {
-      shift = data.shifts[i];
-      if (shift.is_open && shift.location_id == CONFIG.locationID.regular_shifts) {
-        if (typeof openRegShifts[shift.start_time] == 'undefined') {
-          openRegShifts[shift.start_time] = [];
-        }
-        openRegShifts[shift.start_time].push(shift);
+function processDataAndMakeMergeAPICalls(data) {
+  var openRegShifts = {};
+  var openMakShifts = {};
+  var shift;
+  var batchPayload = [];
+
+  for (var i in data.shifts) {
+    shift = data.shifts[i];
+    if (shift.is_open && shift.location_id == CONFIG.locationID.regular_shifts) {
+      if (typeof openRegShifts[shift.start_time] == 'undefined') {
+        openRegShifts[shift.start_time] = [];
       }
-      else if (shift.is_open && shift.location_id == CONFIG.locationID.makeup_and_extra_shifts) {
-        if (typeof openMakShifts[shift.start_time] == 'undefined') {
-          openMakShifts[shift.start_time] = [];
-        }
-        openMakShifts[shift.start_time].push(shift);
+      openRegShifts[shift.start_time].push(shift);
+    }
+    else if (shift.is_open && shift.location_id == CONFIG.locationID.makeup_and_extra_shifts) {
+      if (typeof openMakShifts[shift.start_time] == 'undefined') {
+        openMakShifts[shift.start_time] = [];
       }
+      openMakShifts[shift.start_time].push(shift);
     }
+  }
 
-    for (var key in openRegShifts) {
-      batchPayload = makeBatchPayloadRequestsToMergeOpenShifts(openRegShifts[key], batchPayload);
-    }
+  for (var key in openRegShifts) {
+    batchPayload = makeBatchPayloadRequestsToMergeOpenShifts(openRegShifts[key], batchPayload);
+  }
 
-    for (var key in openMakShifts) {
-      batchPayload = makeBatchPayloadRequestsToMergeOpenShifts(openMakShifts[key], batchPayload);
-    }
-
+  for (var key in openMakShifts) {
+    batchPayload = makeBatchPayloadRequestsToMergeOpenShifts(openMakShifts[key], batchPayload);
+  }
+  if (process.env.NODE_ENV === 'test') {
+    return batchPayload;
+  }
+  else {
     WhenIWork.post('batch', batchPayload, function(response) {
       CONSOLE_WITH_TIME('Response from merge shift batch payload request: ', batchPayload);
-    });
-  });
+    });      
+  }
 }
 
 function makeBatchPayloadRequestsToMergeOpenShifts(arrayOfShiftsForSameTimeInt, batchPayload) {
@@ -100,4 +108,7 @@ function makeBatchPayloadRequestsToMergeOpenShifts(arrayOfShiftsForSameTimeInt, 
   return batchPayload;
 }
 
-module.exports = mergeOpenShifts;
+module.exports = { 
+  mergeOpenShifts: mergeOpenShifts, 
+  processDataAndMakeMergeAPICalls: processDataAndMakeMergeAPICalls
+};

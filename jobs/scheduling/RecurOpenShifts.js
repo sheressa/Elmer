@@ -29,52 +29,6 @@ function recurOpenShifts(now) {
     // Because we're making async calls in a loop, we pass targetTime through callback
     // so that it's defined locally for each scope.
     var targetTime = now.clone().add(i * -2, 'hours');
-<<<<<<< HEAD
-    findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTime, function(extraOpenShiftsToDelete, correctNumberOfShiftsToSet, targetTime) {
-      var batchPayload = [];
-
-      // If we don't need to add any new open shifts, we return.
-      if (correctNumberOfShiftsToSet === 0) {
-        CONSOLE_WITH_TIME('No open shifts need to be added for time: ', targetTime.toString());
-        return;
-      }
-      // If we need to add open shifts
-      else if (correctNumberOfShiftsToSet > 0) {
-        var newOpenShiftParams = {
-          start_time: targetTime.clone().minute(0).second(0).add(1, 'week').format(WIWDateFormat),
-          end_time: targetTime.clone().minute(0).second(0).add(2, 'hour').add(1, 'week').format(WIWDateFormat),
-          location_id: CONFIG.locationID.regular_shifts,
-          instances: correctNumberOfShiftsToSet,
-          published: true
-        };
-        newOpenShiftParams = colorizeShift(newOpenShiftParams);
-
-        var newOpenShiftRequest = {
-          method: "post",
-          url: "/2/shifts",
-          params: newOpenShiftParams
-        };
-        batchPayload.push(newOpenShiftRequest);
-      }
-      /**
-        Batch delete the invalid open shifts in two cases: 1) correctNumberOfShiftsToSet > 0; we need to add open shifts
-        and 2) correctNumberOfShiftsToSet < 0; the number of occupied shifts is currently greater than the total number
-        of open shifts for that block. In BOTH cases, we need to delete all old open shifts.
-      **/
-
-      extraOpenShiftsToDelete.forEach(function(shiftID) {
-        var shiftDeleteRequest = {
-            method: "delete",
-            url: "/2/shifts/" + shiftID,
-            params: {}
-        };
-        batchPayload.push(shiftDeleteRequest);
-      });
-
-      if (correctNumberOfShiftsToSet < 0) { correctNumberOfShiftsToSet = 'no'; }
-      CONSOLE_WITH_TIME('Adding ', correctNumberOfShiftsToSet, ' open shifts to the time: ', targetTime.toString(), '. Deleting incorrect count of open shifts--their shift IDs: ', extraOpenShiftsToDelete);
-      WhenIWork.post('batch', batchPayload);
-    })
     findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTime, 1, incrementFutureOpenShiftsUpOrDown);
     findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTime, 2, incrementFutureOpenShiftsUpOrDown);
   }

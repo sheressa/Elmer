@@ -1,3 +1,6 @@
+global.CONFIG = require('./config');
+global.KEYS = require('./keys');
+
 var args = process.argv.slice(2);
 
 try {

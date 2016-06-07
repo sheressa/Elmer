@@ -4,7 +4,7 @@ var moment = require('moment');
 var fs = require('fs');
 
 var mandrill = require('mandrill-api/mandrill');
-var mandrill_client = new mandrill.Mandrill(CONFIG.mandrill.api_key);
+var mandrill_client = new mandrill.Mandrill(KEYS.mandrill.api_key);
 var date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 
 new CronJob(CONFIG.time_interval.notify_first_shift_cron_job_string, function () {
