@@ -84,7 +84,6 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
               return;
             }
           });
-
           // Removes duplicate reg shifts--those that are in the same recurrence chain.
           var i = regularShifts.length;
           while (i--) {
@@ -100,14 +99,19 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
               }
             );
           }
-
           // Sorting regularShifts by when they occur on the weekly calendar
           regularShifts.sort(function(shiftA, shiftB) {
             return helpers.sortByDayAscAndTimeAsc(moment(shiftA.start_time, wiwDateFormat), moment(shiftB.start_time, wiwDateFormat));
           });
 
-          // Formatting regularShift time display to be more user-readable
+          // Formatting regularShift shift.notes and time display to be more user-readable
           regularShifts.forEach(function(shift) {
+            try {
+            shift.parentShiftID = JSON.parse(shift.notes).parent_shift;
+            }
+            catch (e) {
+              CONSOLE_WITH_TIME('Error parsing JSON for shift: ', shift.id, ' error: ', e);
+            }
             shift.start_time = moment(shift.start_time, wiwDateFormat).tz('America/New_York').format(chooseRegShiftToCancelPageStartDateFormat);
             shift.end_time = moment(shift.end_time, wiwDateFormat).tz('America/New_York').format(chooseRegShiftToCancelPageEndDateFormat);
           });
@@ -130,7 +134,6 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
             token: req.query.token,
             userName: userName
           };
-
           // emitter.emit('chooseShiftsToDeleteJadeTemplateData', templateData);
           // Then, display them in the jade template.
           res.render('scheduling/chooseShiftToCancel', templateData);
