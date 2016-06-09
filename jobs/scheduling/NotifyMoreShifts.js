@@ -90,21 +90,31 @@ function twoShiftNotification(data, only_two, one_shift_post) {
         Fuck. That.
       **/
 
-      if (only_two.indexOf(''+data.users[i].id) < 0) {
+      if (only_two.indexOf('' + data.users[i].id) < 0) {
         continue;
       }
 
       user_data = data.users[i].notes;
-      if (user_data.indexOf('two_shift_notification') < 0) {
-        user_data = JSON.parse(user_data);
-        user_data.two_shift_notification = true;
 
+      if (typeof user_data !== 'object') {
+        user_data = {};
+      }
+      else {
+        try {
+          user_data = JSON.parse(user_data);
+        }
+        catch(e) {
+          user_data = {};
+          CONSOLE_WITH_TIME("Error parsing JSON in notifyMoreShifts: ", e);
+        }
+      } 
+      if (user_data['two_shift_notification'] === undefined) {
+        user_data.two_shift_notification = true;
         update_queue.push({
           method: 'PUT',
           url: '/2/users/'+data.users[i].id,
           params: {notes: JSON.stringify(user_data)}
         });
-
         only_two_notify.push(data.users[i].id);
       }
     }
