@@ -1,49 +1,34 @@
 var moment = require('moment-timezone');
 moment.tz.setDefault("America/New_York");
 
-global.CONSOLE_WITH_TIME = function(){
+global.consoleWithTime = function(){
   var message = '';
 
   for(var key in arguments){
     if(typeof arguments[key]==='object'){
-      message+=JSON.stringify(arguments[key])+ " ";
+      message+=JSON.stringify(arguments[key])+ " "
     } else{
       message+=arguments[key]+ " ";
     }
-  }
-  console.log('[' + new Date() + ']', message.slice(0, message.length-1));
+  };
+  return "Date: [" + new Date() + "] "+message.slice(0, message.length);
 };
 
-var CONFIG = {};
-/**
-  Accepts a string returned from WIW formatted like this:
-  "Wed, 01 Jun 2016, 12:00:00 -500"
-  And converts it to a string with the time zone formatted like this:
-  "Wed, 01 Jun 2016, 12:00:00 -0500"
+var config = {};
 
-  So that it's Moment() parseable. Otherwise, Moment() fails to parse it,
-  and it defaults to creating a date based on the current time. Not good.
-  Moment wants this format:
-  "ddd, DD MMM YYYY HH:mm:ss ZZ"
-**/
-global.MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE = function(timestring) {
-  // Wed, 01 Jun 2016 12:00:00
-  var firstPart = timestring.slice(0, 25).trim();
-  // -500
-  var timeZonePart =  timestring.slice(-5).trim();
-  if (moment(firstPart, 'ddd, DD MMM YYYY HH:mm:ss', true).format() === 'Invalid date') {
-    CONSOLE_WITH_TIME('[ERROR] invalid date being parsed with MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE');
-    return false;
-  }
-  if (timeZonePart.length === 4) {
-    timeZonePart = timeZonePart.substr(0, 1) + '0' + timeZonePart.substr(1);
-  }
-  return firstPart + ' ' + timeZonePart;
+config.root_dir = __dirname;
+
+config.platformUserCreationURL = 'https://app.crisistextline.org/login/create';
+
+config.slackAccountURL = 'https://hooks.slack.com/services/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';
+
+config.canvas = {
+  accountToken: '6SgKnCawGLBm6XwxMrZitpWrMVVP63aGDZmSdSj9Q934MKsgqx9DPv3JSZ8B2YtJ',
+  accountID: '78310000000000001',
+  coursesWeDoNotParseForGraduatedUsers: ["23", "16", "18", "21", "22", "19", "1", "39", "17", "2"]
 };
 
-CONFIG.root_dir = __dirname;
-
-CONFIG.locationID = {
+config.locationID = {
   new_graduate: 959290,
   makeup_and_extra_shifts: 1003762,
   regular_shifts: 1003765,
@@ -53,7 +38,7 @@ CONFIG.locationID = {
   crisis_counselors_demo: 1004215
 };
 
-CONFIG.time_interval = {
+config.time_interval = {
   // runs every 1 min.
   recur_and_publish_shifts_cron_job_string: '0 */1 * * * *',
 
@@ -61,13 +46,7 @@ CONFIG.time_interval = {
   notify_first_shift_cron_job_string: '0 */20 * * * *',
 
   // runs every five mins.
-  time_off_requests_cron_job_string: '0 */5 * * * *',
-
-  // How often do we create new openshifts and merge duplicate openshifts
-  open_shifts: '0 0 */2 * * *', // every two hours
-
-  // How often do we notify users to take more shifts
-  take_more_shifts_cron_job_string: '30 5 18 * * *', // Every day at 6:05:30 pm
+   time_off_requests_cron_job_string: '0 */5 * * * *',
 
   // Each recurrence chain is 1 year long.
   max_shifts_in_chain: 52,
@@ -78,8 +57,8 @@ CONFIG.time_interval = {
   // Each shift is recurred for 5 years.
   years_to_recur_shift: 5,
 
-  // In looking for newly created shifts to recur, we search 3 weeks from the present.
-  weeks_to_search_for_recurred_shifts: 3,
+  // In looking for newly created shifts to recur, we search 2 weeks from the present.
+  weeks_to_search_for_recurred_shifts: 2,
 
   // While we recur shifts for much longer, they're only published (viewable to the employee) 4 weeks from present.
   weeks_to_publish_recurred_shifts: 4,
@@ -87,11 +66,26 @@ CONFIG.time_interval = {
   // Used to search for requests to be auto-approved.
   months_to_search_for_time_off_requests: 6,
 
-  // How many days in advance we show open shifts
-  days_of_open_shift_display: 15
+  // Used to search for users in order to notify them via email.
+  days_to_search_for_new_users_who_have_scheduled_their_first_shift: 7,
+
+  // How often do we create new openshifts and merge duplicate openshifts
+  open_shifts: '0 0 */1 * * *', // every hour
+
+  // How often we repeat open shifts
+  days_in_interval_to_repeat_open_shifts: 7
 };
 
-CONFIG.numberOfCounselorsPerShift = {
+config.mandrill = {
+  api_key: '6TB0S_WyxFBrvLHT8Vawuw'
+};
+
+config.stathat = {
+  enabled: false,
+  email: 'tong@crisistextline.org'
+};
+
+config.numberOfCounselorsPerShift = {
   'Sun' : { '12am': 64, '2am': 42, '4am': 22, '6am': 10, '8am': 14, '10am': 22, '12pm': 35, '2pm': 34, '4pm': 44, '6pm': 53, '8pm': 74, '10pm': 96},
 
   'Mon' : { '12am': 84, '2am': 32, '4am': 16, '6am': 11, '8am': 20, '10am': 37, '12pm': 42, '2pm': 45, '4pm': 48, '6pm': 59, '8pm': 96, '10pm': 103},
@@ -107,7 +101,7 @@ CONFIG.numberOfCounselorsPerShift = {
   'Sat' : { '12am': 58, '2am': 37, '4am': 17, '6am': 8, '8am': 12, '10am': 25, '12pm': 29, '2pm': 33, '4pm': 42, '6pm': 44, '8pm': 61, '10pm': 80}
 };
 
-CONFIG.shiftColors = {
+config.shiftColors = {
   'Sun': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'red', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'red' },
 
   'Mon': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'red', '4pm': 'red', '6pm': 'red', '8pm': 'red', '10pm': 'red' },
@@ -123,4 +117,4 @@ CONFIG.shiftColors = {
   'Sat': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'red', '6pm': 'red', '8pm': 'red', '10pm': 'red' }
 };
 
-module.exports = CONFIG;
+module.exports = config;
