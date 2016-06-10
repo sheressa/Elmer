@@ -8,11 +8,22 @@ var shiftsResponse = {
 };
 
 describe('Time Off Requests', function() {
+  describe('Creation of Time Off Search Params', function() {
+    it('should create start and end times with the correct format for searching', function () {
+
+      function isValidDate(dateString) {
+        var regEx = /^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}$/;
+        return regEx.test(dateString);
+      }
+
+      var timeOffSearchParams = timeOffRequests.createTimeOffSearchParams();
+      assert.equal(isValidDate(timeOffSearchParams.start), true);
+      assert.equal(isValidDate(timeOffSearchParams.end), true);
+    });
+  });
 
   describe('Filter for pending requests only', function() {
-
     it('should filter an array for requests with status code 0', function () {
-
       var correctArray = [
         {
           "id": 14790451,
@@ -45,19 +56,28 @@ describe('Time Off Requests', function() {
           "canceled_by": 0
         },
       ];
-
       assert.deepEqual(timeOffRequests.filterRequestsAndHandleShifts(requests), correctArray);
-
     });
+  });
 
+  describe('Creation of Shift Search Params', function() {
+    it('should create correct parameters for get request from time off request ', function () {
+      var expectedParams = { 
+        start: 'Mon, 06 Jun 2016 00:00:00 -0400',
+        end: 'Fri, 10 Jun 2016 23:59:59 -0400',
+        user_id: 5660404,
+        location_id: [ 1003765, 1003762 ],
+        unpublished: true 
+      };
+
+      var shiftSearchParams = timeOffRequests.createShiftSearchParams(requests[1]);
+      assert.deepEqual(shiftSearchParams, expectedParams);
+    });
   });
 
   describe('creation of correct batchPayload', function() {
-
     var requestId = 123456;
-
     var BatchPayload = timeOffRequests.createBatchPayload (shiftsResponse, requestId);
-
     var timeOffApprovalRequest = {
       "method": "put",
       "url": "/2/requests/123456",
@@ -67,11 +87,9 @@ describe('Time Off Requests', function() {
     };
 
     // Split the Batched Payload into each of the parts it should contain for testing
-
     var approvalRequest = BatchPayload.shift();
     var deleteRequests = [];
     var openShiftRequests = [];
-
     BatchPayload.forEach(function(payload, idx) {
       if (idx % 2) {
         openShiftRequests.push(payload);        
@@ -102,7 +120,5 @@ describe('Time Off Requests', function() {
         assert.equal(req.params.location_id, CONFIG.locationID.makeup_and_extra_shifts);
       });
     });
-
   });
-
 });

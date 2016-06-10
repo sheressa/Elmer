@@ -13,6 +13,15 @@ new CronJob(CONFIG.time_interval.time_off_requests_cron_job_string, function () 
 handleTimeOffRequests();
 
 function handleTimeOffRequests() {
+  var timeOffSearchParams = createTimeOffSearchParams();
+
+  //Get all time off requests within timeOffSearchParams
+  WhenIWork.get('requests', timeOffSearchParams, function(response){
+    filterRequestsAndHandleShifts(response.requests);
+  });
+}
+
+function createTimeOffSearchParams () {
   //Using moment.js to format time as WIW expects
   var startDateToRetrieveRequests = moment().format(date_format);
   var endDateToRetrieveRequests = moment()
@@ -22,11 +31,7 @@ function handleTimeOffRequests() {
     "start": startDateToRetrieveRequests,
     "end": endDateToRetrieveRequests,
   };
-
-  //Get all time off requests within timeOffSearchParams
-  WhenIWork.get('requests', timeOffSearchParams, function(response){
-    filterRequestsAndHandleShifts(response.requests);
-  });
+  return timeOffSearchParams;
 }
 
 function filterRequestsAndHandleShifts (allRequests) {
@@ -42,13 +47,7 @@ function filterRequestsAndHandleShifts (allRequests) {
 }
 
 function retrieveOverlappingShifts (request) {
-  var shiftSearchParams = {
-    "start": request.start_time,
-    "end": request.end_time,
-    "user_id": request.user_id,
-    "location_id": [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts],
-    "unpublished": true
-  };
+  var shiftSearchParams = createShiftSearchParams(request);
 
   WhenIWork.get('shifts', shiftSearchParams, function(response) {
     var batchPayload = createBatchPayload (response, request.id);
@@ -57,6 +56,18 @@ function retrieveOverlappingShifts (request) {
       CONSOLE_WITH_TIME(response);
     });
   });
+}
+
+function createShiftSearchParams (request) {
+  var shiftSearchParams = {
+    "start": request.start_time,
+    "end": request.end_time,
+    "user_id": request.user_id,
+    "location_id": [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts],
+    "unpublished": true
+  };
+
+  return shiftSearchParams;
 }
 
 function createBatchPayload (response, requestId) {
@@ -116,6 +127,8 @@ function createTimeOffApproval (requestId) {
 
 module.exports = {
   filterRequestsAndHandleShifts: filterRequestsAndHandleShifts,
-  createBatchPayload: createBatchPayload
+  createBatchPayload: createBatchPayload,
+  createTimeOffSearchParams: createTimeOffSearchParams,
+  createShiftSearchParams: createShiftSearchParams
 };
 

@@ -1,9 +1,15 @@
+/**
+  This file was created in order to attain sample data from WiW for use 
+  with testing. Modify the get request below as desired and retrieved data will 
+  be written to httpResonse.json. 
+**/
+
 var moment = require('moment-timezone');
 var fs = require('fs');
 
 var wIW = require('wheniwork-unofficial');
-var KEYS = require('../keys.js');
-var CONFIG = require('../config.js');
+var KEYS = require('../../keys.js');
+var CONFIG = require('../../config.js');
 var WhenIWork = new wIW(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password);
 
 var date_format = 'YYYY-MM-DD HH:mm:ss';
