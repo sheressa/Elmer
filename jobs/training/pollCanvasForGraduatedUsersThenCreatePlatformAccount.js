@@ -1,51 +1,53 @@
 var fetch = require('node-fetch');
 var fs = require('fs');
-
+var crypto = require('crypto');
 var internalRequest = require('request');
 var moment = require('moment');
 var throttler = require('throttled-request')(internalRequest);
+
 throttler.configure({
   requests: 5,
   milliseconds: 1000
 });
 
-var crypto = require('crypto');
-var config = require('./config');
-
-var lastRun = lastRunLog();
-
+var lastRun = lastRunLog(moment(1464753600000));
 var SLACK_CHANNEL = '#graduates';
-
 var t = 0;
 
-// Polls Canvas for people who’ve passed the "Graduation" course
-request('accounts/' + config.canvas.accountID + '/courses', 'GET')
-  .then(function (courses) {
-    courses.forEach(function (course) {
-      /**
-        Excluding courses that we don’t need to parse for graduations, because they’re either test courses or not related to CTL training.
-      **/
-      if (config.canvas.coursesWeDoNotParseForGraduatedUsers.indexOf(course.id) >= 0) return;
-      request('courses/' + course.id + '/assignments', 'GET')
-        .then(function (assignments) {
-          return assignments.filter(function (e) {
-            return e.name.indexOf('Graduation') >= 0;
-          });
-        })
-        .then(function (assignments) {
-          lastRunLog(moment());
-          assignments.forEach(function (assignment) {
-            setTimeout(getLogs.bind(this, assignment), t);
-            t += 1000;
+new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
+  pollCanvasForGraduatedUsersThenCreatePlatformAccount();
+}, null, true);
+
+function pollCanvasForGraduatedUsersThenCreatePlatformAccount() {
+  // Polls Canvas for people who’ve passed the "Graduation" course
+  request('accounts/' + KEYS.canvas.accountID + '/courses', 'GET')
+    .then(function (courses) {
+      courses.forEach(function (course) {
+        /**
+          Excluding courses that we don’t need to parse for graduations, because they’re either test courses or not related to CTL training.
+        **/
+        if (KEYS.canvas.coursesWeDoNotParseForGraduatedUsers.indexOf(course.id) >= 0) return;
+        request('courses/' + course.id + '/assignments', 'GET')
+          .then(function (assignments) {
+            return assignments.filter(function (e) {
+              return e.name.indexOf('Graduation') >= 0;
+            });
           })
-        });
+          .then(function (assignments) {
+            lastRunLog(moment());
+            assignments.forEach(function (assignment) {
+              setTimeout(getLogs.bind(this, assignment), t);
+              t += 1000;
+            });
+          });
+      });
     });
-  });
+}
 
 emailsDone = [];
 
 function getLogs(assignment) {
-  consoleWithTime('Graduating from assignment: ' + assignment.id);
+  CONSOLE_WITH_TIME('Graduating from assignment: ' + assignment.id);
   request('audit/grade_change/assignments/' + assignment.id, 'GET', [
       'start_time=' + lastRun.format('YYYY-MM-DD[T]HH:mm:ss[Z]')
     ])
@@ -71,7 +73,7 @@ function getLogs(assignment) {
         });
       }).catch(function (e) {
         if (e.toString().indexOf('TypeError') >= 0) {
-          consoleWithTime('Throttled, retrying in 1 second: ' + assignment.id);
+          CONSOLE_WITH_TIME('Throttled, retrying in 1 second: ' + assignment.id);
           setTimeout(getLogs.bind(this, assignment), 1000);
         }
       });
@@ -82,20 +84,20 @@ function updatePlatform(body) {
   if (emailsDone.indexOf(body.email) >= 0) return;
   emailsDone.push(body.email);
 
-  body.signature = crypto.createHash('sha256').update(body.email + config.platform_secret_key).digest('hex');
-  consoleWithTime('CREATING ACCOUNT FOR: ');
-  consoleWithTime(body);
+  body.signature = crypto.createHash('sha256').update(body.email + KEYS.platform_secret_key).digest('hex');
+  CONSOLE_WITH_TIME('CREATING ACCOUNT FOR: ');
+  CONSOLE_WITH_TIME(body);
 
 //  return;
   throttler({
-    url: config.platformUserCreationURL,
+    url: KEYS.platformUserCreationURL,
     method: 'POST',
     form: body
   }, function (err, res) {
     if (err) {
-      consoleWithTime(err);
+      CONSOLE_WITH_TIME(err);
     } else {
-      consoleWithTime(body.email + ': ' + res.body);
+      CONSOLE_WITH_TIME(body.email + ': ' + res.body);
       notifySlack(body.firstName + ' ' + body.lastName[0]);
     }
   });
@@ -137,7 +139,7 @@ function request(url, method, params) {
 
   return fetch(url, {
     headers: {
-      'Authorization': 'Bearer ' + config.canvas.accountToken,
+      'Authorization': 'Bearer ' + KEYS.canvas.accountToken,
     },
     method: method,
     body: params
@@ -152,10 +154,10 @@ function notifySlack(name) {
     text: 'I just graduated ' + name + '.'
   };
 
-  fetch(config.slackAccountURL, {
+  fetch(KEYS.slackAccountURL, {
     method: 'POST',
     body: JSON.stringify(payload)
   }).catch(e => {
-    consoleWithTime(e);
+    CONSOLE_WITH_TIME(e);
   });
 }

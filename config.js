@@ -92,6 +92,9 @@ CONFIG.time_interval = {
   // How often do we notify users to take more shifts
   take_more_shifts_cron_job_string: '30 5 18 * * *', // Every day at 6:05:30 pm
 
+  // How often we check for graduated useres in canvas and create platform accounts for them.
+  graduate_users_cron_job_string: '0 */15 * * * *', // Every fifteen minutes.
+
   // Each recurrence chain is 1 year long.
   max_shifts_in_chain: 52,
 
