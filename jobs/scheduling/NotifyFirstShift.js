@@ -11,64 +11,90 @@ new CronJob(CONFIG.time_interval.notify_first_shift_cron_job_string, function ()
   checkNewShifts();
 }, null, true);
 
-checkNewShifts();
+if (process.env.NODE_ENV !== 'test') {
+  checkNewShifts();
+}
 
-function checkNewShifts() {
+function checkNewShifts(sampleData) {
   // TODO: Re-enable this.
-  return;
+  if (process.env.NODE_ENV !== 'test') {
+    return;
+  }
 
-  WhenIWork.get('users', {location_id: CONFIG.locationID.new_graduate}, function (users) {
-    var now = moment();
-    var template = fs.readFileSync('./email_templates/shift_welcome.txt', {encoding: 'utf-8'});
+  if (process.env.NODE_ENV === 'test') {
+    return processUsers(sampleData);
+  } else {
+    WhenIWork.get('users', {location_id: CONFIG.locationID.new_graduate}, function (users) {
+      processUsers(users);
+    });
+  }
+}
 
-    for (var i in users.users) {
-      var u = users.users[i];
-      var created = moment(u.created_at, date_format);
+function processUsers(users) {
+  var result = [];
+  var now = moment();
+  if (process.env.NODE_ENV === 'test') now = moment('2016-01-19');
+  var template = fs.readFileSync('./email_templates/shift_welcome.txt', {encoding: 'utf-8'});
 
-      if (u.notes.indexOf('first_shift_notified') < 0 && now.diff(created, 'days') < CONFIG.days_of_open_shift_display) {
-        var q = {
-          user_id: u.id,
-          start: moment().format(date_format),
-          end: moment().add(CONFIG.days_of_open_shift_display, 'days').format(date_format)
-        };
+  for (var i in users.users) {
+    var u = users.users[i];
+    var created = moment(u.created_at, date_format);
 
+    if (u.notes.indexOf('first_shift_notified') < 0 && now.diff(created, 'days') < CONFIG.time_interval.days_of_open_shift_display) {
+      var q = {
+        user_id: u.id,
+        start: moment().format(date_format),
+        end: moment().add(CONFIG.days_of_open_shift_display, 'days').format(date_format)
+      };
+      if (process.env.NODE_ENV === 'test') {
+        result.push(getShifts(users, now, template));
+        // return getShifts(users, now, template);
+        //IT IS RETURNING HERE SO ONLY ONE USER GETS USED, HAVE TO PUT RESULT INTO AN ARRAY OR SOMETHING
+      } else {
         WhenIWork.get('shifts', q, function (shifts) {
-          var sent = false;
-
-          for (var i in shifts.shifts) {
-            var s = shifts.shifts[i];
-            var created = moment(s.created_at, date_format);
-
-            if (now.diff(created, 'minutes') <= interval && !sent) {
-              sent = true;
-              var shift_start = moment(s.start_time, date_format).format('MMM D, YYYY HH:mm');
-
-              var content = template.replace('%name', shifts.users[0].first_name).replace('%date', shift_start);
-
-              var message = {
-                  subject: 'Welcome aboard!',
-                  text: content,
-                  from_email: 'support@crisistextline.org',
-                  from_name: 'Crisis Text Line',
-                  to: [{
-                      email: shifts.users[0].email,
-                      name: shifts.users[0].first_name + ' ' + shifts.users[0].last_name,
-                      type: 'to'
-                  }],
-                  headers: {
-                      "Reply-To": "shannon@crisistextline.org",
-                  }
-              };
-
-              mandrill_client.messages.send({message: message, key: 'first_shift_scheduled'}, function (res) {
-                  CONSOLE_WITH_TIME(res);
-              });
-
-              WhenIWork.update('users/'+shifts.users[0].id, {notes: shifts.users[0].notes + 'first_shift_notified' + "\n"});
-            }
-          }
+          getShifts(shifts, now, template);
         });
       }
     }
-  });
+  }
+  return result;
 }
+
+function getShifts(shifts, now, template) {
+  var sent = false;
+  for (var j in shifts.shifts.shifts) {
+    var s = shifts.shifts.shifts[j];
+    var created = moment(s.created_at, date_format);
+    if (now.diff(created, 'days') <= CONFIG.time_interval.days_of_open_shift_display && !sent) {
+      sent = true;
+      var shift_start = moment(s.start_time, date_format).format('MMM D, YYYY HH:mm');
+
+      var content = template.replace('%name', shifts.users[0].first_name).replace('%date', shift_start);
+
+      var message = {
+          subject: 'Welcome aboard!',
+          text: content,
+          from_email: 'support@crisistextline.org',
+          from_name: 'Crisis Text Line',
+          to: [{
+              email: shifts.users[0].email,
+              name: shifts.users[0].first_name + ' ' + shifts.users[0].last_name,
+              type: 'to'
+          }],
+          headers: {
+              "Reply-To": "shannon@crisistextline.org",
+          }
+      };
+
+      mandrill_client.messages.send({message: message, key: 'first_shift_scheduled'}, function (res) {
+          CONSOLE_WITH_TIME(res);
+      });
+
+      WhenIWork.update('users/' + shifts.users[0].id, {notes: shifts.users[0].notes + 'first_shift_notified' + "\n"});
+      return ({user: shifts.users[0].id, notes: shifts.users[0].notes, message: message});
+    }
+  }
+}
+
+module.exports = checkNewShifts;
+
