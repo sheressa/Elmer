@@ -2,7 +2,6 @@ var CronJob = require('cron').CronJob;
 var WhenIWork = require('./base');
 var fs = require('fs');
 var stathat = require(CONFIG.root_dir + '/lib/stathat');
-var sampleData = require(CONFIG.root_dir + '/test/sampleData');
 
 new CronJob(CONFIG.time_interval.take_more_shifts_cron_job_string, function () {
   notifyMoreShifts();
@@ -128,7 +127,7 @@ function twoShiftNotification(data, only_two, one_shift_post) {
         message: fs.readFileSync('./email_templates/two_shifts.txt', {encoding: 'utf-8'})
       };
       WhenIWork.post('send', two_shift_post);
-      return {one_shift_post: one_shift_post, two_shift_post: two_shift_post};
+      if (process.env.NODE_ENV === 'test') return {one_shift_post: one_shift_post, two_shift_post: two_shift_post};
     }
 }
 
