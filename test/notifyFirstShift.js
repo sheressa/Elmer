@@ -2,7 +2,6 @@ var assert = require('assert');
 var checkNewShifts = require('../jobs/scheduling/NotifyFirstShift.js');
 var sampleData = require(CONFIG.root_dir + '/test/sampleData');
 var result = checkNewShifts(sampleData);
-console.log(result);
 
 describe('notifyFirstShift', function() {
 
