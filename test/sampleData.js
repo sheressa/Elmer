@@ -570,7 +570,7 @@ var wiwUsersObject = {
     activated: true,
     is_hidden: false,
     uuid: '88ffabdddf9bb82r144f4476eacd3064f664dc0f',
-    notes: '{"original_owner":5674723, "parent_shift":277119256}',
+    notes: "{\"canonicalEmail\":\"john+test2@crisistextline.org\",\"timezoneSet\":true}",
     affiliate: 0,
     is_private: true,
     infotips: '',

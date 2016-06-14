@@ -21,7 +21,7 @@ describe('notifyFirstShift', function() {
 
     it('creates an update post to users with correct notes', function (done) {
 
-      assert.equal(result[0].notes, '{"original_owner":5674723, "parent_shift":277119256}');
+      assert.equal(result[0].notes, '{"canonicalEmail":"john+test2@crisistextline.org","timezoneSet":true}');
       done();
 
     });

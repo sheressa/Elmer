@@ -51,13 +51,19 @@ function getShifts(shifts, now, user) {
 
       var content = template.replace('%name', user.first_name).replace('%date', shift_start);
 
+      var email = user.email;
+      if (user.notes) {
+        var parsedNotes = JSON.parse(user.notes);
+        if (parsedNotes.canonicalEmail) email = parsedNotes.canonicalEmail;
+      }
+
       var message = {
           subject: 'Welcome aboard!',
           text: content,
           from_email: 'support@crisistextline.org',
           from_name: 'Crisis Text Line',
           to: [{
-              email: user.email,
+              email: email,
               name: user.first_name + ' ' + user.last_name,
               type: 'to'
           }],
