@@ -28,7 +28,7 @@ function checkNewShifts(optionalSampleDataForTesting) {
 
 function processUsers(users, optionalSampleShiftsForTesting) {
   var result = [];
-  var now = moment();
+  var now = moment('2016-05-24');
   if (process.env.NODE_ENV === 'test') now = moment('2016-01-19');
   var template = fs.readFileSync('./email_templates/shift_welcome.txt', {encoding: 'utf-8'});
   users.forEach(function(user, index) {
@@ -73,7 +73,6 @@ function getShifts(shifts, now, template, user) {
               "Reply-To": "shannon@crisistextline.org",
           }
       };
-
       mandrill_client.messages.send({message: message, key: 'first_shift_scheduled'}, function (res) {
           CONSOLE_WITH_TIME(res);
       });
