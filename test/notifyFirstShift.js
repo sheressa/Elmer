@@ -37,5 +37,16 @@ describe('notifyFirstShift', function() {
 
     });
 
+    it('does not create an update post to users if the user creation date is out of range', function (done) {
+      
+      var failedTest = false;
+      for (var i = 0; i<result.length; i++) {
+        if (result[i].user === 5674724) failedTest = true;
+      }
+      assert.equal(failedTest, false);
+      done();
+
+    });
+
 });
 
