@@ -92,29 +92,29 @@ CONFIG.time_interval = {
 };
 
 CONFIG.numberOfCounselorsPerShift = {
-  'Sun' : { '12am': 64, '2am': 42, '4am': 22, '6am': 10, '8am': 14, '10am': 22, '12pm': 35, '2pm': 34, '4pm': 44, '6pm': 53, '8pm': 74, '10pm': 96},
+  'Sun' : { '12am': 66, '2am': 41, '4am': 24, '6am': 10, '8am': 14, '10am': 25, '12pm': 38, '2pm': 49, '4pm': 43, '6pm': 55, '8pm': 76, '10pm': 101},
 
-  'Mon' : { '12am': 84, '2am': 32, '4am': 16, '6am': 11, '8am': 20, '10am': 37, '12pm': 42, '2pm': 45, '4pm': 48, '6pm': 59, '8pm': 96, '10pm': 103},
+  'Mon' : { '12am': 81, '2am': 43, '4am': 16, '6am': 11, '8am': 19, '10am': 29, '12pm': 42, '2pm': 45, '4pm': 50, '6pm': 68, '8pm': 111, '10pm': 171},
 
-  'Tue' : { '12am': 95, '2am': 63, '4am': 30, '6am': 16, '8am': 32, '10am': 39, '12pm': 52, '2pm': 56, '4pm': 44, '6pm': 49, '8pm': 68, '10pm': 82},
+  'Tue' : { '12am': 172, '2am': 64, '4am': 30, '6am': 18, '8am': 49, '10am': 40, '12pm': 52, '2pm': 58, '4pm': 47, '6pm': 55, '8pm': 66, '10pm': 81},
 
-  'Wed' : { '12am': 57, '2am': 29, '4am': 11, '6am': 9, '8am': 12, '10am': 22, '12pm': 30, '2pm': 38, '4pm': 39, '6pm': 48, '8pm': 67, '10pm': 82},
+  'Wed' : { '12am': 70, '2am': 31, '4am': 9, '6am': 10, '8am': 16, '10am': 28, '12pm': 29, '2pm': 48, '4pm': 49, '6pm': 58, '8pm': 76, '10pm': 99},
 
-  'Thu' : { '12am': 28, '2am': 12, '4am': 12, '6am': 8, '8am': 16, '10am': 24, '12pm': 26, '2pm': 37, '4pm': 37, '6pm': 44, '8pm': 60, '10pm': 69},
+  'Thu' : { '12am': 65, '2am': 35, '4am': 18, '6am': 9, '8am': 19, '10am': 28, '12pm': 28, '2pm': 42, '4pm': 41, '6pm': 43, '8pm': 65, '10pm': 71},
 
-  'Fri' : { '12am': 49, '2am': 29, '4am': 13, '6am': 8, '8am': 12, '10am': 26, '12pm': 30, '2pm': 35, '4pm': 39, '6pm': 44, '8pm': 64, '10pm': 70},
+  'Fri' : { '12am': 55, '2am': 30, '4am': 12, '6am': 8, '8am': 13, '10am': 28, '12pm': 32, '2pm': 36, '4pm': 43, '6pm': 47, '8pm': 68, '10pm': 76},
 
-  'Sat' : { '12am': 58, '2am': 37, '4am': 17, '6am': 8, '8am': 12, '10am': 25, '12pm': 29, '2pm': 33, '4pm': 42, '6pm': 44, '8pm': 61, '10pm': 80}
+  'Sat' : { '12am': 66, '2am': 39, '4am': 16, '6am': 10, '8am': 14, '10am': 23, '12pm': 29, '2pm': 35, '4pm': 40, '6pm': 51, '8pm': 66, '10pm': 79}
 };
 
 CONFIG.shiftColors = {
-  'Sun': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'red', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'red' },
+  'Sun': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'red', '12pm': 'red', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'red' },
 
-  'Mon': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'red', '4pm': 'red', '6pm': 'red', '8pm': 'red', '10pm': 'red' },
+  'Mon': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'gray' },
 
-  'Tue': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'red', '10am': 'red', '12pm': 'red', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
+  'Tue': { '12am': 'red', '2am': 'red', '4am': 'gray', '6am': 'gray', '8am': 'red', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'red' },
 
-  'Wed': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'red', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
+  'Wed': { '12am': 'red', '2am': 'red', '4am': 'gray', '6am': 'red', '8am': 'red', '10am': 'red', '12pm': 'gray', '2pm': 'gray', '4pm': 'red', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
 
   'Thu': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
 

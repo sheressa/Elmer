@@ -14,7 +14,10 @@ var WhenIWork = new wIW(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wh
 
 var date_format = 'YYYY-MM-DD HH:mm:ss';
 
-timeOffRequests();
+// sendRequest('request', timeOffRequests());
+// sendRequest('users', usersRequests());
+sendRequest('shifts', shiftsRequests());
+
 
 function timeOffRequests() {
   //Using moment.js to format time as WIW expects
@@ -27,12 +30,35 @@ function timeOffRequests() {
     "end": endDateToRetrieveRequests,
   };
 
+  return timeOffSearchParams;
+}
+
+function usersRequests() {
+  var usersSearchParams = {
+    location_id: CONFIG.locationID.test
+  };
+
+  return usersSearchParams;
+}
+
+function shiftsRequests() {
+  var query = {
+    location_id: CONFIG.locationID.regular_shifts,
+    end: '+' + CONFIG.time_interval.days_of_open_shift_display + ' days'
+  };
+
+  return query;
+}
+
+function sendRequest (term, params) {
   //Get all time off requests within timeOffSearchParams
-  WhenIWork.get('requests', timeOffSearchParams, function(response) {
-    console.log('response: ', response);
+  WhenIWork.get(term, params, function(response) {
+    console.log(`${term} returns ${response}`);
     fs.writeFile('httpResponse.json', JSON.stringify(response), (err) => {
       if (err) throw err;
       console.log('It\'s saved!');
     });
   });
+
+
 }

@@ -15,3 +15,4 @@ var timezone = require('./timezone.js');
 var deleteShiftsAndRedirect = require('./deleteShiftsAndRedirect.js');
 var renderShiftDeleteSuccess = require('./renderShiftDeleteSuccess.js');
 var mergeOpenShifts = require('./mergeOpenShifts.js');
+var notifyMoreShifts = require('./notifyMoreShifts.js');
