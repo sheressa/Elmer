@@ -213,7 +213,7 @@ var wiwShiftObject =
        is_open: false,
        actionable: false,
        block_id: 0 },
-       { id: 284948049,
+    { id: 284948049,
        account_id: 549781,
        user_id: 5674723,
        location_id: 1003762,
@@ -239,7 +239,7 @@ var wiwShiftObject =
        is_open: true,
        actionable: false,
        block_id: 0 },
-       { id: 284948019,
+    { id: 284948019,
        account_id: 549781,
        user_id: 5674723,
        location_id: 1003762,
@@ -265,7 +265,7 @@ var wiwShiftObject =
        is_open: true,
        actionable: false,
        block_id: 0 },
-       { id: 284948039,
+    { id: 284948039,
        account_id: 549781,
        user_id: 5674724,
        location_id: 1003765,
@@ -291,7 +291,7 @@ var wiwShiftObject =
        is_open: true,
        actionable: false,
        block_id: 0 },
-      { id: 284948029,
+    { id: 284948029,
        account_id: 549781,
        user_id: 5674724,
        location_id: 1003765,
@@ -343,6 +343,204 @@ var wiwShiftObject =
        is_open: true,
        actionable: false,
        block_id: 0 } ],
+};
+
+// These are used in the return for wiwRequestObject
+var requests1 = [
+  {
+    "id": 15013506,
+    "account_id": 549781,
+    "user_id": 5701549,
+    "creator_id": 5701549,
+    "updater_id": 7889841,
+    "status": 2,
+    "type": 0,
+    "hours": 0,
+    "start_time": "Fri, 10 Jun 2016 00:00:00 -0400",
+    "end_time": "Sun, 12 Jun 2016 23:59:59 -0400",
+    "created_at": "Thu, 09 Jun 2016 09:46:55 -0400",
+    "updated_at": "Thu, 09 Jun 2016 09:50:00 -0400",
+    "canceled_by": 0
+  },
+  {
+    "id": 14790451,
+    "account_id": 549781,
+    "user_id": 5660404,
+    "creator_id": 5660404,
+    "updater_id": 5005069,
+    "status": 0,
+    "type": 0,
+    "hours": 0,
+    "start_time": "Mon, 06 Jun 2016 00:00:00 -0400",
+    "end_time": "Fri, 10 Jun 2016 23:59:59 -0400",
+    "created_at": "Sun, 05 Jun 2016 21:31:41 -0400",
+    "updated_at": "Sun, 05 Jun 2016 21:35:01 -0400",
+    "canceled_by": 0
+  },
+  {
+    "id": 15013196,
+    "account_id": 549781,
+    "user_id": 5659612,
+    "creator_id": 5659612,
+    "updater_id": 7889841,
+    "status": 2,
+    "type": 0,
+    "hours": 0,
+    "start_time": "Mon, 13 Jun 2016 00:00:00 -0400",
+    "end_time": "Mon, 13 Jun 2016 23:59:59 -0400",
+    "created_at": "Thu, 09 Jun 2016 09:40:58 -0400",
+    "updated_at": "Thu, 09 Jun 2016 09:45:00 -0400",
+    "canceled_by": 0
+  },
+  {
+    "id": 15013196,
+    "account_id": 549781,
+    "user_id": 5659612,
+    "creator_id": 5659612,
+    "updater_id": 7889841,
+    "status": 0,
+    "type": 0,
+    "hours": 0,
+    "start_time": "Mon, 13 Jun 2016 00:00:00 -0400",
+    "end_time": "Mon, 13 Jun 2016 23:59:59 -0400",
+    "created_at": "Thu, 09 Jun 2016 09:40:58 -0400",
+    "updated_at": "Thu, 09 Jun 2016 09:45:00 -0400",
+    "canceled_by": 0
+  },
+  {
+    "id": 15013196,
+    "account_id": 549781,
+    "user_id": 5659612,
+    "creator_id": 5659612,
+    "updater_id": 7889841,
+    "status": 1,
+    "type": 0,
+    "hours": 0,
+    "start_time": "Mon, 13 Jun 2016 00:00:00 -0400",
+    "end_time": "Mon, 13 Jun 2016 23:59:59 -0400",
+    "created_at": "Thu, 09 Jun 2016 09:40:58 -0400",
+    "updated_at": "Thu, 09 Jun 2016 09:45:00 -0400",
+    "canceled_by": 0
+  }
+];
+
+// This is how the return from a WiW get request for 'requests' should look
+var wiwRequestsObject = {
+  // Example message object currently unused
+  "messages": [
+    {
+      id: 31250596,
+      account_id: 549781,
+      user_id: 5692804,
+      request_id: 14564851,
+      swap_id: 0,
+      conversation_id: 0,
+      type: 0,
+      title: "",
+      content: "I scheduled a make-up shift on the wrong day, sorry.",
+      created_at: "Wed, 01 Jun 2016 18:59:58 -0400",
+      updated_at: "Wed, 01 Jun 2016 18:59:58 -0400"
+    }
+  ],
+  "start": "Thu, 09 Jun 2016 10:55:59 -0400",
+  "end": "Fri, 09 Dec 2016 10:55:59 -0500",
+  "total": 461,
+  "page": 0,
+  // Important Part "status": 2 (approved), 1 (denied), 0 (pending)
+  "requests": requests1,
+  // Example user object currently unused
+  "users": [
+    {
+      "id": 5376436,
+      "account_id": 549781,
+      "login_id": 2588281,
+      "timezone_id": 9,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "brenbland@gmail.com",
+      "first_name": "Brenda",
+      "last_name": "Kuhn",
+      "phone_number": "+17196616289",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/b52c5356097db5d81f3ff87eb07ad0d99082f866/%s",
+        "size": "%s"
+      },
+      "password": true,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "fa3783bba377b3d23b2ea68795843a8b86e6bfd9",
+      "notes": "{\"canonicalEmail\":\"brenbland@gmail.com\",\"timezoneSet\":true}",
+      "affiliate": 0,
+      "is_private": false,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": true,
+          "email": false
+        },
+        "swaps": {
+          "sms": true,
+          "email": false
+        },
+        "schedule": {
+          "sms": true,
+          "email": false
+        },
+        "reminders": {
+          "sms": true,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": false
+        },
+        "new_employee": {
+          "sms": false,
+          "email": false
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "04:00:00",
+      "sleep_end": "12:00:00",
+      "my_positions": [],
+      "last_login": "Sat, 04 Jun 2016 14:31:51 -0400",
+      "dismissed_at": "",
+      "notified_at": "Sat, 23 Jan 2016 20:26:36 -0500",
+      "created_at": "Sat, 19 Dec 2015 16:36:31 -0500",
+      "updated_at": "Sat, 04 Jun 2016 14:31:51 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        1003762,
+        1003765
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "1003762": 0,
+        "1003765": 0
+      }
+    }
+  ]
 };
 
 var wiwUsersObject = [
@@ -741,6 +939,7 @@ var wiwUsersObject = [
 module.exports = {
   shifts: wiwShiftObject,
   user: wiwUserObject,
+  requestsResponse: wiwRequestsObject,
   separateShifts: separateShifts,
   users: wiwUsersObject
 };

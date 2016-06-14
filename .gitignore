@@ -101,6 +101,9 @@ node_modules
 # Customizations
 keys.js
 
+# WiW Response sampler
+test/helpers/httpResponse.json
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
