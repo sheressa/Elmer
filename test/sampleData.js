@@ -1,4 +1,7 @@
-var wiwUserObject = { id: 5674723,
+var moment = require('moment');
+
+var wiwUserObject = { 
+  id: 5674723,
   account_id: 549781,
   login_id: 2761909,
   timezone_id: 0,
@@ -51,10 +54,10 @@ var wiwUserObject = { id: 5674723,
   locations: [ 1003762, 1003765 ],
   position_rates: [],
   position_quality: [],
-  sort: { '1003762': 0, '1003765': 0 } };
+  sort: { '1003762': 0, '1003765': 0 } 
+};
 
 var wiwShiftObject =
-
 {
   shifts:
    [ { id: 284947012,
@@ -543,7 +546,8 @@ var wiwRequestsObject = {
   ]
 };
 
-var wiwUsersObject = [
+var wiwUsersObject = {
+  users: [
   { id: 5674723,
     account_id: 549781,
     login_id: 2761909,
@@ -554,7 +558,7 @@ var wiwUsersObject = [
     is_payroll: false,
     is_trusted: 0,
     type: 1,
-    email: 'amudantest@test.com',
+    email: 'john+test@crisistextline.org',
     first_name: 'Amudan',
     last_name: 'Test',
     phone_number: '',
@@ -588,8 +592,8 @@ var wiwUsersObject = [
     last_login: 'Mon, 25 Jan 2016 21:30:38 -0500',
     dismissed_at: '',
     notified_at: 'Tue, 29 Nov -001 19:00:00 -0500',
-    created_at: 'Tue, 19 Jan 2016 14:48:09 -0500',
-    updated_at: 'Mon, 25 Jan 2016 21:32:47 -0500',
+    created_at: moment().subtract(1, 'weeks'),
+    updated_at: moment().subtract(1, 'weeks'),
     is_deleted: false,
     login_email: 'amudantest@test.com',
     timezone_name: 'America/New_York',
@@ -709,7 +713,185 @@ var wiwUsersObject = [
     position_quality: [],
     sort: { '1003762': 0, '1003765': 0 } 
   }
-];
+  ],
+  locations: [
+      {
+        "id": 959290,
+        "account_id": 549781,
+        "is_default": 0,
+        "name": "New Graduate",
+        "sort": 0,
+        "max_hours": 4,
+        "address": "82 4th Ave, Brooklyn, NY 11217, USA",
+        "coordinates": [
+          40.682108,
+          -73.980149
+        ],
+        "latitude": 40.682108,
+        "longitude": -73.980149,
+        "place_id": "0",
+        "place_confirmed": true,
+        "ip_address": "",
+        "created_at": "Wed, 16 Dec 2015 06:20:36 -0500",
+        "updated_at": "Tue, 24 May 2016 13:43:39 -0400",
+        "is_deleted": false,
+        "radius": 100,
+        "place": null
+      },
+      {
+        "id": 990385,
+        "account_id": 549781,
+        "is_default": 0,
+        "name": "Test",
+        "sort": 0,
+        "max_hours": 0,
+        "address": "82 4th Ave, Brooklyn, NY 11217, USA",
+        "coordinates": [
+          40.682108,
+          -73.980149
+        ],
+        "latitude": 40.682108,
+        "longitude": -73.980149,
+        "place_id": "92226",
+        "place_confirmed": true,
+        "ip_address": "",
+        "created_at": "Wed, 06 Jan 2016 03:43:26 -0500",
+        "updated_at": "Tue, 24 May 2016 13:44:00 -0400",
+        "is_deleted": false,
+        "radius": 100,
+        "place": {
+          "id": 92226,
+          "business_name": "Pacific Standard",
+          "address": "82 4th Ave, Brooklyn, NY 11217, USA",
+          "latitude": 40.6821078,
+          "longitude": -73.9801492,
+          "place_type": [
+            "bar",
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+          ],
+          "place_id": "ChIJn_uB9qxbwokRtZCPRn3Eq9w",
+          "updated_at": "Tue, 24 May 2016 16:01:08 -0400"
+        }
+      },
+      {
+        "id": 1003762,
+        "account_id": 549781,
+        "is_default": 0,
+        "name": "One-time Shifts",
+        "sort": 0,
+        "max_hours": 4,
+        "address": "82 4th Ave, Brooklyn, NY 11217, USA",
+        "coordinates": [
+          40.682108,
+          -73.980149
+        ],
+        "latitude": 40.682108,
+        "longitude": -73.980149,
+        "place_id": "92226",
+        "place_confirmed": true,
+        "ip_address": "",
+        "created_at": "Tue, 12 Jan 2016 06:48:08 -0500",
+        "updated_at": "Tue, 24 May 2016 13:44:07 -0400",
+        "is_deleted": false,
+        "radius": 100,
+        "place": {
+          "id": 92226,
+          "business_name": "Pacific Standard",
+          "address": "82 4th Ave, Brooklyn, NY 11217, USA",
+          "latitude": 40.6821078,
+          "longitude": -73.9801492,
+          "place_type": [
+            "bar",
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+          ],
+          "place_id": "ChIJn_uB9qxbwokRtZCPRn3Eq9w",
+          "updated_at": "Tue, 24 May 2016 16:01:08 -0400"
+        }
+      },
+      {
+        "id": 1003765,
+        "account_id": 549781,
+        "is_default": 0,
+        "name": "Weekly Shifts",
+        "sort": 0,
+        "max_hours": 8,
+        "address": "82 4th Ave, Brooklyn, NY 11217, USA",
+        "coordinates": [
+          40.682108,
+          -73.980149
+        ],
+        "latitude": 40.682108,
+        "longitude": -73.980149,
+        "place_id": "92226",
+        "place_confirmed": true,
+        "ip_address": "",
+        "created_at": "Tue, 12 Jan 2016 06:48:23 -0500",
+        "updated_at": "Tue, 24 May 2016 13:44:12 -0400",
+        "is_deleted": false,
+        "radius": 100,
+        "place": {
+          "id": 92226,
+          "business_name": "Pacific Standard",
+          "address": "82 4th Ave, Brooklyn, NY 11217, USA",
+          "latitude": 40.6821078,
+          "longitude": -73.9801492,
+          "place_type": [
+            "bar",
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+          ],
+          "place_id": "ChIJn_uB9qxbwokRtZCPRn3Eq9w",
+          "updated_at": "Tue, 24 May 2016 16:01:08 -0400"
+        }
+      },
+      {
+        "id": 1007104,
+        "account_id": 549781,
+        "is_default": 0,
+        "name": "Test2",
+        "sort": 0,
+        "max_hours": 0,
+        "address": "82 4th Ave, Brooklyn, NY 11217, USA",
+        "coordinates": [
+          40.682108,
+          -73.980149
+        ],
+        "latitude": 40.682108,
+        "longitude": -73.980149,
+        "place_id": "92226",
+        "place_confirmed": true,
+        "ip_address": "",
+        "created_at": "Wed, 13 Jan 2016 11:00:09 -0500",
+        "updated_at": "Tue, 24 May 2016 13:44:25 -0400",
+        "is_deleted": false,
+        "radius": 100,
+        "place": {
+          "id": 92226,
+          "business_name": "Pacific Standard",
+          "address": "82 4th Ave, Brooklyn, NY 11217, USA",
+          "latitude": 40.6821078,
+          "longitude": -73.9801492,
+          "place_type": [
+            "bar",
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+          ],
+          "place_id": "ChIJn_uB9qxbwokRtZCPRn3Eq9w",
+          "updated_at": "Tue, 24 May 2016 16:01:08 -0400"
+        }
+      }
+  ]
+};
 
 //created for MergeOpenShifts testing--these shifts are separate and should not be merged
 var separateShifts = {
@@ -766,180 +948,13 @@ var separateShifts = {
        is_open: false,
        actionable: false,
        block_id: 0 },
-       ]};
-
-var wiwUsersObject = [
-  { id: 5674723,
-    account_id: 549781,
-    login_id: 2761909,
-    timezone_id: 0,
-    country_id: 233,
-    migration_id: 0,
-    role: 3,
-    is_payroll: false,
-    is_trusted: 0,
-    type: 1,
-    email: 'amudantest@test.com',
-    first_name: 'Amudan',
-    last_name: 'Test',
-    phone_number: '',
-    employee_code: '',
-    avatar:
-     { url: 'https://avatars.wheniwork.com/dc02824b2af4ac232129a41fc376c77cc2ea3d5f/%s',
-       size: '%s' },
-    password: true,
-    activated: true,
-    is_hidden: false,
-    uuid: '88ffabdddf9bb82r144f4476eacd3064f664dc0f',
-    notes: '{"original_owner":5674723, "parent_shift":277119256}',
-    affiliate: 0,
-    is_private: true,
-    infotips: '',
-    hours_preferred: 0,
-    hours_max: 40,
-    hourly_rate: 0,
-    alert_settings:
-     { timeoff: { sms: false, email: false },
-       swaps: { sms: false, email: false },
-       schedule: { sms: false, email: false },
-       reminders: { sms: true, email: true },
-       availability: { sms: false, email: false },
-       new_employee: { sms: false, email: false },
-       attendance: { sms: false, email: false } },
-    reminder_time: 1,
-    sleep_start: '23:00:00',
-    sleep_end: '05:00:00',
-    my_positions: [],
-    last_login: 'Mon, 25 Jan 2016 21:30:38 -0500',
-    dismissed_at: '',
-    notified_at: 'Tue, 29 Nov -001 19:00:00 -0500',
-    created_at: 'Tue, 19 Jan 2016 14:48:09 -0500',
-    updated_at: 'Mon, 25 Jan 2016 21:32:47 -0500',
-    is_deleted: false,
-    login_email: 'amudantest@test.com',
-    timezone_name: 'America/New_York',
-    positions: [],
-    locations: [ 1003762, 1003765 ],
-    position_rates: [],
-    position_quality: [],
-    sort: { '1003762': 0, '1003765': 0 } 
-  },
-  { id: 5674724,
-    account_id: 549781,
-    login_id: 2761909,
-    timezone_id: 0,
-    country_id: 233,
-    migration_id: 0,
-    role: 3,
-    is_payroll: false,
-    is_trusted: 0,
-    type: 1,
-    email: 'amudantest@test.com',
-    first_name: 'Amudan',
-    last_name: 'Test',
-    phone_number: '',
-    employee_code: '',
-    avatar:
-     { url: 'https://avatars.wheniwork.com/dc02824b2af4ac232129a41fc376c77cc2ea3d5f/%s',
-       size: '%s' },
-    password: true,
-    activated: true,
-    is_hidden: false,
-    uuid: '88ffabdddf9bb82r144f4476eacd3064f664dc0f',
-    notes: '{"original_owner":5674723, "parent_shift":277119256}',
-    affiliate: 0,
-    is_private: true,
-    infotips: '',
-    hours_preferred: 0,
-    hours_max: 40,
-    hourly_rate: 0,
-    alert_settings:
-     { timeoff: { sms: false, email: false },
-       swaps: { sms: false, email: false },
-       schedule: { sms: false, email: false },
-       reminders: { sms: true, email: true },
-       availability: { sms: false, email: false },
-       new_employee: { sms: false, email: false },
-       attendance: { sms: false, email: false } },
-    reminder_time: 1,
-    sleep_start: '23:00:00',
-    sleep_end: '05:00:00',
-    my_positions: [],
-    last_login: 'Mon, 25 Jan 2016 21:30:38 -0500',
-    dismissed_at: '',
-    notified_at: 'Tue, 29 Nov -001 19:00:00 -0500',
-    created_at: 'Tue, 19 Jan 2015 14:48:09 -0500',
-    updated_at: 'Mon, 25 Jan 2015 21:32:47 -0500',
-    is_deleted: false,
-    login_email: 'amudantest@test.com',
-    timezone_name: 'America/New_York',
-    positions: [],
-    locations: [ 1003762, 1003765 ],
-    position_rates: [],
-    position_quality: [],
-    sort: { '1003762': 0, '1003765': 0 } 
-  },
-  { id: 7889841,
-    account_id: 7889841,
-    login_id: 7889841,
-    timezone_id: 0,
-    country_id: 233,
-    migration_id: 0,
-    role: 3,
-    is_payroll: false,
-    is_trusted: 0,
-    type: 1,
-    email: 'john@crisistextline.org',
-    first_name: 'John',
-    last_name: 'Rauschenberg',
-    phone_number: '',
-    employee_code: '',
-    avatar:
-     { url: 'https://avatars.wheniwork.com/dc02824b2af4ac232129a41fc376c77cc2ea3d5f/%s',
-       size: '%s' },
-    password: true,
-    activated: true,
-    is_hidden: false,
-    uuid: '88ffabdddf9bb82r144f4476eacd3064f664dc0f',
-    notes: '{"original_owner":5674723, "parent_shift":277119256}',
-    affiliate: 0,
-    is_private: true,
-    infotips: '',
-    hours_preferred: 0,
-    hours_max: 40,
-    hourly_rate: 0,
-    alert_settings:
-     { timeoff: { sms: false, email: false },
-       swaps: { sms: false, email: false },
-       schedule: { sms: false, email: false },
-       reminders: { sms: true, email: true },
-       availability: { sms: false, email: false },
-       new_employee: { sms: false, email: false },
-       attendance: { sms: false, email: false } },
-    reminder_time: 1,
-    sleep_start: '23:00:00',
-    sleep_end: '05:00:00',
-    my_positions: [],
-    last_login: 'Mon, 25 Jan 2016 21:30:38 -0500',
-    dismissed_at: '',
-    notified_at: 'Tue, 29 Nov -001 19:00:00 -0500',
-    created_at: 'Tue, 19 Jan 2016 14:48:09 -0500',
-    updated_at: 'Mon, 25 Jan 2016 21:32:47 -0500',
-    is_deleted: false,
-    login_email: 'amudantest@test.com',
-    timezone_name: 'America/New_York',
-    positions: [],
-    locations: [ 1003762, 1003765 ],
-    position_rates: [],
-    position_quality: [],
-    sort: { '1003762': 0, '1003765': 0 } 
-  }
-];
+       ]
+     };
 
 module.exports = {
-  shifts: wiwShiftObject,
+  shiftsResponse: wiwShiftObject,
   user: wiwUserObject,
   requestsResponse: wiwRequestsObject,
   separateShifts: separateShifts,
-  users: wiwUsersObject
+  usersResponse: wiwUsersObject
 };

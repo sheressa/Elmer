@@ -4,7 +4,7 @@ var assert = require('assert'),
 
 var requests = sampleData.requestsResponse.requests;
 var shiftsResponse = {
-  shifts: sampleData.shifts.shifts.slice(0,4)
+  shifts: sampleData.shiftsResponse.shifts.slice(0,4)
 };
 
 describe('Time Off Requests', function() {
