@@ -1,5 +1,6 @@
-global.CONFIG = require('../config');
+//REQUIRING KEYS BEFORE CONFIG BECAUSE CONFIG DEPENDS ON KEYS
 global.KEYS = require('../keys.js');
+global.CONFIG = require('../config');
 
 if (process.env.NODE_ENV !== 'production') {
   CONFIG.locationID.regular_shifts = CONFIG.locationID.test;

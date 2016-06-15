@@ -6,7 +6,6 @@ console.log('index file running');
 global.KEYS = require('../keys.js');
 global.CONFIG = require('../config.js');
 //tests
-var timeOffRequests = require('./timeOffRequests');
 var colorize = require('./colorize.js');
 var loginUserCreation = require('./loginUserCreation.js');
 var retrieveAndRenderShiftsToDelete = require('./retrieveAndRenderShiftsToDelete.js');
@@ -15,4 +14,6 @@ var timezone = require('./timezone.js');
 var deleteShiftsAndRedirect = require('./deleteShiftsAndRedirect.js');
 var renderShiftDeleteSuccess = require('./renderShiftDeleteSuccess.js');
 var mergeOpenShifts = require('./mergeOpenShifts.js');
+var notifyFirstShift = require('./notifyFirstShift.js');
 var notifyMoreShifts = require('./notifyMoreShifts.js');
+var timeOffRequests = require('./timeOffRequests');

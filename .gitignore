@@ -103,6 +103,7 @@ keys.js
 
 # WiW Response sampler
 test/helpers/httpResponse.json
+test/helpers/sampleResponse
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

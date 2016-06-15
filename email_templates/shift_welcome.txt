@@ -2,7 +2,7 @@ Congrats, %name!
 
 All graduated and signed up for your shift time, that's HUGE! 
 
-Your first shift is %date
+Your first shift is %date.
 
 Here are a few pro tips to help you rock your first shift:
 
