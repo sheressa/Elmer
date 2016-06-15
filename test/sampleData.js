@@ -592,6 +592,9 @@ var wiwUsersObject = {
     last_login: 'Mon, 25 Jan 2016 21:30:38 -0500',
     dismissed_at: '',
     notified_at: 'Tue, 29 Nov -001 19:00:00 -0500',
+    //We are using moment to create a date one week in the past in order
+    //to allow tests to run correctly. The notifyFirstShift function
+    //will only consider users who were created less than 15 days ago.
     created_at: moment().subtract(1, 'weeks'),
     updated_at: moment().subtract(1, 'weeks'),
     is_deleted: false,

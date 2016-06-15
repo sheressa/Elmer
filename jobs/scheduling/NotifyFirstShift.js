@@ -10,6 +10,8 @@ new CronJob(CONFIG.time_interval.notify_first_shift_cron_job_string, function ()
   checkNewShifts();
 }, null, true);
 
+checkNewShifts();
+
 function checkNewShifts() {
   // TODO: Re-enable this.
   if (process.env.NODE_ENV !== 'test') {

@@ -43,7 +43,6 @@ global.MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE = function(timestring) {
 
 CONFIG.WhenIWork = process.env.NODE_ENV === 'test' ? require('./test/helpers/base') : require('./jobs/scheduling/base');
 
-
 CONFIG.root_dir = __dirname;
 
 CONFIG.locationID = {
