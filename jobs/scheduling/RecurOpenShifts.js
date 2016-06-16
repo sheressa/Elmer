@@ -1,7 +1,9 @@
 var CronJob = require('cron').CronJob;
-var WhenIWork = require('./base');
+var WhenIWork = CONFIG.WhenIWork;
 var moment = require('moment-timezone');
 var colorizeShift = require('../../lib/ColorizeShift').go;
+var events = require('events');
+var eventEmitter = new events.EventEmitter();
 
 var WIWDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var shiftQueryDateFormat = 'YYYY-MM-DD HH:mm:ss';
@@ -22,13 +24,14 @@ runJob();
 function recurOpenShifts(now) {
   if (now.hours() % 2 == 1) {
     CONSOLE_WITH_TIME('running at an odd hour. abort.');
-    return;
+    return 'running at an odd hour. abort.';
   }
   // Each time this cron runs, we run this function over the previous four shift times for failsafe redundancy.
   for (var i = 0; i < 5; i++) {
     // Because we're making async calls in a loop, we pass targetTime through callback
     // so that it's defined locally for each scope.
     var targetTime = now.clone().add(i * -2, 'hours');
+
     findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTime, 1, incrementFutureOpenShiftsUpOrDown);
     findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTime, 2, incrementFutureOpenShiftsUpOrDown);
   }
@@ -77,9 +80,14 @@ function findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTimeMomentObj, w
 
     var correctNumberOfShiftsToSet = returnMaxOpenShiftCountForTime(targetTimeMomentObj.clone()) - countOfOccupiedShifts;
     CONSOLE_WITH_TIME('Found ', countOfOpenShifts, ' open shifts, ', countOfOccupiedShifts, ' occupied shifts found for a time ', weeksFromNowToCheck, 'weeks from now where we expect ', returnMaxOpenShiftCountForTime(targetTimeMomentObj.clone()), ' open shifts. Time: ', targetTimeMomentObj.toString());
+    //the below just runs for test purposes.
+    if (process.env.NODE_ENV === 'test') {
+      eventEmitter.emit('recurOpenShiftsData', {countOfOpenShifts: countOfOpenShifts, countOfOccupiedShifts: countOfOccupiedShifts, extraOpenShiftsToDelete: extraOpenShiftsToDelete});
+    }
     callback(extraOpenShiftsToDelete, correctNumberOfShiftsToSet, weeksFromNowToCheck, targetTimeMomentObj);
-    return;
+    return;  
   });
+
 }
 
 /**
@@ -130,6 +138,8 @@ function incrementFutureOpenShiftsUpOrDown(extraOpenShiftsToDelete, correctNumbe
   if (correctNumberOfShiftsToSet < 0) { correctNumberOfShiftsToSet = 'no'; }
   CONSOLE_WITH_TIME('Adding ', correctNumberOfShiftsToSet, ' open shifts to the time: ', targetTime.toString(), ' . Deleting incorrect count of open shifts--their shift IDs: ', extraOpenShiftsToDelete);
   WhenIWork.post('batch', batchPayload);
+  //the below is returned for test purposes
+  return batchPayload;
 }
 
 function returnMaxOpenShiftCountForTime(targetTimeMomentObj) {
@@ -144,5 +154,6 @@ module.exports = {
   returnMaxOpenShiftCountForTime: returnMaxOpenShiftCountForTime,
   findExtraOpenShiftsToDeleteAndOccupiedShiftCount: findExtraOpenShiftsToDeleteAndOccupiedShiftCount,
   incrementFutureOpenShiftsUpOrDown: incrementFutureOpenShiftsUpOrDown,
-  cronJob: cronJob
+  cronJob: cronJob,
+  eventEmitter: eventEmitter
 };
