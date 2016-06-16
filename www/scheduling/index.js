@@ -1,6 +1,7 @@
 var express   = require('express')
-  , WhenIWork = require('wheniwork-unofficial')
+  , WhenIWork = CONFIG.WhenIWork
   , api = require('./initWhenIWorkAPI')
+  , api2 = require('./initWhenIWorkAPI')
   , moment    = require('moment')
   , sha1      = require('sha1')
   , stathat   = require(CONFIG.root_dir + '/lib/stathat')
@@ -103,6 +104,7 @@ router.get('/timezone', function (req, res) {
 
 function checkUser(email, first, last, callback) {
   var altEmail = helpers.generateAltEmail(email);
+  var newUser;
 
   api.get('users', function (users) {
     users = users.users;
@@ -121,7 +123,7 @@ function checkUser(email, first, last, callback) {
       attached to another organization's account, the account collides. Hence,
       We need to create a new account using a faked email.
     **/
-    var newUser = {
+    newUser = {
       role: 3,
       email: altEmail,
       first_name: first,
@@ -133,8 +135,6 @@ function checkUser(email, first, last, callback) {
     };
 
     api.post('users', newUser, function (data) {
-      var api2 = new WhenIWork(KEYS.wheniwork.api_key, altEmail, KEYS.wheniwork.default_password, function (data) {
-      });
 
       var alert = {sms: false, email: false};
       var alerts = ['timeoff', 'swaps', 'schedule', 'reminders', 'availability', 'new_employee', 'attendance'];
@@ -151,6 +151,10 @@ function checkUser(email, first, last, callback) {
       });
     });
   });
+  return newUser;
 }
 
-module.exports = router;
+module.exports = {
+  router: router,
+  checkUser: checkUser
+};
