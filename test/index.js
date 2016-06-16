@@ -20,3 +20,4 @@ var notifyMoreShifts = require('./notifyMoreShifts.js');
 var timeOffRequests = require('./timeOffRequests');
 var recurShifts = require('./recurShifts.js');
 var updateCanvas = require('./updateCanvas');
+var recurOpenShifts = require('./recurOpenShifts.js');
