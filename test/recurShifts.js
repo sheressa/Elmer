@@ -42,19 +42,13 @@ describe('recurShifts', function() {
     });
 
     it('should create a publish payload', function (done) {
-      assert.equal(result.publishPayload.ids[0], 284948099);
-      done();
-    });
-
-    it('recognizes when no shifts are returned from WiW', function (done) {
-      var noShiftResult = recurNewlyCreatedShifts.recurNewlyCreatedShifts({shifts: {shifts: ''}});
-      assert.equal(noShiftResult, 'NO SHIFTS RETURNED.');
+      assert.equal(result.publishPayload[0], 284948099);
       done();
     });
 
     it('decrements previous and next week\'s open shifts by one', function (done) {
       var decrementResult = recurNewlyCreatedShifts.decrementPrevWeeksAndNextWeeksOpenShiftsByOne(testShift);
-      assert.equal(decrementResult[0].url, '/2/shifts/284948199');
+      assert.equal(decrementResult[0].url, '/2/shifts/284948029');
       done();
     });
 

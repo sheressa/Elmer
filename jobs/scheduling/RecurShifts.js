@@ -1,5 +1,5 @@
 var CronJob = require('cron').CronJob;
-var WhenIWork = require('./base');
+var WhenIWork = CONFIG.WhenIWork;
 var moment = require('moment-timezone');
 var fs = require('fs');
 var async = require('async');
@@ -10,10 +10,11 @@ new CronJob(CONFIG.time_interval.recur_and_publish_shifts_cron_job_string, funct
   recurNewlyCreatedShifts();
 }, null, true);
 
-recurNewlyCreatedShifts();
-
-function recurNewlyCreatedShifts() {
+function recurNewlyCreatedShifts(optionalNoShiftsForTesting) {
   var batchPostRequestBody = [];
+  var requestTaskArray = [];
+  var unpublishedShiftIDStorageForTesting;
+
   /**
     Only searching for newly created shifts one day prior and three weeks out since counselors
     only can create a new shift in the next two weeks.
@@ -97,11 +98,11 @@ function recurNewlyCreatedShifts() {
           "method": "post",
           "url": "/2/shifts",
           "params": {
-            "start_time": moment(workingShift.start_time, wiw_date_format).add(config.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
-            "end_time": moment(workingShift.end_time, wiw_date_format).add(config.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
+            "start_time": moment(workingShift.start_time, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
+            "end_time": moment(workingShift.end_time, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
             "notes": workingShift.notes,
             "acknowledged": workingShift.acknowledged,
-            "chain": {"week": "1", "until": moment(workingShift.chain.until, wiw_date_format).add(config.time_interval.max_shifts_in_chain, 'weeks').format('L')},
+            "chain": {"week": "1", "until": moment(workingShift.chain.until, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format('L')},
             "location_id": workingShift.location_id,
             "user_id": workingShift.user_id
           }
@@ -119,7 +120,6 @@ function recurNewlyCreatedShifts() {
 
       var startDateToRetrieveUnpublishedShifts = moment().add(-12, 'hours').format('YYYY-MM-DD HH:mm:ss');
       var endDateToRetrieveUnpublishedShifts = moment().add(12, 'hours').format('YYYY-MM-DD HH:mm:ss');
-      var requestTaskArray = [];
       for (var i = 0; i < CONFIG.time_interval.weeks_to_publish_recurred_shifts * 7; i++) {
         var firstTask = function(callback) {
           var unpublishedShiftIDs = [];
@@ -136,7 +136,6 @@ function recurNewlyCreatedShifts() {
             "end": endDateToRetrieveUnpublishedShifts,
             "unpublished": true
           };
-
           // Getting all shifts created in the timeframe defined above in 'postData' that are unpublished.
           WhenIWork.get('shifts', postData, function(response) {
             var unpublishedShifts = response.shifts.filter(function(shift) {
@@ -149,6 +148,7 @@ function recurNewlyCreatedShifts() {
             });
 
             unpublishedShiftIDs = unpublishedShiftIDs.concat(newUnpublishedShiftIDs);
+            unpublishedShiftIDStorageForTesting = unpublishedShiftIDs;
 
             callback(null, startDateToRetrieveUnpublishedShifts, endDateToRetrieveUnpublishedShifts, unpublishedShiftIDs);
           });
@@ -180,6 +180,7 @@ function recurNewlyCreatedShifts() {
             });
 
             unpublishedShiftIDs = unpublishedShiftIDs.concat(newUnpublishedShiftIDs);
+            unpublishedShiftIDStorageForTesting = unpublishedShiftIDs;
 
             callback(null, startDate, endDate, unpublishedShiftIDs);
           });
@@ -192,16 +193,16 @@ function recurNewlyCreatedShifts() {
           requestTaskArray.push(task);
         }
       }
-
       async.waterfall(requestTaskArray, function(err, startDate, endDate, unpublishedShiftIDs) {
-        var publishPayload = {
+        publishPayload = {
           'ids': unpublishedShiftIDs
         };
-
         WhenIWork.post('shifts/publish/', publishPayload);
       });
     });
   });
+  // Returning these params for testing.
+  return {publishPayload: unpublishedShiftIDStorageForTesting, requestTaskArray: requestTaskArray, batchPostRequestBody: batchPostRequestBody};
 }
 
 function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
@@ -209,17 +210,17 @@ function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
   var prevWeekShiftStartTime =  moment(shift.start_time, wiw_date_format, true).add(-1, 'weeks').format(wiw_date_format);
   var nextWeekShiftStartTime = moment(shift.start_time, wiw_date_format, true).add(1, 'weeks').format(wiw_date_format);
   var nextWeekShiftEndTime = moment(shift.start_time, wiw_date_format, true).add(1, 'weeks').add(2, 'hours').format(wiw_date_format);
+  var batchPayload = [];
 
   var openShiftQuery = {
     include_open: true,
     include_allopen: true,
-    location_id: config.locationID.regular_shifts,
+    location_id: CONFIG.locationID.regular_shifts,
     start: prevWeekShiftStartTime,
     end: nextWeekShiftEndTime
   };
 
   WhenIWork.get('shifts', openShiftQuery, function(response) {
-    var batchPayload = [];
     var openShifts = response.shifts;
     if (typeof openShifts !== 'object' || openShifts.length === 0) {
       CONSOLE_WITH_TIME('NO OPEN SHIFTS RETURNED TO DECREMENT.');
@@ -265,6 +266,9 @@ function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
       CONSOLE_WITH_TIME('Response from decrementing week prior\'s shifts by one, and week after\'s open shifts by one: ', response);
     });
   });
+  // Returning payload for testing.
+  return batchPayload;
+
 }
 
 module.exports = {
