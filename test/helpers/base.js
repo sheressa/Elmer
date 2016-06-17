@@ -20,11 +20,17 @@ var WhenIWork = {
   post: function(term, params, cbFunction) {
     //may need to account for different arguments passed in in future
     if (cbFunction && typeof cbFunction === 'function') cbFunction();
+    else if (cbFunction && typeof cbFunction !== 'function') {
+      CONSOLE.WITH_TIME("Error! This callback function is not a function: ", cbFunction);
+    }
   },
   update: function(term, params, cbFunction) {
     //may need to account for different arguments passed in in future.
     if (cbFunction && typeof cbFunction === 'function') cbFunction();
-  }
+    else if (cbFunction && typeof cbFunction !== 'function') {
+      CONSOLE.WITH_TIME("Error! This callback function is not a function: ", cbFunction);
+    }
+  },
 };
 
 module.exports = WhenIWork;
