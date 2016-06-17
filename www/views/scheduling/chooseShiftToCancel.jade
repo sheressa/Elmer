@@ -16,7 +16,7 @@ block content
             - if (regularShifts && regularShifts.length > 0) {
                 h4 Weekly shifts
                 each shift in regularShifts
-                    - var parentShiftID = JSON.parse(shift.notes).parent_shift
+                    - var parentShiftID = shift.parentShiftID
                     - var title = shift.start_time + ' to ' + shift.end_time
                     div.input
                         input(type="checkbox", name='regShift' + parentShiftID)
