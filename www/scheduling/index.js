@@ -81,6 +81,10 @@ router.get('/login', function (req, res) {
 });
 
 router.get('/timezone', function (req, res) {
+  getTimezones(req, res);
+});
+
+function getTimezones(req, res) {
   if (!helpers.validate(req.query.email, req.query.token)) {
     res.status(403).send('Access denied.');
     return;
@@ -99,7 +103,7 @@ router.get('/timezone', function (req, res) {
   var url = '/scheduling/login';
 
   res.render('scheduling/timezone', {url: url, params: req.query, timezones: timezones});
-});
+}
 
 
 function checkUser(email, first, last, callback) {
@@ -156,4 +160,4 @@ function checkUser(email, first, last, callback) {
   return newUser;
 }
 
-module.exports = {router: router, checkUser: checkUser};
+module.exports = {router: router, checkUser: checkUser, getTimezones: getTimezones};
