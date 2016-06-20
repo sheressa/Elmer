@@ -8,19 +8,11 @@ global.CONFIG = require('../../config.js')
 global.KEYS = require('../../keys.js')
 
 //TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS 
-console.log('canvas ', canvas)
 var GTWusers = [];
-var emailHash = {};
-var nameHash = {};
 
 // new CronJob(CONFIG.time_interval.open_shifts, function () {
 //     scrape();
 // }, null, true);
-
-
-// NOTES NOTES NOTES NOTES NOTES
-
-//fix CroneJob (config file times)
 
 scraperGTWSess();
 
@@ -31,8 +23,8 @@ function scraperGTWSess(){
 	// var endTime = time.endDate;
 	// var startTime = time.startDate;
 
-	var endTime = '2016-05-09T20%3A05%3A27Z';
-	var startTime = '2016-05-01T20%3A05%3A27Z';
+	var endTime = '2016-06-05T20%3A05%3A27Z';
+	var startTime = '2016-06-01T20%3A05%3A27Z';
 	// console.log('time time time time ', time)
 
 	var url = 'https://api.citrixonline.com/G2W/rest/organizers/'+KEYS.GTW.org_id+'/sessions?fromTime='+startTime+'&toTime='+endTime;
@@ -43,8 +35,6 @@ function scraperGTWSess(){
     	Authorization: KEYS.GTW.api_key
   		}
 	};
-
-	console.log('url ', url)
 
 	function callback(e, r, b) {
   		if (!e && r.statusCode == 200) {
@@ -104,11 +94,13 @@ function processor(arr){
 			}
 			if(arr.length-1==index){
 				// console.log('gtw users from processor ', GTWusers)
-			 GTWusers.push(last)
-			 hash(GTWusers);
+			 GTWusers.push(last);
+			 // hash(GTWusers);
 			}
 		}
 	});
+	console.log('all GTW users ', GTWusers)
+
 	canvasUsers();
 }
 
@@ -120,79 +112,90 @@ function observationID(assignments){
 };
 
 function canvasUsers(){
-	var aID,
-	cID;
+	if(GTWusers.length==0) {
+		console.log('done')
+		return;
+	}
 
-	return canvas.scrapeCanvasC()
-	.then(function(courses){
-		courses.forEach(function(course){
-			if(course.id<42) return;
-			cID=course.id;
-			promise.all([canvas.scrapeCanvasA(course.id), canvas.scrapeCanvasU(course.id)])
-			.then(function(answers){
-				console.log('answers ', answers.length)
-				aID = observationID(answers[0]);
-				if (answers[1]) checkForAttendance(answers[1], aID, cID);
-			})
-		})
+	var uID,
+	cID,
+	aID,
+	qs = {search_term: null};
+
+	var Uurl = 'https://crisistextline.instructure.com/api/v1/accounts/1/users';
+	
+
+	var init=0;
+	var last = init+10;
+	if(last>GTWusers.length){last = GTWusers.length};
+	var tenu = GTWusers.slice(init, last);
+
+	//iterate over GTW array and scrapeCanvas for user
+	//api call for user enrollments using user_id
+	//api call for desired assignment using course id
+	//markAttendance
+	tenu.forEach(function(guser){
+
+		qs.search_term = guser.firstName + " " + guser.lastName;
+		console.log('search term ', qs.search_term)
+		canvas.scrapeCanvasU(Uurl, qs)
+		.then(function(user){
+			// identityChecker(guser, user);
+			if(user.length>1){
+				console.log('canvas users more THAN ONE');
+				return;
+			}
+			if (user.length==0) { return;}
+			console.log("user ",user)
+			uID = user[0].id;
+			var Eurl = 'https://crisistextline.instructure.com/api/v1/users/'+uID+'/enrollments';
+			canvas.scrapeCanvasEnroll(Eurl)
+			.then(function(eobj){
+				if (eobj.length==0) { return;}
+				cID = eobj[0].course_id;
+				// params.search_term = 'Attend an Observation';
+				qs.search_term = 'Attend 1 Observation';
+				console.log('enrollment obg id ', eobj[0].id)
+				canvas.scrapeCanvasA(cID, qs)
+				.then(function(assignment){
+					console.log('got to mark attendance ', cID,assignment[0].id, uID);
+		// 	// 		// markAttendance(cID, assignment[0].id, uID);
+				
+				});
+			});
+		});
 	})
+	GTWusers = GTWusers.slice(last);
+	canvasUsers();
 
-
-	// canvas.scrapeCanvasC()
+	// return canvas.scrapeCanvasC()
 	// .then(function(courses){
 	// 	courses.forEach(function(course){
 	// 		if(course.id<42) return;
-			
-	// 		canvas.scrapeCanvasA(course.id)
-	// 		.then(function(assignments){
-	// 			if(assignment.name.slice(0,36)!="Checkpoint #12: Attend 1 Observation") return;
-	// 			scrapeCanvasU(course.id, assignment.id)
-	// 			.then(function(users){
-	// 				hash(users, function(){
-	// 					checkForAttendance();
-	// 				});
-	// 			})
+	// 		cID=course.id;
+	// 		promise.all([canvas.scrapeCanvasA(course.id), canvas.scrapeCanvasU(course.id)])
+	// 		.then(function(answers){
+	// 			console.log('answers ', answers.length)
+	// 			aID = observationID(answers[0]);
+	// 			if (answers[1]) checkForAttendance(answers[1], aID, cID);
 	// 		})
 	// 	})
 	// })
-
-	// canvas.scrapeCanvasC(function(courses){
-	// 	courses.forEach(function(course){
-	// 		if(course.id<42) return;
-	// 		canvas.scrapeCanvasA(course.id, function(assignments){
-	// 			assignments.forEach(function(assignment){
-	// 			if(assignment.name.slice(0,36)!="Checkpoint #12: Attend 1 Observation") return;
-	// 			scrapeCanvasU(course.id, assignment.id, function(users){
-	// 				hash(users, function(){
-	// 					checkForAttendance();
-	// 				});
-	// 			});
-	// 		});
-	// 		});
-	// 	});		
-	// });
 }
 
 //hash GTW instead of canvas users
 //finds id's of canvas users who have attended the gtw webinar
-function checkForAttendance(users, aID, cID){
- 	// console.log('email hash ', emailHash, 'nameHash ', nameHash);
- users.forEach(function(user){
- 	// var name = user.firstName + " "+ user.lastName;
- 	// console.log('we made it, mom ')
- 	if(emailHash.hasOwnProperty(user.login_id)) {
- 		// console.log('inside of email')
- 		// console.log('from the email hash ', emailHash[user.login_id]);
- 		// markAttendance(cID, aID, user.id);
- 	} else if(nameHash.hasOwnProperty(user.name)){
- 		// console.log('inside of name')
- 		// console.log('from the name hash ', nameHash[name]);
- 		// markAttendance(cID, aID, user.id)
- 	} 
- 	// else {
+function identityChecker(gUser, cUser){
+
+	cUser.forEach(function(user){
+
+		if(cUser.login_id==gUser.email) return true;
+
+
+	})
+
  	// 	CONSOLE_WITH_TIME('Sorry, ' + user.name +' is not in the Canvas database system.');
  	// }
- });
 }
 
 //gives credit for attending a GTW webinar on Canvas
