@@ -1,7 +1,7 @@
 var express   = require('express')
   , WhenIWork = CONFIG.WhenIWork
   , api = require('./initWhenIWorkAPI')
-  , api2 = require('./initWhenIWorkAPI')
+  , api2 = require('./initSecondWhenIWorkAPIWithParams')
   , moment    = require('moment')
   , sha1      = require('sha1')
   , stathat   = require(CONFIG.root_dir + '/lib/stathat')
@@ -57,12 +57,12 @@ router.get('/login', function (req, res) {
 
     // Try to log in as the user using our global password.
     // If we can't, immediately redirect to When I Work and don't try to do anything else.
-    var api2 = new WhenIWork(KEYS.wheniwork.api_key, user.email, KEYS.wheniwork.default_password, function (resp) {
+    var newAPI = new WhenIWork(KEYS.wheniwork.api_key, user.email, KEYS.wheniwork.default_password, function (resp) {
         res.redirect('https://app.wheniwork.com/login/?redirect=myschedule');
     });
 
     // Try to generate an autologin token for a user
-    api2.post('users/autologin', function (data) {
+    newAPI.post('users/autologin', function (data) {
       // If we can't generate one for some reason, redirect immediately.
       if (typeof data.error !== 'undefined') {
         res.redirect('https://app.wheniwork.com');
@@ -135,7 +135,8 @@ function checkUser(email, first, last, callback) {
     };
 
     api.post('users', newUser, function (data) {
-
+      
+      var secondAPI = api2(KEYS.wheniwork.api_key, altEmail, KEYS.wheniwork.default_password, function (data) {});
       var alert = {sms: false, email: false};
       var alerts = ['timeoff', 'swaps', 'schedule', 'reminders', 'availability', 'new_employee', 'attendance'];
       var postBody = {};
@@ -144,17 +145,15 @@ function checkUser(email, first, last, callback) {
         postBody[alerts[i]] = alert;
       }
 
-      api2.post('users/alerts', postBody, function () {});
+      secondAPI.post('users/alerts', postBody, function () {});
 
-      api2.post('users/profile', {email: email}, function (profile) {
+      secondAPI.post('users/profile', {email: email}, function (profile) {
         CONSOLE_WITH_TIME(profile);
       });
     });
   });
+  //below is returned for testing purposes
   return newUser;
 }
 
-module.exports = {
-  router: router,
-  checkUser: checkUser
-};
+module.exports = {router: router, checkUser: checkUser};
