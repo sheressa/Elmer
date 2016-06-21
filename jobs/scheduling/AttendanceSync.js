@@ -1,47 +1,46 @@
 var CronJob = require('cron').CronJob;
-var Request = require('request');
-var bignumJSON = require('json-bignum');
-var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var canvas = require('../../canvas.js');
-var promise = require('bluebird');
+var bignumJSON = require('json-bignum');
+var Request = require('request');
+
+//global variables are here to run this file separately in node
 global.CONFIG = require('../../config.js')
 global.KEYS = require('../../keys.js')
-
-//TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS TEST IN TEST LOCATIONS 
+ 
 var GTWusers = [];
 
+//run crone job every day, interval three days; for redundancy 
+//not ready to be commented out
 // new CronJob(CONFIG.time_interval.open_shifts, function () {
-//     scrape();
+//    scrapeGTWSessions();
 // }, null, true);
 
-scraperGTWSess();
 
-//get all webinar sessions
-function scraperGTWSess(){
-	var keysArr = [];
-	// var time = urlTime();
-	// var endTime = time.endDate;
-	// var startTime = time.startDate;
+scrapeGTWSessions();
 
-	var endTime = '2016-06-05T20%3A05%3A27Z';
-	var startTime = '2016-06-01T20%3A05%3A27Z';
-	// console.log('time time time time ', time)
+//gets all webinar sessions in a specified time period
+function scrapeGTWSessions(){
+  var keysArr = [];
+  // var time = urlTime();
+  // var endTime = time.endDate;
+  // var startTime = time.startDate;
 
+  //time function needs tweaking, use this for testing for now
+  var endTime = '2016-06-21T20%3A05%3A27Z';
+  var startTime = '2016-06-19T20%3A05%3A27Z';
 	var url = 'https://api.citrixonline.com/G2W/rest/organizers/'+KEYS.GTW.org_id+'/sessions?fromTime='+startTime+'&toTime='+endTime;
 	var options = {
   		url: url,
   		headers: {
   		Accept: 'application/json',
     	Authorization: KEYS.GTW.api_key
-  		}
+      }
 	};
 
 	function callback(e, r, b) {
   		if (!e && r.statusCode == 200) {
 	   		var info = bignumJSON.parse(b);
-	   		// console.log('info info info ', info, b)
 	   		info.forEach(function(webinar){
-	   			// console.log('webinar webinar webinar ', webinar)
 	   			keysArr.push({webinarKey: webinar.webinarKey.toString(), sessionKey: webinar.sessionKey.toString()});
 	   		});
 	   		scrapeGTWAttendees(keysArr);
@@ -53,14 +52,13 @@ function scraperGTWSess(){
 	Request.get(options, callback);
 }
 
-//get all webinar attendees
+//gets all webinar attendees for each session
 function scrapeGTWAttendees(keysArr){
 
 	function callback(e, r, b) {
   		if (!e && r.statusCode == 200) {
 	   		var info = bignumJSON.parse(b);
-	   		// console.log('GTW USERS ', info)
-	   		processor(info);
+	   		checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins(info);
   		} else {
   			CONSOLE_WITH_TIME("GTW get all webinar attendees error message: ", b);
   		}
@@ -79,7 +77,7 @@ function scrapeGTWAttendees(keysArr){
 }
 
 //removes duplicate emails, calculates attended time and filters out users who attended for less than 90 minutes.
-function processor(arr){
+function checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins(arr){
 	var last;
 
 	arr.forEach(function(user, index){
@@ -89,148 +87,91 @@ function processor(arr){
 			if(last.email == user.email){
 				last.attendance+=user.attendanceTimeInSeconds;
 			} else {
-				if(last.attendance>=5400) {GTWusers.push(last);}
+				if(last.attendance>=CONFIG.GTW_attendance_minimum) {GTWusers.push(last);}
 				last = {firstName: user.firstName, lastName: user.lastName, email: user.email, attendance: user.attendanceTimeInSeconds};
 			}
 			if(arr.length-1==index){
-				// console.log('gtw users from processor ', GTWusers)
 			 GTWusers.push(last);
-			 // hash(GTWusers);
+
 			}
 		}
 	});
-	console.log('all GTW users ', GTWusers)
 
-	canvasUsers();
+  //stops the script if GTWusers array is empty
+  if(!GTWusers) { 
+    CONSOLE_WITH_TIME('None of the scrapped GTW users attended a webinar for 90 minutes or more.');
+     return;
+   } else {
+    scrapeCanvasUsers();
+  }
 }
 
-//return the id of the webinar assignment for a specific course
-function observationID(assignments){
-	assignments.forEach(function(assignment){
-		if(assignment.name.slice(0,36)=="Checkpoint #12: Attend 1 Observation") return assignment.id;
-	})
-};
-
-function canvasUsers(){
-	if(GTWusers.length==0) {
-		console.log('done')
-		return;
-	}
-
+//scrapes canvas for user, course and assignment id's
+function scrapeCanvasUsers(){
 	var uID,
 	cID,
 	aID,
-	qs = {search_term: null};
+  Eurl,
+	emailQuery = {search_term: null};
+	assignmentQuery = {search_term:'Attend 1 Observation'};
 
 	var Uurl = 'https://crisistextline.instructure.com/api/v1/accounts/1/users';
-	
 
-	var init=0;
-	var last = init+10;
-	if(last>GTWusers.length){last = GTWusers.length};
-	var tenu = GTWusers.slice(init, last);
+	GTWusers.forEach(function(guser){
 
-	//iterate over GTW array and scrapeCanvas for user
-	//api call for user enrollments using user_id
-	//api call for desired assignment using course id
-	//markAttendance
-	tenu.forEach(function(guser){
-
-		qs.search_term = guser.firstName + " " + guser.lastName;
-		console.log('search term ', qs.search_term)
-		canvas.scrapeCanvasU(Uurl, qs)
+		emailQuery.search_term = guser.email;
+    //query canvas for a user using user email
+		canvas.scrapeCanvasU(Uurl, emailQuery)
 		.then(function(user){
-			// identityChecker(guser, user);
+
+			if (!user) { 
+				//@ TODO: send request again using name only, if that fails 
+				console.log("COULD NOT FIND: ", emailQuery.search_term)
+				return;}
+
+      //@TODO: V2: send an email to trainers if the below happens 
+
 			if(user.length>1){
+				//not going to happen w email (unless there are duplicate accounts), but can w name? but since we're querying by email first there is nothing we can do at this point
+        // sendEmailtoTrainers();
 				console.log('canvas users more THAN ONE');
 				return;
 			}
-			if (user.length==0) { return;}
-			console.log("user ",user)
 			uID = user[0].id;
-			var Eurl = 'https://crisistextline.instructure.com/api/v1/users/'+uID+'/enrollments';
+			Eurl = 'https://crisistextline.instructure.com/api/v1/users/'+uID+'/enrollments';
+      //scrape for user's enrollments in order to get course ID
 			canvas.scrapeCanvasEnroll(Eurl)
 			.then(function(eobj){
-				if (eobj.length==0) { return;}
+				if (eobj.length==0) { 
+          CONSOLE_WITH_TIME('This user has no enrollments');
+          return;
+        }
 				cID = eobj[0].course_id;
-				// params.search_term = 'Attend an Observation';
-				qs.search_term = 'Attend 1 Observation';
-				console.log('enrollment obg id ', eobj[0].id)
-				canvas.scrapeCanvasA(cID, qs)
+        //scrape for the id of the relevant assignment within a specific course
+				canvas.scrapeCanvasA(cID, assignmentQuery)
 				.then(function(assignment){
 					console.log('got to mark attendance ', cID,assignment[0].id, uID);
-		// 	// 		// markAttendance(cID, assignment[0].id, uID);
+
+        // DO NOT CALL THE FUNCTION BELOW AT THIS TIME; IT IS A FUNCTIONAL POST REQUEST
+        //gives canvas user credit for attending a GTW observation
+				// markAttendance(cID, assignment[0].id, uID);
 				
 				});
 			});
 		});
 	})
-	GTWusers = GTWusers.slice(last);
-	canvasUsers();
-
-	// return canvas.scrapeCanvasC()
-	// .then(function(courses){
-	// 	courses.forEach(function(course){
-	// 		if(course.id<42) return;
-	// 		cID=course.id;
-	// 		promise.all([canvas.scrapeCanvasA(course.id), canvas.scrapeCanvasU(course.id)])
-	// 		.then(function(answers){
-	// 			console.log('answers ', answers.length)
-	// 			aID = observationID(answers[0]);
-	// 			if (answers[1]) checkForAttendance(answers[1], aID, cID);
-	// 		})
-	// 	})
-	// })
 }
 
-//hash GTW instead of canvas users
-//finds id's of canvas users who have attended the gtw webinar
-function identityChecker(gUser, cUser){
+//gives credit for attending a GTW webinar on Canvas to a user
+//can't implement now because attending a session is a quiz now, not a binary pass/fail
 
-	cUser.forEach(function(user){
-
-		if(cUser.login_id==gUser.email) return true;
-
-
-	})
-
- 	// 	CONSOLE_WITH_TIME('Sorry, ' + user.name +' is not in the Canvas database system.');
- 	// }
-}
-
-//gives credit for attending a GTW webinar on Canvas
 // function markAttendance(cID, aID, uID){
-// 	var url = 'https://crisistextline.instructure.com/api/v1/courses/'+cID+'/assignments/'+aID+'/submissions/'+uID;
-// 	var options = {
-// 		url: url,
-// 		headers: {
-// 			Authorization: KEYS.canvas.api_key
-// 		}, 
-// 		json: true,
-// 		body: {submission:{posted_grade: "pass"}}
-// 	};
-
-// 	function callback(e, r, b){
-// 		if(!e && r.statusCode == 200){
-// 			console.log(b);
-// 		} else {
-// 			CONSOLE_WITH_TIME("Canvas post error message: ", b);
-// 		}
-// 	};
-
-// 	Request.put(options, callback);
+//  canvas.updateGradeCanvas(cID, aID, uID, 'pass');
 // }
 
 //HELPERS
 
-// hashes canvas users so we don't have to enter the exciting world of nested forloops in the checkForAttendance function
-function hash(GTWUsers){
-	GTWUsers.forEach(function(user, index){
-		var name = user.firstName+" "+user.lastName;
-		emailHash[user.email] = index;
-		nameHash[name] = index;
-	});
-}
+function sendEmailtoTrainers(user){}
 
 //makes time objects url friendly; replaces ':' w '%3A' 
 //and returns GTW query time range
@@ -240,6 +181,7 @@ function urlTime(){
 	var endDate = new Date();
 	var m = endDate.getMinutes();
 	var startDate = (new Date());
+  //right now this has a 5 minute interval which i will change to 1 day
 	startDate.setMinutes(m-5);
 	endDate = endDate.toJSON().toString().slice(0,19)+'Z';
 	startDate = startDate.toJSON().toString().slice(0,19)+'Z';
