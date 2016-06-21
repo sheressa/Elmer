@@ -52,7 +52,12 @@ CONFIG.locationID = {
   test: 990385,
   test2: 1007104,
   supervisors: 884473,
-  crisis_counselors_demo: 1004215
+  supervisor_on_platform: 995815
+};
+
+CONFIG.wiwAccountID = {
+  CCs: 549781,
+  supervisors: 622060,
 };
 
 CONFIG.time_interval = {
@@ -67,6 +72,9 @@ CONFIG.time_interval = {
 
   // How often do we create new openshifts and merge duplicate openshifts
   open_shifts: '0 0 */2 * * *', // every two hours
+
+  // Runs twice a day / every twelve hours
+  cron_twice_per_day: '0 0 */12 * * *',
 
   // How often do we notify users to take more shifts
   take_more_shifts_cron_job_string: '30 5 18 * * *', // Every day at 6:05:30 pm
@@ -90,7 +98,10 @@ CONFIG.time_interval = {
   months_to_search_for_time_off_requests: 6,
 
   // How many days in advance we show open shifts
-  days_of_open_shift_display: 15
+  days_of_open_shift_display: 15,
+
+  // Number of days in a week
+  one_week: 7
 };
 
 CONFIG.numberOfCounselorsPerShift = {
