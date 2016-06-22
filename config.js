@@ -64,6 +64,8 @@ CONFIG.wiwAccountID = {
 CONFIG.GTW_attendance_minimum = 5400;
 
 CONFIG.time_interval = {
+  // runs every day at 5am
+  gtw_attendance_sync_with_canvas:'0 0 5 * * *',
   // runs every 1 min.
   recur_and_publish_shifts_cron_job_string: '0 */1 * * * *',
 

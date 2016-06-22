@@ -1,10 +1,8 @@
 var Request = require('request-promise');
 var bignumJSON = require('json-bignum');
+
 global.KEYS = require('./keys.js');
-// var throttler = require('throttled-request')(Request);
 global.CONFIG = require('./config.js')
-var RateLimiter = require('limiter').RateLimiter;
-var limiter = new RateLimiter(1, 250);
 
 var canvas = {};
 
@@ -94,7 +92,6 @@ canvas.scrapeCanvasU = function(url, params){
 		return Request(options)
 		.then(function(response){
 			var info = bignumJSON.parse(response);
-			console.log('This is the user ', info[0].name);
 			return info;
 		})
 		.catch(function(err){
@@ -119,7 +116,6 @@ var url = 'https://crisistextline.instructure.com/api/v1/courses/'+cID+'/assignm
 
   return Request(options)
   .then(function(response){
-    // console.log('response ', response)
     return  response;
   })
   .catch(function(err){
