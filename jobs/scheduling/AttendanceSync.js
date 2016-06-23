@@ -1,7 +1,3 @@
-//global variables are here to run this file separately in node
-global.CONFIG = require('../../config.js');
-global.KEYS = require('../../keys.js');
-
 var CronJob = require('cron').CronJob;
 var canvas = require('../../canvas.js');
 var bignumJSON = require('json-bignum');
@@ -9,15 +5,10 @@ var Request = require('request');
 var mandrill = require('mandrill-api/mandrill');
 var mandrill_client = new mandrill.Mandrill(KEYS.mandrill.api_key);
 
-
-//runs crone job every day
-//not ready to be commented out
-// new CronJob(CONFIG.gtw_attendance_sync_with_canvas, function () {
-//    scrapeGTWSessions();
-// }, null, true);
-
-
-scrapeGTWSessions();
+//runs crone job every day at 5am
+new CronJob(CONFIG.time_interval.gtw_attendance_sync_with_canvas, function () {
+   scrapeGTWSessions();
+}, null, true);
 
 //gets all webinar sessions in a specified time period
 function scrapeGTWSessions(){
@@ -37,6 +28,7 @@ function scrapeGTWSessions(){
 
 	function callback(e, r, b) {
   		if (!e && r.statusCode == 200) {
+        //we need bignumJSON because JS rounds GTW session ids otherwise
 	   		var info = bignumJSON.parse(b);
         if(info.length===0){
           CONSOLE_WITH_TIME('NO SESSIONS DURING', startTime, 'and', endTime, '!');
@@ -119,12 +111,14 @@ function scrapeCanvasUsers(GTWusers){
     canvas.scrapeCanvasU(Uurl, emailQuery)
     .then(function(user){
       if (user.length===0) { 
-        emailtrainer(guser);
-        CONSOLE_WITH_TIME("COULD NOT FIND: ", guser);
+        emailtrainer(guser, 0);
+        scrapeCanvasNames([guser]);
+        CONSOLE_WITH_TIME("COULD NOT FIND USER BY EMAIL: ", guser);
         return;}
 
       if(user.length>1){
-        // emailtrainer(guser);
+        emailtrainer(guser, 1);
+        scrapeCanvasNames(user);
         CONSOLE_WITH_TIME("TWO USERS WITH THE SAME EMAIL FOUND ", user);
         return;}
 
@@ -140,11 +134,49 @@ function scrapeCanvasUsers(GTWusers){
         //scrape for the id of the relevant assignment within a specific course
         canvas.scrapeCanvasA(cID, assignmentQuery)
         .then(function(assignment){
-          console.log('got to mark attendance ', cID, assignment[0].id, eobj[0].user_id);
-
-        // DO NOT CALL THE FUNCTION BELOW AT THIS TIME; IT IS A FUNCTIONAL POST REQUEST
         //gives canvas user credit for attending a GTW observation
-        // markAttendance(cID, assignment[0].id, uID);
+        markAttendance(cID, assignment[0].id, uID);
+        
+        });
+      });
+    });
+  });
+}
+
+
+function scrapeCanvasNames(gtwUser){
+   var assignmentQuery = {search_term:'Attend 1 Observation'},
+       Uurl = 'https://crisistextline.instructure.com/api/v1/accounts/1/users';
+  
+  gtwUser.forEach(function(guser){
+    var nameQuery = {search_term: guser.firstName+' '+guser.lastName};
+    //query canvas for a user using user name
+    canvas.scrapeCanvasU(Uurl, nameQuery)
+    .then(function(user){
+      if (user.length===0) { 
+        emailtrainer(guser, 2);
+        CONSOLE_WITH_TIME("COULD NOT FIND USER BY NAME: ", guser);
+        return;}
+
+      if(user.length>1){
+        emailtrainer(guser, 3);
+        CONSOLE_WITH_TIME("TWO USERS WITH THE SAME NAME FOUND ", user);
+        return;}
+
+      var uID = user[0].id;
+      var Eurl = 'https://crisistextline.instructure.com/api/v1/users/'+uID+'/enrollments';
+      //scrape for user's enrollments in order to get course ID
+      canvas.scrapeCanvasEnroll(Eurl)
+      .then(function(eobj){
+        if (eobj.length==0) { 
+          CONSOLE_WITH_TIME('This user has no enrollments');
+          return;}
+        var cID = eobj[0].course_id;
+        //scrape for the id of the relevant assignment within a specific course
+        canvas.scrapeCanvasA(cID, assignmentQuery)
+        .then(function(assignment){
+        //gives canvas user credit for attending a GTW observation
+        markAttendance(cID, assignment[0].id, uID);
         
         });
       });
@@ -155,27 +187,47 @@ function scrapeCanvasUsers(GTWusers){
 //gives credit for attending a GTW webinar on Canvas to a user
 //can't implement now because attending a session is a quiz now, not a binary pass/fail
 
-// function markAttendance(cID, aID, uID){
-//  canvas.updateGradeCanvas(cID, aID, uID, 'pass');
-// }
+function markAttendance(cID, aID, uID){
+ canvas.updateGradeCanvas(cID, aID, uID, 'pass');
+}
+
 
 //HELPERS
 
 //emails Heather whenever a user uses different emails on Canvas and GTW and we can't find them to give them credit
-function emailtrainer(user){
-  var content = 'Hello Heather! GoToWebinar user '+user.firstName + ' ' + user.lastName +' email: '+ user.email + ' was not found on Canvas and we could not give them credit for attending a GoToWebinar observation.';
-
+function emailtrainer(user, option){
   var message = {
     subject: 'Cannot find GoToWebinar attendee on Canvas',
-    text: content,
+    text: '',
     from_email: 'support@crisistextline.org',
     from_name: 'Crisis Text Line',
     to: [{
-        // email: 'heather@crisistextline.org',
+        email: 'heather@crisistextline.org',
         name: 'Heather',
         type: 'to'
     }]
   };
+  var a = {body: 'Hello Heather! GoToWebinar user '+user.firstName + ' ' + user.lastName +' email: '+ user.email + ' was not found on Canvas by email and we could not give them credit for attending a GoToWebinar observation at this time. We will attempt to find them by name next. '},
+  c = {body:'Hello Heather! GoToWebinar user '+user.firstName + ' ' + user.lastName +' email: '+ user.email + ' was not found on Canvas by email or by name and we could not give them credit for attending a GoToWebinar observation.'};
+
+  switch(option) {
+    case 0:
+    message.text = a.body;
+    case 2:
+    message.text = c.body;
+  }
+
+  if(user.length>1){
+  var d = {body:'Hello Heather! GoToWebinar user '+user[0].firstName + ' ' + user[0].lastName + ' was not found on Canvas by an initial email search and has returned two or more users after a secondary name search. We therefore could not give them credit for attending a GoToWebinar observation. The returned user objects are: '+user},
+    b = {body:'Hello Heather! GoToWebinar user with email: '+ user[0].email + ' matched two or more accounts on Canvas and therefore we could not give them credit for attending a GoToWebinar observation. The returned duplicate user objects are: '+user};
+
+  switch(option) {
+    case 1:
+    message.text = b.body;
+    case 3:
+    message.text = d.body;
+    }
+  }
 
   mandrill_client.messages.send({message: message, key: 'canvas_user_not_found'}, function (res) {
       CONSOLE_WITH_TIME(res);

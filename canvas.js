@@ -1,9 +1,5 @@
 var Request = require('request-promise');
 var bignumJSON = require('json-bignum');
-
-global.KEYS = require('./keys.js');
-global.CONFIG = require('./config.js')
-
 var canvas = {};
 
 //@TODO: add error handling
