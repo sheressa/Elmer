@@ -4,25 +4,22 @@ Input should be the WiW API to call (user or supervisor) and callback for how to
 Data is hashed by shift start time: [users scheduled];
 
 Example for using supervisor API:
+
 var wIW = require('wheniwork-unofficial');
-var apiSup = wIW.apiWithOptons({
-  key: KEYS.wheniwork.api_key, 
-  email: KEYS.wheniwork.username, 
-  password: KEYS.wheniwork.password,
-  companyName: "Crisis Text Line Supervisors"
-});
+global.KEYS = require('../../../keys.js');
+global.CONFIG = require('../../../config.js');
+var apiSup = new wIW(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password, "Crisis Text Line Supervisors");
 var fs = require('fs');
 
-// sortUsersByShift(apiSup, 995815)
-// .then(writeToFile);
+sortUsersByShift(apiSup, CONFIG.locationID.supervisor_on_platform, CONFIG.wiwAccountID.supervisors)
+.then((sortedSupers) => writeToFile('supervisorApi/sortedSupersToShifts', sortedSupers));
 
-function writeToFile (text) {
-  fs.writeFile('../../../test/helpers/sampleResponse/testingSupervisorsResponse.json', JSON.stringify(text), (err) => {
+function writeToFile (fileName, text) {
+  fs.writeFile(`../../../test/helpers/sampleResponse/${fileName}.json`, JSON.stringify(text), (err) => {
     if (err) throw err;
-    console.log('It\'s saved!');
+    console.log(`${fileName} saved!`);
   });
 }
-
 **/
 
 var gravatar = require('gravatar');

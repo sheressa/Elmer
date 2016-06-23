@@ -1,3 +1,4 @@
+var wiw = require('wheniwork-unofficial');
 var moment = require('moment-timezone');
 moment.tz.setDefault("America/New_York");
 
@@ -41,7 +42,12 @@ global.MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE = function(timestring) {
   return firstPart + ' ' + timeZonePart;
 };
 
-CONFIG.WhenIWork = process.env.NODE_ENV === 'test' ? require('./test/helpers/base') : require('./jobs/scheduling/base');
+CONFIG.WhenIWork = process.env.NODE_ENV === 'test' ? 
+  require('./test/helpers/base') : 
+  require('./jobs/scheduling/base');
+CONFIG.WhenIWorkSuper = process.env.NODE_ENV === 'test' ? 
+  require('./test/helpers/mockWiWSupervisors') :
+  require('./jobs/scheduling/WiWSupervisorsApi');
 
 CONFIG.root_dir = __dirname;
 
