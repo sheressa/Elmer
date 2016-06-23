@@ -9,6 +9,9 @@ var WhenIWork = {
     if (term === 'users') {
       cbFunction(sampleData.usersResponse);
     }
+    else if (term === 'users/7889841') {
+      params({user: sampleData.usersResponse.users[2]});
+    }
     else if (term === 'shifts') {
       cbFunction(sampleData.shiftsResponse);
     }
