@@ -1,134 +1,182 @@
-var CronJob = require('cron').CronJob;
-var WhenIWork = require('./base');
-var fs = require('fs');
-var stathat = require(CONFIG.root_dir + '/lib/stathat');
+// TODO enable this when we have the go ahead from Darren -
 
-new CronJob(CONFIG.time_interval.take_more_shifts_cron_job_string, function () {
-  notifyMoreShifts();
-});
+// var CronJob = require('cron').CronJob;
+// var wIWUserAPI = CONFIG.WhenIWork;
+// var wiw = require('wheniwork-unofficial');
+// var wIWSupervisorsAPI = new wiw(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password, "Crisis Text Line Supervisors");
 
-function notifyMoreShifts(sampleData) {
+// var stathat = require(CONFIG.root_dir + '/lib/stathat');
+// var moment = require('moment');
+// var retrieveAndSortSupervisorsByShift = require('./helpers/sortUsersByShift');
+// var composeEmail = require('../../email_templates/composeNotifyMoreShifts');
+// var mandrill = require('mandrill-api/mandrill');
+// var mandrill_client = new mandrill.Mandrill(KEYS.mandrill.api_key);
 
+
+// new CronJob(CONFIG.time_interval.cron_twice_per_day, notifyMoreShifts);
+
+// notifyMoreShifts();
+
+function notifyMoreShifts() {
+  var result;
   var query = {
-    location_id: CONFIG.locationID.regular_shifts,
-    end: '+' + CONFIG.time_interval.days_of_open_shift_display + ' days'
+    end: '+' + CONFIG.time_interval.one_week + ' days',
+    location_id: CONFIG.locationID.regular_shifts
   };
 
-  if (process.env.NODE_ENV === 'test') {
-    return findUserShifts(sampleData.shifts);
-  } else {
-    WhenIWork.get('shifts', query, function (data) {
-      findUserShifts(data);
-    });  
-  }
-}
+  wIWUserAPI.get('shifts', query, function (response) {
+    var usersTally = tallyUserShifts(response.shifts);
+    var usersWithTwoOrMore = listUsersWithTwoOrMoreShifts(usersTally);
 
-function findUserShifts(data) {
-  var users = {};
-  var shift;
+    if (objectHasOwnKeys(usersWithTwoOrMore)) {
+      var filteredUsers = removeOlderUsers(response.users);
+      var twoShiftNotificationResult = twoShiftNotification(filteredUsers, usersWithTwoOrMore);
 
-  for (var i in data.shifts) {
-    shift = data.shifts[i];
+      if (objectHasOwnKeys(twoShiftNotificationResult.usersBeingNotified)) {
 
-    if (typeof users[shift.user_id] == 'undefined') {
-      users[shift.user_id] = 0;
+        batchPost(twoShiftNotificationResult.updateUserNotes);
+
+        retrieveAndSortSupervisorsByShift(wIWSupervisorsAPI, CONFIG.locationID.supervisor_on_platform, CONFIG.wiwAccountID.supervisors)
+        .then(function(shiftsToSup){
+          result = mandrillEachUser(twoShiftNotificationResult.usersBeingNotified, shiftsToSup);  
+        })
+        .catch(function(err){
+          CONSOLE_WITH_TIME(err);
+        });
+      }
+
     }
 
-    users[shift.user_id]++;
-  }
-  return processUsers(users, sampleData); 
+  });
+  return result;
 }
 
-function processUsers(users, sampleData) {
-  var only_one = [];
-  var only_two = [];
+function objectHasOwnKeys(obj) {
+  var numberOfKeys = 0;
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) numberOfKeys++;
+  }
+  return numberOfKeys;
+}
+
+function tallyUserShifts(shifts) {
+  var users = {};
+
+  shifts.forEach(function(shift){
+    if (typeof users[shift.user_id] == 'undefined') {
+      users[shift.user_id] = [];
+    }
+    users[shift.user_id].push(shift.start_time);
+  });
+
+  return users; 
+}
+
+function listUsersWithTwoOrMoreShifts(users) {
+  var usersWithTwoOrMoreShifts = {};
 
   for (var i in users) {
-    if (users[i] == 1) {
-      only_one.push(i);
-    } else if (users[i] == 2) {
-      only_two.push(i);
-    }
+    if (users[i].length >= 2) usersWithTwoOrMoreShifts[i] = users[i];
   }
 
-  stathat.log('Scheduling - One Shift', only_one.length);
-  stathat.log('Scheduling - Two Shifts', only_two.length);
-
-  // We're going to notify these people once a day.
-  var one_shift_post = {
-    ids: only_one,
-    subject: 'Thanks for signing up for a shift',
-    message: fs.readFileSync('./email_templates/one_shift.txt', {encoding: 'utf-8'})
-  };
-  WhenIWork.post('send', one_shift_post);
-  // Now we're going to notify these people once. So the logic is more complicated.
-  if (only_two.length > 0) {
-
-    var req = {
-      location_id: CONFIG.locationID.regular_shifts
-    };
-
-    if (process.env.NODE_ENV === 'test') {
-      return twoShiftNotification(sampleData, only_two, one_shift_post);
-    } else {
-      WhenIWork.get('users', req, function (data) {
-        twoShiftNotification(data, only_two, one_shift_post);
-      });
-    }
-  }
+  stathat.log('Scheduling - Two Shifts', objectHasOwnKeys(usersWithTwoOrMoreShifts));
+  return usersWithTwoOrMoreShifts;
 }
 
-function twoShiftNotification(data, only_two, one_shift_post) {
-    var only_two_notify = [];
-    var user_data;
-    var update_queue = [];
+function removeOlderUsers (users) {
+  return users.filter(function(user) {
+    var created = moment(new Date(user.created_at));
+    return moment().diff(created, 'days') < CONFIG.time_interval.days_of_open_shift_display;
+  });
+}
 
-    for (var i in data.users) {
-      /**
-        Soooo apparently the {ids: 1,2,3} doesn't work in the WiW API...
-        Fuck. That.
-      **/
+function parseUserNotes(notes) {
+  var user_data = notes;
+  if (typeof user_data !== 'string') {
+    user_data = '{}';
+  }
+  else {
+    try {
+      user_data = JSON.parse(user_data);
+    }
+    catch(e) {
+      CONSOLE_WITH_TIME("Error parsing JSON in notifyMoreShifts: ", e, "\nNotes: ", notes);
+      user_data = {};
+    }
+  } 
+  return user_data;
+}
 
-      if (only_two.indexOf('' + data.users[i].id) < 0) {
-        continue;
-      }
+function twoShiftNotification(users, usersToNotify) {
+  // users is an array of user objects, usersToNotify is hash from userID: [shift start times]
+  var usersBeingNotified = {};
+  var updateUserNotes = [];
+  var user_data;
 
-      user_data = data.users[i].notes;
+  users.forEach(function(user){
 
-      if (typeof user_data !== 'object') {
-        user_data = {};
-      }
-      else {
-        try {
-          user_data = JSON.parse(user_data);
-        }
-        catch(e) {
-          user_data = {};
-          CONSOLE_WITH_TIME("Error parsing JSON in notifyMoreShifts: ", e);
-        }
-      } 
-      if (user_data['two_shift_notification'] === undefined) {
+    if (usersToNotify[user.id]) {
+
+      user_data = parseUserNotes(user.notes);
+
+      if (user_data.two_shift_notification === undefined) {
         user_data.two_shift_notification = true;
-        update_queue.push({
+        updateUserNotes.push({
           method: 'PUT',
-          url: '/2/users/'+data.users[i].id,
+          url: '/2/users/' + user.id,
           params: {notes: JSON.stringify(user_data)}
         });
-        only_two_notify.push(data.users[i].id);
+
+        usersBeingNotified[user.id] = {
+          firstName: user.first_name,
+          lastName: user.last_name,
+          email: user_data.canonicalEmail ? user_data.canonicalEmail : user.email,
+          shifts: usersToNotify[user.id]
+        };
+        
       }
     }
 
-    WhenIWork.post('batch', update_queue);
+  });
 
-    if (only_two_notify.length > 0) {
-      var two_shift_post = {
-        ids: only_two_notify,
-        subject: 'A little secret...',
-        message: fs.readFileSync('./email_templates/two_shifts.txt', {encoding: 'utf-8'})
-      };
-      WhenIWork.post('send', two_shift_post);
-      if (process.env.NODE_ENV === 'test') return {one_shift_post: one_shift_post, two_shift_post: two_shift_post};
-    }
+  return {updateUserNotes: updateUserNotes, usersBeingNotified: usersBeingNotified};
+}
+
+function batchPost(updateUserNotes) {
+  wIWUserAPI.post('batch', updateUserNotes);
+}
+
+function mandrillEachUser(userWithAllInfo, shiftToSup) {
+  var results = [];
+  var contents;
+  var user;
+
+  for (var i in userWithAllInfo) {
+    user = userWithAllInfo[i];
+    contents = composeEmail(user, shiftToSup);
+
+    results.push(contents);
+
+    var message = {
+      subject: 'Thank you for booking!',
+      html: contents,
+      from_email: 'support@crisistextline.org',
+      from_name: 'Crisis Text Line',
+      to: [{
+          email: user.email,
+          name: user.firstName + ' ' + user.lastName,
+          type: 'to'
+      }],
+      headers: {
+          "Reply-To": "support@crisistextline.org",
+      }
+    };
+
+    mandrill_client.messages.send({message: message}, CONSOLE_WITH_TIME);
+  }
+
+  // results are returned for testing.
+  return results;
 }
 
 module.exports.go = notifyMoreShifts;
