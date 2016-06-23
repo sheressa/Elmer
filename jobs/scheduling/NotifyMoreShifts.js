@@ -5,6 +5,7 @@
 // var wiw = require('wheniwork-unofficial');
 // var wIWSupervisorsAPI = new wiw(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password, "Crisis Text Line Supervisors");
 
+// var updateCanvas = require('./updateCanvas.js');
 // var stathat = require(CONFIG.root_dir + '/lib/stathat');
 // var moment = require('moment');
 // var retrieveAndSortSupervisorsByShift = require('./helpers/sortUsersByShift');
@@ -127,13 +128,16 @@ function twoShiftNotification(users, usersToNotify) {
           params: {notes: JSON.stringify(user_data)}
         });
 
+        var email = user_data.canonicalEmail ? user_data.canonicalEmail : user.email;
+
         usersBeingNotified[user.id] = {
           firstName: user.first_name,
           lastName: user.last_name,
-          email: user_data.canonicalEmail ? user_data.canonicalEmail : user.email,
+          email: email,
           shifts: usersToNotify[user.id]
         };
         
+        updateCanvas.findWiWUserInCanvas(user.first_name + " " + user.last_name, email);
       }
     }
 
