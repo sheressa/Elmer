@@ -28,7 +28,7 @@
     "sha1": "^1.1.1",
     "stathat": "0.0.8",
     "static-favicon": "~1.0.0",
-    "wheniwork-unofficial": "^0.1.5"
+    "wheniwork-unofficial": "^0.2.0"
   },
   "devDependencies": {
     "mocha": "^2.4.5",
