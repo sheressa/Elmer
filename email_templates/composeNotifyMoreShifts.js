@@ -23,11 +23,11 @@ function composeEmail (user, shiftToSup) {
    "<p> Our supervisors are amazeballs. They're also human beings who take vacations and get sick - if your super above isn’t online for your shift, don't fret. You’ll be in good hands with someone else on our team. Here are a few pro tips for the platform: </p>" +
     "<ul>" +
       "<li>Your supervisor's name is on the upper left corner of your screen (click it and say hello!)</li>" +
-      "<li>Enter your status under your name (suggestion: &#34First Shift&#34 - or some funky version of this, so your fellow crisis counselors know to say hi!)</li>" +
+      "<li>Enter your status under your name (suggestion: " + '"First Shift"' + " - or some funky version of this, so your fellow crisis counselors know to say hi!)</li>" +
       "<li>Only take 1 conversation at a time</li>" +
       "<li>NEVER feel like you are alone, your peers and supervisors are there to help!</li>" +
       "<li>Say hi to everyone in the Global Chat let them know you are new - join the convo (it's a fun crew!)</li>" +
-      "<li>If you need to make any changes to your schedule, or aren't able to make your first shift please visit CTL Online and click on &#34Shift Scheduling&#34.</li>" +
+      "<li>If you need to make any changes to your schedule, or aren't able to make your first shift please visit CTL Online and click on " + '"Shift Scheduling"' + ".</li>" +
     "</ul> " +
     "<p> Taking your first shift is the last step in becoming a bona fide Crisis Counselor! You got this!</p>" +
     "<p> Enjoy your first shift, </p> " +
