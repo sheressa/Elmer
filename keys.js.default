@@ -13,6 +13,15 @@ KEYS.wheniwork = {
   default_password: 'TODO'
 };
 
+KEYS.GTW = {
+  org_id: TODO,
+  api_key:'TODO'
+};
+
+KEYS.canvas = {
+  api_key: 'TODO'
+};
+
 KEYS.mandrill = {
   api_key: 'TODO'
 };
@@ -23,7 +32,9 @@ KEYS.stathat = {
 };
 
 //development test keys
+
 KEYS.test = {};
+
 KEYS.test.secret_key = 'SuperSecretKey';
 
 KEYS.test.platform_secret_key = '';
@@ -35,6 +46,15 @@ KEYS.test.wheniwork = {
   username: 'TODO',
   password: 'TODO',
   default_password: 'TODO'
+};
+
+KEYS.test.GTW = {
+  org_id: TODO,
+  api_key:'TODO'
+};
+
+KEYS.test.canvas = {
+  api_key: 'TODO'
 };
 
 KEYS.test.mandrill = {

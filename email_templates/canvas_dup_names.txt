@@ -1,0 +1,3 @@
+Hello Heather! 
+
+GoToWebinar user %fname %lname was not found on Canvas by an initial email search and has returned two or more users after a secondary name search. We therefore could not give them credit for attending a GoToWebinar observation. The returned user objects are: %user
