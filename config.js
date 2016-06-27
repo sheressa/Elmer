@@ -60,8 +60,10 @@ CONFIG.wiwAccountID = {
   supervisors: 622060,
 };
 
-//in seconds
+//used in AttendanceSync.js to check whether trainees attended a GTW webinar for a minimum of 90 minutes = 5400 seconds
 CONFIG.GTW_attendance_minimum = 5400;
+//used in AttendanceSync.js to set the hour range over which we query GTW sessions
+CONFIG.GTW_time_range_query = 72;
 
 CONFIG.time_interval = {
   // runs every day at 5am
