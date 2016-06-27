@@ -10,6 +10,8 @@ new CronJob(CONFIG.time_interval.recur_and_publish_shifts_cron_job_string, funct
   recurNewlyCreatedShifts();
 }, null, true);
 
+recurNewlyCreatedShifts();
+
 function recurNewlyCreatedShifts(optionalNoShiftsForTesting) {
   var batchPostRequestBody = [];
   var requestTaskArray = [];
