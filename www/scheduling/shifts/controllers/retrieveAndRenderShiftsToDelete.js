@@ -41,7 +41,7 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
         whenIWorkAPI.get('shifts', query, function(response) {
           var url = scheduleShiftsURL + 'email=' + encodeURIComponent(email) + '&token=' + req.query.token;
           if (!response.shifts || !response.shifts.length) {
-            var error = "You don't seem to have booked any shifts to delete! If this message is sent in error, contact scheduling@crisistextline.org";
+            var error = "You don't seem to have booked any shifts to delete! If this message is sent in error, contact support@crisistextline.org";
             templateData = {
                 regularShifts: [],
                 makeupShifts: [],
@@ -79,7 +79,8 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
           **/
           regularShifts.forEach(function(shift) {
             if (!shift.notes) {
-              var error = "Sorry! WhenIWork is loading slowly. Please wait 30 seconds, and then refresh and try again.";
+              var error = "Sorry! The page is loading slowly. Please wait 30 seconds, and then refresh and try again. \n" + 
+                          "If this problem persists please let us know via email to support@crisistextline.org";
               res.render('scheduling/chooseShiftToCancel', { error: error , url: url});
               return;
             }
