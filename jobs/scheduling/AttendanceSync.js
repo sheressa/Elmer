@@ -157,6 +157,10 @@ function scrapeCanvasCourse(uID){
     if (!eobj.length) { 
       CONSOLE_WITH_TIME('This user has no enrollments');
       return;}
+    if(eobj[0].type=='TeacherEnrollment' || 'DesignerEnrollment'){
+      CONSOLE_WITH_TIME('THE USER ' + eobj[0].user.name + ' APPEARS TO BE A TEACHER, ABORTING GRADING');
+      return;
+    }
     var cID = eobj[0].course_id;
     //scrape for the id of the relevant assignment within a specific course
     canvas.scrapeCanvasA(cID, assignmentQuery)
