@@ -87,7 +87,7 @@ function checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins(arr){
 				userData = {firstName: user.firstName, lastName: user.lastName, email: user.email, attendance: user.attendanceTimeInSeconds};
 			}
     }
-		if(arr.length-1==index && userData.attendanceTimeInSeconds>=CONFIG.GTW_attendance_minimum){
+		if(arr.length-1==index && userData.attendance>=CONFIG.GTW_attendance_minimum){
 			 GTWusers.push(userData);
 		 }
 	});
