@@ -6,13 +6,13 @@ var mandrill = require('mandrill-api/mandrill');
 var mandrill_client = new mandrill.Mandrill(KEYS.mandrill.api_key);
 var fs = require('fs');
 
-//runs crone job every day at 5am
+//runs cron job every day at 5am
 new CronJob(CONFIG.time_interval.gtw_attendance_sync_with_canvas, function () {
-   scrapeGTWSessions();
+   startJobByQueryingForGTWSessions();
 }, null, true);
 
 //gets all webinar sessions in a specified time period
-function scrapeGTWSessions(){
+function startJobByQueryingForGTWSessions(){
   var keysArr = [];
   var time = urlTime();
   var endTime = time.endDate;
@@ -27,35 +27,35 @@ function scrapeGTWSessions(){
       }
 	};
 
-	function callback(e, r, b) {
-  		if (!e && r.statusCode == 200) {
+	function callback(error, response, body) {
+  		if (!error && response.statusCode == 200) {
         //we need bignumJSON because JS rounds GTW session ids otherwise
-	   		var info = bignumJSON.parse(b);
-        if(info.length===0){
+	   		var GTWSessions = bignumJSON.parse(body);
+        if(GTWSessions.length===0){
           CONSOLE_WITH_TIME('NO SESSIONS DURING', startTime, 'and', endTime, '!');
           return;
         }
-	   		info.forEach(function(webinar){
+	   		GTWSessions.forEach(function(webinar){
 	   			keysArr.push({webinarKey: webinar.webinarKey.toString(), sessionKey: webinar.sessionKey.toString()});
 	   		});
-	   		scrapeGTWAttendees(keysArr);
+	   		queryForGTWAttendees(keysArr);
   		} else {
-  			CONSOLE_WITH_TIME("GTW get all webinars error message: ", b);
+  			CONSOLE_WITH_TIME("GTW get all webinars error message: ", body);
   		}
 	}
 
 	Request.get(options, callback);
 }
 
-//gets all webinar attendees for each session
-function scrapeGTWAttendees(keysArr){
+//gets all webinar attendees for each session then calls a user processing function
+function queryForGTWAttendees(keysArr){
 
-	function callback(e, r, b) {
-  		if (!e && r.statusCode == 200) {
-	   		var info = bignumJSON.parse(b);
-	   		checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins(info);
+	function callback(error, response, body) {
+  		if (!error && response.statusCode == 200) {
+	   		var GTWAttendees = bignumJSON.parse(body);
+	   		checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins(GTWAttendees);
   		} else {
-  			CONSOLE_WITH_TIME("GTW get all webinar attendees error message: ", b);
+  			CONSOLE_WITH_TIME("GTW get all webinar attendees error message: ", body);
   		}
 	}
 
@@ -73,113 +73,112 @@ function scrapeGTWAttendees(keysArr){
 
 //removes duplicate emails, calculates attended time and filters out users who attended for less than 90 minutes.
 function checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins(arr){
-	var last;
+	var userData;
   var GTWusers = [];
 
 	arr.forEach(function(user, index){
-		if(!last){
-		last = {firstName: user.firstName, lastName: user.lastName, email: user.email, attendance: user.attendanceTimeInSeconds};
+		if(!userData){
+		userData = {firstName: user.firstName, lastName: user.lastName, email: user.email, attendance: user.attendanceTimeInSeconds};
 		} else {
-			if(last.email == user.email){
-				last.attendance+=user.attendanceTimeInSeconds;
+			if(userData.email == user.email){
+				userData.attendance+=user.attendanceTimeInSeconds;
 			} else {
-				if(last.attendance>=CONFIG.GTW_attendance_minimum) {GTWusers.push(last);}
-				last = {firstName: user.firstName, lastName: user.lastName, email: user.email, attendance: user.attendanceTimeInSeconds};
+				if(userData.attendance>=CONFIG.GTW_attendance_minimum) {GTWusers.push(userData);}
+				userData = {firstName: user.firstName, lastName: user.lastName, email: user.email, attendance: user.attendanceTimeInSeconds};
 			}
-			if(arr.length-1==index){
-			 GTWusers.push(last);
-
-			}
-		}
+    }
+		if(arr.length-1==index && userData.attendanceTimeInSeconds>=CONFIG.GTW_attendance_minimum){
+			 GTWusers.push(userData);
+		 }
 	});
   //stops the script if GTWusers array is empty
   if(!GTWusers) { 
-    CONSOLE_WITH_TIME('None of the scrapped GTW users attended a webinar for 90 minutes or more.');
+    CONSOLE_WITH_TIME('None of the scraped GTW users attended a webinar for 90 minutes or more.');
      return;
    } else {
-    findCanvasUsersEmail(GTWusers);
+    findCanvasUsersByEmail(GTWusers);
   }
 }
 
 //scrapes canvas for user by email, course and assignment id's
-function findCanvasUsersEmail(GTWusers){
+function findCanvasUsersByEmail(GTWusers){
   var Uurl = 'https://crisistextline.instructure.com/api/v1/accounts/1/users';
   
-  GTWusers.forEach(function(guser){
-    var emailQuery = {search_term: guser.email};
+  GTWusers.forEach(function(GTWUser){
+    var emailQuery = {search_term: GTWUser.email};
     //query canvas for a user using user email
     canvas.scrapeCanvasU(Uurl, emailQuery)
-    .then(function(user){
-      if (!user.length) { 
-        emailtrainer(guser, 0);
-        findCanvasUsersName(guser);
-        CONSOLE_WITH_TIME("COULD NOT FIND USER BY EMAIL: ", guser);
+    .then(function(canvasUsers){
+      if (!canvasUsers.length) { 
+        emailTrainer(GTWUser, 0);
+        findCanvasUserByName(GTWUser);
+        CONSOLE_WITH_TIME("COULD NOT FIND USER BY EMAIL: ", GTWUser);
         return;}
 
-      if(user.length>1){
-        emailtrainer(guser, 1);
-        CONSOLE_WITH_TIME("TWO USERS WITH THE SAME EMAIL FOUND ", user);
+      if(canvasUsers.length>1){
+        emailTrainer(GTWUser, 1);
+        CONSOLE_WITH_TIME("TWO USERS WITH THE SAME EMAIL FOUND ", canvasUsers);
         return;}
-      var uID = user[0].id;
-      scrapeCanvasCourse(uID);
+      var userID = canvasUsers[0].id;
+      queryForCanvasCoursesAndAssignments(userID);
     });
   });
 }
 
 //scrapes canvas for user by name, course and assignment id's
-function findCanvasUsersName(guser){
+function findCanvasUserByName(GTWUser){
   var Uurl = 'https://crisistextline.instructure.com/api/v1/accounts/1/users',
-  nameQuery = {search_term: guser.firstName+' '+guser.lastName};
+  nameQuery = {search_term: GTWUser.firstName+' '+GTWUser.lastName};
     //query canvas for a user using user email
   canvas.scrapeCanvasU(Uurl, nameQuery)
-  .then(function(user){
-    if (!user.length) { 
-      emailtrainer(guser, 2);
-      CONSOLE_WITH_TIME("COULD NOT FIND USER BY EMAIL: ", guser);
+  .then(function(canvasUsers){
+    if (!canvasUsers.length) { 
+      emailTrainer(GTWUser, 2);
+      CONSOLE_WITH_TIME("COULD NOT FIND USER BY NAME: ", GTWUser);
       return;}
 
-    if(user.length>1){
-      emailtrainer(guser, 3);
-      CONSOLE_WITH_TIME("TWO USERS WITH THE SAME EMAIL FOUND ", user);
+    if(canvasUsers.length>1){
+      emailTrainer(GTWUser, 3);
+      CONSOLE_WITH_TIME("TWO USERS WITH THE SAME NAME FOUND ", canvasUsers);
       return;}
-    var uID = user[0].id;
-    scrapeCanvasCourse(uID);
+    var userID = canvasUsers[0].id;
+    queryForCanvasCoursesAndAssignments(userID);
   });
 }
 
 //scrapes canvas for user by name, course and assignment id's
-function scrapeCanvasCourse(uID){
+function queryForCanvasCoursesAndAssignments(userID){
   var assignmentQuery = {search_term:'Attend 1 Observation'},
-  Eurl = 'https://crisistextline.instructure.com/api/v1/users/'+uID+'/enrollments';
+  Eurl = 'https://crisistextline.instructure.com/api/v1/users/'+userID+'/enrollments';
       //scrape for user's enrollments in order to get course ID
   canvas.scrapeCanvasEnroll(Eurl)
-  .then(function(eobj){
-    if (!eobj.length) { 
+  .then(function(enrollmentObj){
+    if (!enrollmentObj.length) { 
       CONSOLE_WITH_TIME('This user has no enrollments');
       return;}
-    if(eobj[0].type=='TeacherEnrollment' || 'DesignerEnrollment'){
-      CONSOLE_WITH_TIME('THE USER ' + eobj[0].user.name + ' APPEARS TO BE A TEACHER, ABORTING GRADING');
+    if(enrollmentObj[0].type=='TeacherEnrollment' || enrollmentObj[0].type=='DesignerEnrollment'){
+      CONSOLE_WITH_TIME('THE USER ' + enrollmentObj[0].user.name + ' APPEARS TO BE A TEACHER, ABORTING GRADING');
       return;
     }
-    var cID = eobj[0].course_id;
+    var courseID = enrollmentObj[0].course_id;
     //scrape for the id of the relevant assignment within a specific course
-    canvas.scrapeCanvasA(cID, assignmentQuery)
+    canvas.scrapeCanvasA(courseID, assignmentQuery)
     .then(function(assignment){
     //gives canvas user credit for attending a GTW observation
-    markAttendance(cID, assignment[0].id, uID);
+    markAttendanceInCanvas(courseID, assignment[0].id, userID);
     });
   });
 }
 
 //gives credit for attending a GTW webinar on Canvas to a user
-function markAttendance(cID, aID, uID){
- canvas.updateGradeCanvas(cID, aID, uID, 'pass');
+function markAttendanceInCanvas(courseID, assignmentID, userID){
+ canvas.updateGradeCanvas(courseID, assignmentID, userID, 'pass');
 }
 
 //HELPERS
 
 //emails Heather whenever a user uses different emails on Canvas and GTW and we can't find them to give them credit
-function emailtrainer(user, option){
+function emailTrainer(user, option){
   var template,
   content;
 
@@ -219,9 +218,9 @@ function emailtrainer(user, option){
 //the interval is 72 hours to ensure redundancy
 function urlTime(){
   var endDate = new Date();
-  var h = endDate.getHours();
+  var hours = endDate.getHours();
   var startDate = new Date();
-  startDate.setHours(h-72);
+  startDate.setHours(hours-CONFIG.GTW_time_range_query);
   endDate = endDate.toJSON().toString().slice(0,19)+'Z';
   startDate = startDate.toJSON().toString().slice(0,19)+'Z';
   var re = new RegExp(':', 'ig');

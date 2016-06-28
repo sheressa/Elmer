@@ -1,7 +1,7 @@
 var express   = require('express')
   , WhenIWork = CONFIG.WhenIWork
   , api = require('./initWhenIWorkAPI')
-  , api2 = require('./initSecondWhenIWorkAPIWithParams')
+  , createSecondAPI = require('./initSecondWhenIWorkAPIWithParams')
   , moment    = require('moment')
   , sha1      = require('sha1')
   , stathat   = require(CONFIG.root_dir + '/lib/stathat')
@@ -46,7 +46,7 @@ router.get('/login', function (req, res) {
         notes = JSON.parse(user.notes);
       } catch (e) {
         if (user.notes !== undefined && user.notes.trim() !== '') {
-            notes[user.notes.trim()] = true;
+          notes[user.notes.trim()] = true;
         }
       }
       notes['timezoneSet'] = true;
@@ -57,7 +57,7 @@ router.get('/login', function (req, res) {
 
     // Try to log in as the user using our global password.
     // If we can't, immediately redirect to When I Work and don't try to do anything else.
-    var newAPI = new WhenIWork(KEYS.wheniwork.api_key, user.email, KEYS.wheniwork.default_password, function (resp) {
+    var newAPI = createSecondAPI(KEYS.wheniwork.api_key, user.email, KEYS.wheniwork.default_password, function (resp) {
         res.redirect('https://app.wheniwork.com/login/?redirect=myschedule');
     });
 
@@ -139,8 +139,7 @@ function checkUser(email, first, last, callback) {
     };
 
     api.post('users', newUser, function (data) {
-      
-      var secondAPI = api2(KEYS.wheniwork.api_key, altEmail, KEYS.wheniwork.default_password, function (data) {});
+      var secondAPI = createSecondAPI(KEYS.wheniwork.api_key, altEmail, KEYS.wheniwork.default_password, function (error) { CONSOLE_WITH_TIME('Error creating secondAPI within checkUser: ', error)});
       var alert = {sms: false, email: false};
       var alerts = ['timeoff', 'swaps', 'schedule', 'reminders', 'availability', 'new_employee', 'attendance'];
       var postBody = {};
@@ -153,6 +152,7 @@ function checkUser(email, first, last, callback) {
 
       secondAPI.post('users/profile', {email: email}, function (profile) {
         CONSOLE_WITH_TIME(profile);
+        callback(profile.user);
       });
     });
   });
