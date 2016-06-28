@@ -31,10 +31,9 @@ router.get('/login', function (req, res) {
 
   var email = req.query.email;
 
-  checkUser(req.query.email, req.query.fn, req.query.ln, function (user) {
-    CONSOLE_WITH_TIME('made it out of checkuser', user)
+  checkUser(req.query.email, req.query.fn, req.query.ln, function (user, notes) {
     // If they have not yet set their timezone
-    if ((user.notes.indexOf('timezoneSet') < 0) && req.query.timezone == undefined) {
+    if ((notes.indexOf('timezoneSet') < 0) && req.query.timezone == undefined) {
       res.redirect('/scheduling/timezone?' + querystring.stringify(req.query));
       return;
     }
@@ -61,10 +60,8 @@ router.get('/login', function (req, res) {
     var newAPI = createSecondAPI(KEYS.wheniwork.api_key, user.email, KEYS.wheniwork.default_password, function (resp) {
         res.redirect('https://app.wheniwork.com/login/?redirect=myschedule');
     });
-    CONSOLE_WITH_TIME('made it to right before autologin')
     // Try to generate an autologin token for a user
     newAPI.post('users/autologin', function (data) {
-      CONSOLE_WITH_TIME('inside autologin', data)
       // If we can't generate one for some reason, redirect immediately.
       if (typeof data.error !== 'undefined') {
         res.redirect('https://app.wheniwork.com');
@@ -116,7 +113,7 @@ function checkUser(email, first, last, callback) {
     users = users.users;
     for (var i in users) {
       if (users[i].email == email || users[i].email == altEmail) {
-        callback(users[i]);
+        callback(users[i], users[i].notes);
         return;
       }
     }
@@ -154,7 +151,7 @@ function checkUser(email, first, last, callback) {
 
       secondAPI.post('users/profile', {email: email}, function (profile) {
         CONSOLE_WITH_TIME(profile);
-        callback(profile.user);
+        callback(profile.user, newUser.notes);
       });
     });
   });
