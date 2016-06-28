@@ -42,7 +42,7 @@ var WhenIWork = {
     else if (cbFunction && typeof cbFunction !== 'function') {
       CONSOLE.WITH_TIME("Error! This callback function is not a function: ", cbFunction);
     }
-  },
+  }
 };
 
 module.exports = WhenIWork;

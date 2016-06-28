@@ -8,6 +8,7 @@ global.KEYS = require('../keys.js');
 global.CONFIG = require('../config.js');
 //tests
 var colorize = require('./colorize.js');
+var attendanceSync = require('./attendanceSync.js');
 var loginUserCreation = require('./loginUserCreation.js');
 var retrieveAndRenderShiftsToDelete = require('./retrieveAndRenderShiftsToDelete.js');
 var whenIWorkUnofficialAPI = require('./whenIWorkUnofficialAPI.js');

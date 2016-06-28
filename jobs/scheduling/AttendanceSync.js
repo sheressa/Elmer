@@ -79,13 +79,13 @@ function checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins(arr){
 	arr.forEach(function(user, index){
 		if(!userData){
 		userData = {firstName: user.firstName, lastName: user.lastName, email: user.email, attendance: user.attendanceTimeInSeconds};
-		} else {
-			if(userData.email == user.email){
-				userData.attendance+=user.attendanceTimeInSeconds;
-			} else {
-				if(userData.attendance>=CONFIG.GTW_attendance_minimum) {GTWusers.push(userData);}
-				userData = {firstName: user.firstName, lastName: user.lastName, email: user.email, attendance: user.attendanceTimeInSeconds};
-			}
+    } else {
+      if(userData.email == user.email){
+        userData.attendance+=user.attendanceTimeInSeconds;
+      } else {
+        if(userData.attendance>=CONFIG.GTW_attendance_minimum) {GTWusers.push(userData);}
+        userData = {firstName: user.firstName, lastName: user.lastName, email: user.email, attendance: user.attendanceTimeInSeconds};
+      }
     }
 		if(arr.length-1==index && userData.attendance>=CONFIG.GTW_attendance_minimum){
 			 GTWusers.push(userData);
@@ -95,6 +95,8 @@ function checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins(arr){
   if(!GTWusers) { 
     CONSOLE_WITH_TIME('None of the scraped GTW users attended a webinar for 90 minutes or more.');
      return;
+   } else if (process.env.NODE_ENV=='test'){
+      return GTWusers;
    } else {
     findCanvasUsersByEmail(GTWusers);
   }
@@ -226,3 +228,7 @@ function urlTime(){
   var re = new RegExp(':', 'ig');
   return {endDate: endDate.replace(re, '%3A'), startDate: startDate.replace(re, '%3A')};
 }
+
+module.exports = {urlTime: urlTime, 
+  emailTrainer: emailTrainer, 
+  processor:checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins};
