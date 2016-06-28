@@ -1,22 +1,19 @@
-// TODO enable this when we have the go ahead from Darren -
+var CronJob = require('cron').CronJob;
+var wIWUserAPI = CONFIG.WhenIWork;
+var wiw = require('wheniwork-unofficial');
+var wIWSupervisorsAPI = new wiw(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password, "Crisis Text Line Supervisors");
 
-// var CronJob = require('cron').CronJob;
-// var wIWUserAPI = CONFIG.WhenIWork;
-// var wiw = require('wheniwork-unofficial');
-// var wIWSupervisorsAPI = new wiw(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password, "Crisis Text Line Supervisors");
+var updateCanvas = require('./updateCanvas.js');
+var stathat = require(CONFIG.root_dir + '/lib/stathat');
+var moment = require('moment');
+var retrieveAndSortSupervisorsByShift = require('./helpers/sortUsersByShift');
+var composeEmail = require('../../email_templates/composeNotifyMoreShifts');
+var mandrill = require('mandrill-api/mandrill');
+var mandrill_client = new mandrill.Mandrill(KEYS.mandrill.api_key);
 
-// var updateCanvas = require('./updateCanvas.js');
-// var stathat = require(CONFIG.root_dir + '/lib/stathat');
-// var moment = require('moment');
-// var retrieveAndSortSupervisorsByShift = require('./helpers/sortUsersByShift');
-// var composeEmail = require('../../email_templates/composeNotifyMoreShifts');
-// var mandrill = require('mandrill-api/mandrill');
-// var mandrill_client = new mandrill.Mandrill(KEYS.mandrill.api_key);
+new CronJob(CONFIG.time_interval.cron_twice_per_day, notifyMoreShifts);
 
-
-// new CronJob(CONFIG.time_interval.cron_twice_per_day, notifyMoreShifts);
-
-// notifyMoreShifts();
+notifyMoreShifts();
 
 function notifyMoreShifts() {
   var result;
