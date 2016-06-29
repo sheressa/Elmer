@@ -116,6 +116,9 @@ CONFIG.time_interval = {
   // How many days in advance we show open shifts
   days_of_open_shift_display: 15,
 
+  // How many days until we consider users no longer new
+  days_until_older_user: 21,
+
   // Number of days in a week
   one_week: 7
 };
