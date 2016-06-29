@@ -1,6 +1,6 @@
 var assert = require('assert');
 var notifyMoreShifts = require('../jobs/scheduling/NotifyMoreShifts.js');
-var sampleData = require(CONFIG.root_dir + '/test/sampleData');
+var sampleData = require(CONFIG.root_dir + '/sample_data/sampleData');
 
 describe('notifyMoreShifts', function() {
 

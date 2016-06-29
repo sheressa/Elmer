@@ -2,7 +2,7 @@ var nock = require('nock'),
     WhenIWork = require('wheniwork-unofficial');
 
 var assert = require('assert')
-  , sampleData = require('./sampleData')
+  , sampleData = require(CONFIG.root_dir + '/sample_data/sampleData')
   var deleteShiftsAndRedirect = require(CONFIG.root_dir + '/www/scheduling/shifts/controllers/deleteShiftsAndRedirect')
   ;
 describe('delete shifts and redirect', function() {
