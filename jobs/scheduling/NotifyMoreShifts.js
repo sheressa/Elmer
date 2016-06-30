@@ -1,7 +1,6 @@
 var CronJob = require('cron').CronJob;
 var wIWUserAPI = CONFIG.WhenIWork;
-var wiw = require('wheniwork-unofficial');
-var wIWSupervisorsAPI = new wiw(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password, "Crisis Text Line Supervisors");
+var wIWSupervisorsAPI = CONFIG.WhenIWorkSuper;
 
 var updateCanvas = require('./updateCanvas.js');
 var stathat = require(CONFIG.root_dir + '/lib/stathat');
@@ -29,6 +28,8 @@ function notifyMoreShifts() {
     if (objectHasOwnKeys(usersWithTwoOrMore)) {
       var filteredUsers = removeOlderUsers(response.users);
       var twoShiftNotificationResult = twoShiftNotification(filteredUsers, usersWithTwoOrMore);
+      // Assigning this result for testing
+      result = twoShiftNotificationResult;
 
       if (objectHasOwnKeys(twoShiftNotificationResult.usersBeingNotified)) {
 
@@ -36,7 +37,7 @@ function notifyMoreShifts() {
 
         retrieveAndSortSupervisorsByShift(wIWSupervisorsAPI, CONFIG.locationID.supervisor_on_platform, CONFIG.wiwAccountID.supervisors)
         .then(function(shiftsToSup){
-          result = mandrillEachUser(twoShiftNotificationResult.usersBeingNotified, shiftsToSup);  
+          mandrillEachUser(twoShiftNotificationResult.usersBeingNotified, shiftsToSup);  
         })
         .catch(function(err){
           CONSOLE_WITH_TIME(err);
@@ -46,6 +47,7 @@ function notifyMoreShifts() {
     }
 
   });
+  // returned for testing;
   return result;
 }
 
@@ -156,8 +158,6 @@ function mandrillEachUser(userWithAllInfo, shiftToSup) {
     user = userWithAllInfo[i];
     contents = composeEmail(user, shiftToSup);
 
-    results.push(contents);
-
     var message = {
       subject: 'Thank you for booking!',
       html: contents,
@@ -172,12 +172,17 @@ function mandrillEachUser(userWithAllInfo, shiftToSup) {
           "Reply-To": "support@crisistextline.org",
       }
     };
+    
+    results.push(message);
 
     mandrill_client.messages.send({message: message}, CONSOLE_WITH_TIME);
   }
 
-  // results are returned for testing.
+  // returned for testing;
   return results;
 }
 
-module.exports.go = notifyMoreShifts;
+module.exports = {
+  notifyMoreShifts: notifyMoreShifts,
+  mandrillEachUser: mandrillEachUser
+};

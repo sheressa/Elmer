@@ -121,7 +121,7 @@ function recurNewlyCreatedShifts(optionalNoShiftsForTesting) {
       **/
 
       //The response at this point doesn't include error status codes so we're looking for a message that indicates an error
-      if (response.message && /error/.test(response.message)) CONSOLE_WITH_TIME("Error in RecurShift Batch Response: ", response);
+      if (response && response.message && /error/.test(response.message)) CONSOLE_WITH_TIME("Error in RecurShift Batch Response: ", response);
 
       var startDateToRetrieveUnpublishedShifts = moment().add(-12, 'hours').format('YYYY-MM-DD HH:mm:ss');
       var endDateToRetrieveUnpublishedShifts = moment().add(12, 'hours').format('YYYY-MM-DD HH:mm:ss');
