@@ -1,6 +1,6 @@
 var assert = require('assert');
 var processUsers = require('../jobs/scheduling/NotifyFirstShift.js');
-var sampleData = require(CONFIG.root_dir + '/test/sampleData');
+var sampleData = require(CONFIG.root_dir + '/sample_data/sampleData');
 var result = processUsers(sampleData.usersResponse.users);
 
 describe('notifyFirstShift', function() {

@@ -1,7 +1,7 @@
 var api = require('./helpers/base.js');
 
 var assert = require('assert')
-  , sampleData = require('./sampleData')
+  , sampleData = require(CONFIG.root_dir + '/sample_data/sampleData')
   var retrieveAndRenderShiftsToDelete = require(CONFIG.root_dir + '/www/scheduling/shifts/controllers/retrieveAndRenderShiftsToDelete');
 
 describe('retrieveAndRenderShiftsToDelete should retrieve shifts and render them when user navigates to shift deletion page', function() {

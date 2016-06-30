@@ -1,4 +1,5 @@
-var sampleData = require('../sampleData');
+global.CONFIG = require('../../config.js');
+var sampleData = require('../../sample_data/sampleData');
 
 var WhenIWork = {
   get: function(term, params, cbFunction){
