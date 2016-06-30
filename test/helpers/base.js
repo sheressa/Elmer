@@ -23,12 +23,20 @@ var WhenIWork = {
   //POST AND UPDATE ARE JUST EMPTY FUNCTIONS, SINCE WE'RE NOT USING THE RESPONSES.
   post: function(term, params, cbFunction) {
     //may need to account for different arguments passed in in future
+    if (term === 'users/profile') return {user: 'testUser'};
     if (cbFunction && typeof cbFunction === 'function') cbFunction();
     else if (cbFunction && typeof cbFunction !== 'function') {
       CONSOLE.WITH_TIME("Error! This callback function is not a function: ", cbFunction);
     }
   },
   update: function(term, params, cbFunction) {
+    //may need to account for different arguments passed in in future.
+    if (cbFunction && typeof cbFunction === 'function') cbFunction();
+    else if (cbFunction && typeof cbFunction !== 'function') {
+      CONSOLE.WITH_TIME("Error! This callback function is not a function: ", cbFunction);
+    }
+  },
+  delete: function(term, params, cbFunction) {
     //may need to account for different arguments passed in in future.
     if (cbFunction && typeof cbFunction === 'function') cbFunction();
     else if (cbFunction && typeof cbFunction !== 'function') {
