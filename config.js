@@ -42,10 +42,10 @@ global.MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE = function(timestring) {
   return firstPart + ' ' + timeZonePart;
 };
 
-CONFIG.WhenIWork = process.env.NODE_ENV === 'test' ? 
-  require('./test/helpers/base') : 
+CONFIG.WhenIWork = process.env.NODE_ENV === 'test' ?
+  require('./test/helpers/base') :
   require('./jobs/scheduling/base');
-CONFIG.WhenIWorkSuper = process.env.NODE_ENV === 'test' ? 
+CONFIG.WhenIWorkSuper = process.env.NODE_ENV === 'test' ?
   require('./test/helpers/mockWiWSupervisors') :
   require('./jobs/scheduling/WiWSupervisorsApi');
 
@@ -118,35 +118,35 @@ CONFIG.time_interval = {
 };
 
 CONFIG.numberOfCounselorsPerShift = {
-  'Sun' : { '12am': 66, '2am': 41, '4am': 24, '6am': 10, '8am': 14, '10am': 25, '12pm': 38, '2pm': 49, '4pm': 43, '6pm': 55, '8pm': 76, '10pm': 101},
+  'Sun' : { '12am': 75, '2am': 49, '4am': 25, '6am': 9, '8am': 17, '10am': 19, '12pm': 38, '2pm': 35, '4pm': 36, '6pm': 54, '8pm': 64, '10pm': 93},
 
-  'Mon' : { '12am': 81, '2am': 43, '4am': 16, '6am': 11, '8am': 19, '10am': 29, '12pm': 42, '2pm': 45, '4pm': 50, '6pm': 68, '8pm': 111, '10pm': 171},
+  'Mon' : { '12am': 90, '2am': 42, '4am': 23, '6am': 7, '8am': 12, '10am': 28, '12pm': 44, '2pm': 36, '4pm': 50, '6pm': 56, '8pm': 64, '10pm': 82},
 
-  'Tue' : { '12am': 172, '2am': 64, '4am': 30, '6am': 18, '8am': 49, '10am': 40, '12pm': 52, '2pm': 58, '4pm': 47, '6pm': 55, '8pm': 66, '10pm': 81},
+  'Tue' : { '12am': 118, '2am': 41, '4am': 18, '6am': 9, '8am': 16, '10am': 21, '12pm': 31, '2pm': 40, '4pm': 40, '6pm': 40, '8pm': 63, '10pm': 91},
 
-  'Wed' : { '12am': 70, '2am': 31, '4am': 9, '6am': 10, '8am': 16, '10am': 28, '12pm': 29, '2pm': 48, '4pm': 49, '6pm': 58, '8pm': 76, '10pm': 99},
+  'Wed' : { '12am': 96, '2am': 56, '4am': 23, '6am': 15, '8am': 12, '10am': 23, '12pm': 30, '2pm': 40, '4pm': 47, '6pm': 35, '8pm': 63, '10pm': 99},
 
-  'Thu' : { '12am': 65, '2am': 35, '4am': 18, '6am': 9, '8am': 19, '10am': 28, '12pm': 28, '2pm': 42, '4pm': 41, '6pm': 43, '8pm': 65, '10pm': 71},
+  'Thu' : { '12am': 83, '2am': 53, '4am': 21, '6am': 10, '8am': 22, '10am': 30, '12pm': 35, '2pm': 44, '4pm': 38, '6pm': 44, '8pm': 63, '10pm': 87},
 
-  'Fri' : { '12am': 55, '2am': 30, '4am': 12, '6am': 8, '8am': 13, '10am': 28, '12pm': 32, '2pm': 36, '4pm': 43, '6pm': 47, '8pm': 68, '10pm': 76},
+  'Fri' : { '12am': 75, '2am': 38, '4am': 20, '6am': 8, '8am': 9, '10am': 16, '12pm': 33, '2pm': 50, '4pm': 54, '6pm': 51, '8pm': 55, '10pm': 83},
 
   'Sat' : { '12am': 66, '2am': 39, '4am': 16, '6am': 10, '8am': 14, '10am': 23, '12pm': 29, '2pm': 35, '4pm': 40, '6pm': 51, '8pm': 66, '10pm': 79}
 };
 
 CONFIG.shiftColors = {
-  'Sun': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'red', '12pm': 'red', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'red' },
+  'Sun': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
 
-  'Mon': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'gray' },
+  'Mon': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
 
-  'Tue': { '12am': 'red', '2am': 'red', '4am': 'gray', '6am': 'gray', '8am': 'red', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'gray', '6pm': 'gray', '8pm': 'red', '10pm': 'red' },
+  'Tue': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
 
-  'Wed': { '12am': 'red', '2am': 'red', '4am': 'gray', '6am': 'red', '8am': 'red', '10am': 'red', '12pm': 'gray', '2pm': 'gray', '4pm': 'red', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
+  'Wed': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
 
   'Thu': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'gray', '2pm': 'gray', '4pm': 'gray', '6pm': 'gray', '8pm': 'gray', '10pm': 'gray' },
 
-  'Fri': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'red', '12pm': 'red', '2pm': 'gray', '4pm': 'red', '6pm': 'red', '8pm': 'red', '10pm': 'red' },
+  'Fri': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'gray', '8am': 'gray', '10am': 'gray', '12pm': 'red', '2pm': 'gray', '4pm': 'gray', '6pm': 'red', '8pm': 'gray', '10pm': 'gray' },
 
-  'Sat': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'gray', '12pm': 'red', '2pm': 'red', '4pm': 'red', '6pm': 'red', '8pm': 'red', '10pm': 'red' }
+  'Sat': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'red', '12pm': 'gray', '2pm': 'gray', '4pm': 'red', '6pm': 'gray', '8pm': 'gray', '10pm': 'red' }
 };
 
 module.exports = CONFIG;
