@@ -4,22 +4,24 @@ var crypto = require('crypto');
 var internalRequest = require('request');
 var moment = require('moment');
 var throttler = require('throttled-request')(internalRequest);
+var CronJob = require('cron').CronJob;
 
+var SLACK_CHANNEL = '#graduates';
+var timeout = 0;
+var emailsDone = [];
+
+// throttles requests so no more than 5 are made a second
 throttler.configure({
   requests: 5,
   milliseconds: 1000
 });
 
-var lastRun = lastRunLog(moment(1464753600000));
-var SLACK_CHANNEL = '#graduates';
-var t = 0;
-
 new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
   pollCanvasForGraduatedUsersThenCreatePlatformAccount();
 }, null, true);
 
+// Polls Canvas for people who’ve passed the "Graduation" course
 function pollCanvasForGraduatedUsersThenCreatePlatformAccount() {
-  // Polls Canvas for people who’ve passed the "Graduation" course
   request('accounts/' + KEYS.canvas.accountID + '/courses', 'GET')
     .then(function (courses) {
       courses.forEach(function (course) {
@@ -29,58 +31,53 @@ function pollCanvasForGraduatedUsersThenCreatePlatformAccount() {
         if (KEYS.canvas.coursesWeDoNotParseForGraduatedUsers.indexOf(course.id) >= 0) return;
         request('courses/' + course.id + '/assignments', 'GET')
           .then(function (assignments) {
-            return assignments.filter(function (e) {
-              return e.name.indexOf('Graduation') >= 0;
+            return assignments.filter(function (assignment) {
+              return assignment.name.indexOf('Graduation') >= 0;
             });
           })
           .then(function (assignments) {
-            lastRunLog(moment());
             assignments.forEach(function (assignment) {
-              setTimeout(getLogs.bind(this, assignment), t);
-              t += 1000;
+              setTimeout(getLogs.bind(this, assignment), timeout);
+              timeout += 1000;
             });
           });
       });
     });
 }
 
-emailsDone = [];
-
+// gets grading logs for assignments from relevant courses
 function getLogs(assignment) {
   CONSOLE_WITH_TIME('Graduating from assignment: ' + assignment.id);
+  var startDate = moment().subtract(6, "hours").toJSON();
   request('audit/grade_change/assignments/' + assignment.id, 'GET', [
-      'start_time=' + lastRun.format('YYYY-MM-DD[T]HH:mm:ss[Z]')
+      'start_time=' + startDate
     ])
       .then(function (logs) {
         logs.events.forEach(function (log) {
-          var m = moment(log.created_at, moment.ISO_8601);
 
-          if (m.diff(lastRun) >= 0) {
             request('users/' + log.links.student + '/profile', 'GET').then(function (res) {
               if (res.primary_email) {
                 var name = res.sortable_name.split(', ');
-
                 var body = {
                   firstName: name[1],
                   lastName: name[0],
                   email: res.primary_email.toLowerCase()
                 };
-
                 updatePlatform(body);
               }
             });
-          }
         });
-      }).catch(function (e) {
-        if (e.toString().indexOf('TypeError') >= 0) {
+      }).catch(function (error) {
+        if (error.toString().indexOf('TypeError') >= 0) {
           CONSOLE_WITH_TIME('Throttled, retrying in 1 second: ' + assignment.id);
           setTimeout(getLogs.bind(this, assignment), 1000);
         }
       });
 }
 
-// Creates a platform account for users who have passed "Graduation" course
+// Creates a platform account for users who have passed the "Graduation" course
 function updatePlatform(body) {
+  //checks that we don't POST more than once to the platform w the same information
   if (emailsDone.indexOf(body.email) >= 0) return;
   emailsDone.push(body.email);
 
@@ -88,14 +85,13 @@ function updatePlatform(body) {
   CONSOLE_WITH_TIME('CREATING ACCOUNT FOR: ');
   CONSOLE_WITH_TIME(body);
 
-//  return;
   throttler({
     url: KEYS.platformUserCreationURL,
     method: 'POST',
     form: body
-  }, function (err, res) {
-    if (err) {
-      CONSOLE_WITH_TIME(err);
+  }, function (error, res) {
+    if (error) {
+      CONSOLE_WITH_TIME('Failed to create a platform account: ',error);
     } else {
       CONSOLE_WITH_TIME(body.email + ': ' + res.body);
       notifySlack(body.firstName + ' ' + body.lastName[0]);
@@ -103,14 +99,9 @@ function updatePlatform(body) {
   });
 }
 
-function lastRunLog(date) {
-  if (!date) {
-    return moment(fs.readFileSync('./last-run.txt', {encoding: 'UTF8'}), 'x');
-  } else {
-    fs.writeFileSync('./last-run.txt', date.format('x'));
-  }
-}
+// HELPER FUNCTIONS
 
+// allows our request function to return promises upon success
 function convertIds(text) {
   var regex = /":(\d+),/g;
   var id;
@@ -125,6 +116,7 @@ function convertIds(text) {
   });
 }
 
+// sets up basic api call functionality
 function request(url, method, params) {
   if (!params) {
     params = [];
@@ -139,7 +131,7 @@ function request(url, method, params) {
 
   return fetch(url, {
     headers: {
-      'Authorization': 'Bearer ' + KEYS.canvas.accountToken,
+      'Authorization': KEYS.canvas.api_key,
     },
     method: method,
     body: params
@@ -148,6 +140,7 @@ function request(url, method, params) {
   .then(convertIds);
 }
 
+// notifies the slack graduation channel w the name of the new graduate
 function notifySlack(name) {
   var payload = {
     channel: SLACK_CHANNEL,
@@ -157,7 +150,7 @@ function notifySlack(name) {
   fetch(KEYS.slackAccountURL, {
     method: 'POST',
     body: JSON.stringify(payload)
-  }).catch(e => {
-    CONSOLE_WITH_TIME(e);
+  }).catch(function(error) {
+    CONSOLE_WITH_TIME('Failed to post to the graduate slack channel: ',error);
   });
 }
