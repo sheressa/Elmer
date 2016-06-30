@@ -19,6 +19,8 @@ We split out these functions into two separate processes for more stability--if 
 
 During development, we generally run each process separately, either running `node ./www/app.js` or `node ./runJobs.js`. Note that if no `NODE_ENV` specified, the environment is running in `develop` by default.
 
+This app runs on Node 6.6.2.
+
 ## Running on production
 
 There's a Jenkins continuous integration job set up that allows for instant deploys from the master branch of this repo.
