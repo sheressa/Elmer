@@ -112,5 +112,6 @@ test/helpers/sampleResponse
 *.csv
 *.swp
 
-# Email file
+# Email files for tasks
 tasks/canonicalEmails.js
+churnedUserEmailList.js
