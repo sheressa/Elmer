@@ -143,19 +143,22 @@ function recurNewlyCreatedShifts(optionalNoShiftsForTesting) {
           };
           // Getting all shifts created in the timeframe defined above in 'postData' that are unpublished.
           WhenIWork.get('shifts', postData, function(response) {
-            var unpublishedShifts = response.shifts.filter(function(shift) {
-              return shift.notes && !shift.published;
-            });
+            if (!response.shifts) CONSOLE_WITH_TIME("[Error 146] RecurShifts response missing .shifts", response);
+            else {
+              var unpublishedShifts = response.shifts.filter(function(shift) {
+                return shift.notes && !shift.published;
+              });
 
-            // Shift publishing API takes an array of shift IDs.
-            var newUnpublishedShiftIDs = unpublishedShifts.map(function(shift) {
-              return shift.id;
-            });
+              // Shift publishing API takes an array of shift IDs.
+              var newUnpublishedShiftIDs = unpublishedShifts.map(function(shift) {
+                return shift.id;
+              });
 
-            unpublishedShiftIDs = unpublishedShiftIDs.concat(newUnpublishedShiftIDs);
-            unpublishedShiftIDStorageForTesting = unpublishedShiftIDs;
+              unpublishedShiftIDs = unpublishedShiftIDs.concat(newUnpublishedShiftIDs);
+              unpublishedShiftIDStorageForTesting = unpublishedShiftIDs;
 
-            callback(null, startDateToRetrieveUnpublishedShifts, endDateToRetrieveUnpublishedShifts, unpublishedShiftIDs);
+              callback(null, startDateToRetrieveUnpublishedShifts, endDateToRetrieveUnpublishedShifts, unpublishedShiftIDs);
+            }
           });
         };
 
@@ -175,19 +178,22 @@ function recurNewlyCreatedShifts(optionalNoShiftsForTesting) {
           };
 
           WhenIWork.get('shifts', postData, function(response) {
-            var unpublishedShifts = response.shifts.filter(function(shift) {
-              return shift.notes && !shift.published;
-            });
+            if (!response.shifts) CONSOLE_WITH_TIME("[Error 181] RecurShifts response missing .shifts", response);
+            else {
+              var unpublishedShifts = response.shifts.filter(function(shift) {
+                return shift.notes && !shift.published;
+              });
 
-            // Shift publishing API takes an array of shift IDs.
-            var newUnpublishedShiftIDs = unpublishedShifts.map(function(shift) {
-              return shift.id;
-            });
+              // Shift publishing API takes an array of shift IDs.
+              var newUnpublishedShiftIDs = unpublishedShifts.map(function(shift) {
+                return shift.id;
+              });
 
-            unpublishedShiftIDs = unpublishedShiftIDs.concat(newUnpublishedShiftIDs);
-            unpublishedShiftIDStorageForTesting = unpublishedShiftIDs;
+              unpublishedShiftIDs = unpublishedShiftIDs.concat(newUnpublishedShiftIDs);
+              unpublishedShiftIDStorageForTesting = unpublishedShiftIDs;
 
-            callback(null, startDate, endDate, unpublishedShiftIDs);
+              callback(null, startDate, endDate, unpublishedShiftIDs);
+            }
           });
         };
 
@@ -268,7 +274,9 @@ function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
     });
 
     WhenIWork.post('batch', batchPayload, function(response) {
-      CONSOLE_WITH_TIME('Response from decrementing week prior\'s shifts by one, and week after\'s open shifts by one: ', response);
+      //The response at this point doesn't include error status codes so we're looking for a message that indicates an error
+      if (response && response.message && /error/.test(response.message)) CONSOLE_WITH_TIME("[ERROR 278] in Job RecurShift Batch Response: ", response);
+      else CONSOLE_WITH_TIME('Successful Response from decrementing week prior\'s shifts by one, and week after\'s open shifts by one');
     });
   });
   // Returning payload for testing.

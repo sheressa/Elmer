@@ -73,9 +73,9 @@ canvas.updateUserGrade = function(user, course, assignment, grade) {
 
   function callback(error, response, body){
     if(!error && response.statusCode == 200){
-      console.log('Canvas update succeeded: ', body);
+      CONSOLE_WITH_TIME('Canvas update succeeded for user ID ', user_id);
     } else {
-      console.log("Canvas error message: ", response, response.statusCode);
+      CONSOLE_WITH_TIME("Canvas error message: ", response, response.statusCode);
     }
   }
 

@@ -31,8 +31,10 @@ module.exports.go = function () {
     });
 
     api.post('batch', batchRequest, function(response) {
-      CONSOLE_WITH_TIME(response);
-    })
+      //The response at this point doesn't include error status codes so we're looking for a message that indicates an error
+      if (response && response.message && /error/.test(response.message)) CONSOLE_WITH_TIME("Error in Task Color Batch Response: ", response);
+      else (CONSOLE_WITH_TIME("Task Color Batch Post Success"));
+    });
 
   });
 };
