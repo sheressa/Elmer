@@ -41,6 +41,38 @@ canvas.scrapeCanvasUsers = function(email) {
 
 };
 
+canvas.retrieveCourses = function() {
+
+  options.url = 'https://crisistextline.instructure.com/api/v1/accounts/1/courses?per_page=1000';
+
+  return Request(options)
+  .then(function(response){
+    response = JSON.parse(response);
+    if (Array.isArray(response) && response.length === 0) throw 'No courses found.';
+    return response;
+  })
+  .catch(function(err){
+    CONSOLE_WITH_TIME('Canvas call to get courses failed: ', err);
+  });
+
+};
+
+//finds all enrollments in a given course
+canvas.retrieveEnrollment = function(courseID, enrollmentState) {
+
+  options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments?state[]=' + enrollmentState;
+
+  return Request(options)
+  .then(function(response){
+    response = JSON.parse(response);
+    return response;
+  })
+  .catch(function(err){
+    CONSOLE_WITH_TIME("Finding enrollments for the course with ID " + courseID + " in Canvas failed: ", err);
+  });
+
+};
+
 //finds all courses a specific user is enrolled in
 canvas.scrapeCanvasEnrollment = function(userID) {
 
