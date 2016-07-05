@@ -1,13 +1,20 @@
-
 var WhenIWork = require('wheniwork-unofficial');
-var api = new WhenIWork(global.config.wheniwork.api_key, global.config.wheniwork.username, global.config.wheniwork.password);
+var api = new WhenIWork(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password);
 
-var churned = require('../churned');
+var churnedUserEmailList = require('../churnedUserEmailList');
+
+/**
+  To run this task, add a "churnedUserList.js" file to the root directory exporting
+  an array of email strings that need to be deleted. (Formatted like emails.example.js)
+
+  Then run: node console removedChurned go.
+**/
 
 module.exports.go = function () {
   var userList = [];
   getUsersToClean().then(function (users) {
-    users.forEach(function (e, i, arr) {
+    CONSOLE_WITH_TIME(users);
+    users.forEach(function (e, i) {
       if (typeof userList[i%10] !== 'object') {
         userList[i%10] = [];
       }
@@ -29,11 +36,11 @@ module.exports.go = function () {
       for (var i in arrayOfArrays) {
         shiftsToDelete = shiftsToDelete.concat(arrayOfArrays[i]);
       }
-      
+
       deleteShifts(shiftsToDelete);
     });
   });
-}
+};
 
 function getUsersToClean() {
   return new Promise(function (resolve, reject) {
@@ -49,7 +56,7 @@ function getUsersToClean() {
           email = e.email;
         }
 
-        if (churned.indexOf(email) >= 0) {
+        if (churnedUserEmailList.indexOf(email) >= 0) {
           uidsToClean.push(e.id);
         }
       });
@@ -85,19 +92,19 @@ function getUserShifts(users) {
       res.shifts.forEach(function(e, i, arr) {
         shifts.push(e.id);
       });
-      
+
       resolve(shifts);
     });
   });
 }
 
 function deleteShifts(shiftsToDelete) {
-  console.log(shiftsToDelete.length);
+  CONSOLE_WITH_TIME('Total number of shifts to delete for churned users: ', shiftsToDelete.length);
   var thisBatch = [],
       batches = [];
   for (var i = 0; i < shiftsToDelete.length; i++) {
     setTimeout(function (shift) {
-      console.log(shift);
+      CONSOLE_WITH_TIME(shift);
       api.delete('shifts/' + shift);
     }.bind(null, shiftsToDelete[i]), 75*i);
   }
