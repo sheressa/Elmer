@@ -1,3 +1,6 @@
+global.KEYS = require('../keys.js');
+global.CONFIG = require('../config.js');
+
 var colorize = require('../lib/ColorizeShift').go
   , dateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ'
   , moment = require('moment')

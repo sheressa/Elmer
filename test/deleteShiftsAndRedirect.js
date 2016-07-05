@@ -69,7 +69,7 @@ describe('delete shifts and redirect', function() {
         request.query.makShift281883880 = 'on';
       // Dummy Express response object
         response.json =  function(response) {
-          assert.equal(response.redirect, '/scheduling/shifts/delete-success?deletedShiftInformation={"regShifts":{},"makShifts":{}}&email=amudantest%40test.com&token=9365583ac27c52684eb6efb8e9374c04823dce59&url=https://app.wheniwork.com/&');
+          assert.equal(response.redirect, '/scheduling/shifts/delete-success?deletedShiftInformation={"regShifts":{},"makShifts":{"281883880":{"start_time":"Thursday, Jan 28th 2016 - 4:00 pm","end_time":"6:00 pm EST"}}}&email=amudantest%40test.com&token=9365583ac27c52684eb6efb8e9374c04823dce59&url=https://app.wheniwork.com/&');
           done();
         };
 
