@@ -31,7 +31,7 @@ function startJobByQueryingForGTWSessions(){
   		if (!error && response.statusCode == 200) {
         //we need bignumJSON because JS rounds GTW session ids otherwise
 	   		var GTWSessions = bignumJSON.parse(body);
-        if(GTWSessions.length===0){
+        if (GTWSessions.length===0){
           CONSOLE_WITH_TIME('NO SESSIONS DURING', startTime, 'and', endTime, '!');
           return;
         }
@@ -53,7 +53,8 @@ function queryForGTWAttendees(keysArr){
 	function callback(error, response, body) {
   		if (!error && response.statusCode == 200) {
 	   		var GTWAttendees = bignumJSON.parse(body);
-	   		checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins(GTWAttendees);
+	   		var newGTWUsers = checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins(GTWAttendees);
+        findCanvasUsersByEmail(newGTWUsers);
   		} else {
   			CONSOLE_WITH_TIME("GTW get all webinar attendees error message: ", body);
   		}
@@ -77,29 +78,27 @@ function checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins(arr){
   var GTWusers = [];
 
 	arr.forEach(function(user, index){
-		if(!userData){
+		if (!userData){
 		userData = {firstName: user.firstName, lastName: user.lastName, email: user.email, attendance: user.attendanceTimeInSeconds};
     } else {
-      if(userData.email == user.email){
+      if (userData.email == user.email){
         userData.attendance+=user.attendanceTimeInSeconds;
       } else {
-        if(userData.attendance>=CONFIG.GTW_attendance_minimum) {GTWusers.push(userData);}
+        if (userData.attendance>=CONFIG.GTW_attendance_minimum) {GTWusers.push(userData);}
         userData = {firstName: user.firstName, lastName: user.lastName, email: user.email, attendance: user.attendanceTimeInSeconds};
       }
     }
-		if(arr.length-1==index && userData.attendance>=CONFIG.GTW_attendance_minimum){
+		if (arr.length-1==index && userData.attendance>=CONFIG.GTW_attendance_minimum){
 			 GTWusers.push(userData);
 		 }
 	});
   //stops the script if GTWusers array is empty
-  if(!GTWusers) { 
+  if (!GTWusers) { 
     CONSOLE_WITH_TIME('None of the scraped GTW users attended a webinar for 90 minutes or more.');
      return;
-   } else if (process.env.NODE_ENV=='test'){
-      return GTWusers;
    } else {
-    findCanvasUsersByEmail(GTWusers);
-  }
+      return GTWusers;
+   } 
 }
 
 //scrapes canvas for user by email, course and assignment id's
@@ -117,7 +116,7 @@ function findCanvasUsersByEmail(GTWusers){
         CONSOLE_WITH_TIME("COULD NOT FIND USER BY EMAIL: ", GTWUser);
         return;}
 
-      if(canvasUsers.length>1){
+      if (canvasUsers.length>1){
         emailTrainer(GTWUser, 1);
         CONSOLE_WITH_TIME("TWO USERS WITH THE SAME EMAIL FOUND ", canvasUsers);
         return;}
@@ -139,7 +138,7 @@ function findCanvasUserByName(GTWUser){
       CONSOLE_WITH_TIME("COULD NOT FIND USER BY NAME: ", GTWUser);
       return;}
 
-    if(canvasUsers.length>1){
+    if (canvasUsers.length>1){
       emailTrainer(GTWUser, 3);
       CONSOLE_WITH_TIME("TWO USERS WITH THE SAME NAME FOUND ", canvasUsers);
       return;}
@@ -158,7 +157,7 @@ function queryForCanvasCoursesAndAssignments(userID){
     if (!enrollmentObj.length) { 
       CONSOLE_WITH_TIME('This user has no enrollments');
       return;}
-    if(enrollmentObj[0].type=='TeacherEnrollment' || enrollmentObj[0].type=='DesignerEnrollment'){
+    if (enrollmentObj[0].type=='TeacherEnrollment' || enrollmentObj[0].type=='DesignerEnrollment'){
       CONSOLE_WITH_TIME('THE USER ' + enrollmentObj[0].user.name + ' APPEARS TO BE A TEACHER, ABORTING GRADING');
       return;
     }
@@ -184,7 +183,7 @@ function emailTrainer(user, option){
   var template,
   content;
 
-  if(option===0){
+  if (option===0){
     template = fs.readFileSync('./email_templates/canvas_email_not_found.txt', {encoding: 'utf-8'});
     content = template.replace('%fname', user.firstName).replace('%lname', user.lastName).replace('%email', user.email);
   } else if (option==1) {
