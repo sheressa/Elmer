@@ -57,7 +57,9 @@ function processDataAndMakeMergeAPICalls(data) {
   }
   else {
     WhenIWork.post('batch', batchPayload, function(response) {
-      CONSOLE_WITH_TIME('Response from merge shift batch payload request: ', batchPayload);
+      //The response at this point doesn't include error status codes so we're looking for a message that indicates an error
+      if (response && response.message && /error/.test(response.message)) CONSOLE_WITH_TIME("[ERROR 61] in Job MergeOpenShifts Batch Response: ", response);
+      else (CONSOLE_WITH_TIME("Job MergeOpenShifts Batch Post Success"));
     });      
   }
 }

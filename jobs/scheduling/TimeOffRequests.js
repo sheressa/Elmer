@@ -53,7 +53,9 @@ function retrieveOverlappingShifts (request) {
     var batchPayload = createBatchPayload (response, request.id);
     //Send the time off request approval and all shift deletions/open shift creations to batch
     WhenIWork.post('batch', batchPayload, function(response) {
-      CONSOLE_WITH_TIME(response);
+      //The response at this point doesn't include error status codes so we're looking for a message that indicates an error
+      if (response && response.message && /error/.test(response.message)) CONSOLE_WITH_TIME("Error in TimeOffRequests Batch Response: ", response);
+      else (CONSOLE_WITH_TIME("Job TimeOffRequests Batch Post Success"));
     });
   });
 }
