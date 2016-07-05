@@ -1,30 +1,11 @@
-var nock = require('nock'), 
-    WhenIWork = require('wheniwork-unofficial');
-
+var api = require('./helpers/base.js');
 var assert = require('assert')
-  , sampleData = require(CONFIG.root_dir + '/sample_data/sampleData')
+  , sampleData = require('./sampleData')
   var deleteShiftsAndRedirect = require(CONFIG.root_dir + '/www/scheduling/shifts/controllers/deleteShiftsAndRedirect')
   ;
 describe('delete shifts and redirect', function() {
-  var base = nock('https://api.wheniwork.com/2');
   var userEmail = 'amudantest@test.com';
   var userToken = '9365583ac27c52684eb6efb8e9374c04823dce59';
-
-  beforeEach(function() {
-
-    var apiMocker = nock('https://api.wheniwork.com/2')
-          .get('/shifts')
-          .query(true)
-          .reply(200, {shifts: [sampleData.shifts]});
-
-    var apiMocker2 = nock('https://api.wheniwork.com/2')
-          .post('/batch', {})
-          .query(true)
-          .reply(203, {});
-
-  });
-
-  var api = new WhenIWork(KEYS.test.wheniwork.api_key, KEYS.test.wheniwork.username, KEYS.test.wheniwork.password);
 
   describe('shift deletion', function() {
 
@@ -131,11 +112,7 @@ describe('delete shifts and redirect', function() {
           }
         }
       };
-
       deleteShiftsAndRedirect(request, response, api);
     });
-
   });
-
 });
-
