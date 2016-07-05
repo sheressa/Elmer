@@ -1,0 +1,2689 @@
+{
+  "users": [
+    {
+      "id": 5542945,
+      "account_id": 622060,
+      "login_id": 2415361,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 2,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "darsedwqdybfs@crisistextline.org",
+      "first_name": "Andrew",
+      "last_name": "Gremmo",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/96efe79c349519177d2012bc5f528c60cec893d0/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "6625df93442bab612b683da8a3d24ea74271a444",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Mon, 21 Mar 2016 10:45:00 -0400",
+      "dismissed_at": "",
+      "notified_at": "Tue, 29 Nov -001 19:00:00 -0500",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Fri, 08 Jan 2016 14:58:07 -0500",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0
+      }
+    },
+    {
+      "id": 8373926,
+      "account_id": 622060,
+      "login_id": 3744601,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 2,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "saasfdqdybfs@crisistextline.org",
+      "first_name": "Assaf",
+      "last_name": "Packin",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/1648d8abd2545d80815f71d9200e2ec0101548a2/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "ba93a25adb48a329b937cfcf492956f6202e939b",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Thu, 23 Jun 2016 13:29:29 -0400",
+      "dismissed_at": "",
+      "notified_at": "Mon, 20 Jun 2016 12:55:41 -0400",
+      "created_at": "Tue, 14 Jun 2016 18:30:35 -0400",
+      "updated_at": "Mon, 20 Jun 2016 14:01:02 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "country_code": "US",
+      "positions": [],
+      "locations": [
+        995815
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0
+      }
+    },
+    {
+      "id": 5542942,
+      "account_id": 622060,
+      "login_id": 2463187,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 2,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "yalsedeqdybfs@crisistextline.org",
+      "first_name": "Baylee",
+      "last_name": "Greenberg",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/ae06143ed2189e680900e5f111ffae79ae027a25/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "7f14404bb4d87a8d3b91c3986aa6cb902e74299b",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": false
+        },
+        "swaps": {
+          "sms": false,
+          "email": false
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": false
+        },
+        "new_employee": {
+          "sms": false,
+          "email": false
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Thu, 21 Jan 2016 10:51:58 -0500",
+      "dismissed_at": "",
+      "notified_at": "Fri, 18 Mar 2016 19:52:14 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Fri, 01 Apr 2016 11:32:56 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0
+      }
+    },
+    {
+      "id": 5533291,
+      "account_id": 622060,
+      "login_id": 792816,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 1,
+      "is_payroll": true,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "raissdqdybfs@crisistextline.org",
+      "first_name": "Chris",
+      "last_name": "Johnson",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/0640ea2c6bd277e42268a795e359872c9815759b/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "925eb9744847bddb52c2e5c6b6f298c767491f94",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Thu, 23 Jun 2016 11:30:10 -0400",
+      "dismissed_at": "",
+      "notified_at": "Tue, 29 Nov -001 19:00:00 -0500",
+      "created_at": "Thu, 07 Jan 2016 16:31:41 -0500",
+      "updated_at": "Tue, 31 May 2016 10:16:01 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {}
+    },
+    {
+      "id": 5542951,
+      "account_id": 622060,
+      "login_id": 2557960,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "nansydjqdybfs@crisistextline.org",
+      "first_name": "Danny",
+      "last_name": "Johnson",
+      "phone_number": "+13132899460",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/ad32e2291849818e698a681a58a8db1cce41f7e8/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "c7bcc1dfe844dada55b59f9e39f7e7f49d2f508d",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 21 Jun 2016 22:02:39 -0400",
+      "dismissed_at": "",
+      "notified_at": "Thu, 26 May 2016 11:06:49 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Thu, 26 May 2016 17:04:59 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 7611242,
+      "account_id": 622060,
+      "login_id": 3572516,
+      "timezone_id": 267,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "rarsednqdybfs@crisistextline.org",
+      "first_name": "Darren",
+      "last_name": "Mastropaolo",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/037fd5956dd202acc3bb3950e33221e9ce69df55/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "5aa1925f93f8b8934be725f7438b4c9a0a456de2",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 1,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Sun, 08 May 2016 19:46:09 -0400",
+      "dismissed_at": "",
+      "notified_at": "Tue, 29 Nov -001 19:00:00 -0500",
+      "created_at": "Sun, 08 May 2016 11:48:40 -0400",
+      "updated_at": "Thu, 23 Jun 2016 10:14:27 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "Asia/Bangkok",
+      "positions": [],
+      "locations": [
+        995815,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 6830356,
+      "account_id": 622060,
+      "login_id": 3357511,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "ralsqddybfs@crisistextline.org",
+      "first_name": "Earl",
+      "last_name": "Lewis",
+      "phone_number": "+12012828681",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/63e5048d04f465294afce7b3b09da5acfc4c6920/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "87831d55f6f52a335c4bd190beb0eb590800fc2d",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 21 Jun 2016 12:20:54 -0400",
+      "dismissed_at": "",
+      "notified_at": "Thu, 26 May 2016 20:31:21 -0400",
+      "created_at": "Tue, 12 Apr 2016 11:40:26 -0400",
+      "updated_at": "Thu, 09 Jun 2016 15:17:34 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542939,
+      "account_id": 622060,
+      "login_id": 2560408,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "iasshdaqdybfs@crisistextline.org",
+      "first_name": "Elisha",
+      "last_name": "Ferguson",
+      "phone_number": "+17326426770",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/3404f26167eb23a68443f3d53fb16084d955eae4/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "7386ffec8e582a5f3362281d014c8c9ea3ec3f10",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Wed, 22 Jun 2016 19:19:11 -0400",
+      "dismissed_at": "",
+      "notified_at": "Sat, 28 May 2016 03:59:23 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Wed, 01 Jun 2016 17:46:19 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542972,
+      "account_id": 622060,
+      "login_id": 2560678,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 2,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "rarsedttqdybfs@crisistextline.org",
+      "first_name": "Garrett",
+      "last_name": "Shotwell",
+      "phone_number": "+13122863526",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/c61d1fe4728e7ec2a9ea8b83d1c6160c9d0f95b7/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "c850a821bbf3417f3a70413840a863561fd5ee2c",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": true,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Thu, 23 Jun 2016 13:12:15 -0400",
+      "dismissed_at": "",
+      "notified_at": "Wed, 22 Jun 2016 12:55:29 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Wed, 22 Jun 2016 13:55:30 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542948,
+      "account_id": 622060,
+      "login_id": 2558026,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "najsqddybfs@crisistextline.org",
+      "first_name": "Jen",
+      "last_name": "James",
+      "phone_number": "+15109193420",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/9d2db811f7a5a19a26b5c02c369847a64c41b97f/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "7afff7e1d7b0c2898e9f9d9adc8d6c531b9cdc72",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": false
+        },
+        "new_employee": {
+          "sms": false,
+          "email": false
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 21 Jun 2016 15:47:28 -0400",
+      "dismissed_at": "",
+      "notified_at": "Tue, 31 May 2016 12:21:46 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Mon, 20 Jun 2016 08:13:11 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 8373936,
+      "account_id": 622060,
+      "login_id": 3744501,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 2,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "hansqddybfs@crisistextline.org",
+      "first_name": "John",
+      "last_name": "Rauschenberg",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/58b1000a50c38b2aca873df858f46eb379e10380/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "bd44c19de3b2774dad4c18e9777b234575d4a38e",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Thu, 23 Jun 2016 12:06:53 -0400",
+      "dismissed_at": "",
+      "notified_at": "Tue, 29 Nov -001 19:00:00 -0500",
+      "created_at": "Tue, 14 Jun 2016 18:31:11 -0400",
+      "updated_at": "Tue, 14 Jun 2016 20:16:01 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0
+      }
+    },
+    {
+      "id": 7611224,
+      "account_id": 622060,
+      "login_id": 2924530,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "laesydqdybfs@crisistextline.org",
+      "first_name": "Kaley",
+      "last_name": "Leshem",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/09f74bc22a2d5cec4e9dab3ec386448d6627abcb/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "0b319e2222257b4cb5af9b67826916816f21fcfa",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 21 Jun 2016 09:46:01 -0400",
+      "dismissed_at": "",
+      "notified_at": "Tue, 29 Nov -001 19:00:00 -0500",
+      "created_at": "Sun, 08 May 2016 11:45:33 -0400",
+      "updated_at": "Tue, 10 May 2016 15:45:52 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542957,
+      "account_id": 622060,
+      "login_id": 2558662,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "nadssdaymlqdybfs@crisistextline.org",
+      "first_name": "Lindsay",
+      "last_name": "Marrinan-Levy",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/2c12f327eb1ac6204421f2fd97b0e9353a6a2ec8/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "0c67b7413a10ef25325332d9dc7cbf997c60086e",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 1,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Mon, 20 Jun 2016 14:44:39 -0400",
+      "dismissed_at": "",
+      "notified_at": "Mon, 20 Jun 2016 13:00:26 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Mon, 20 Jun 2016 14:44:53 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542960,
+      "account_id": 622060,
+      "login_id": 2561821,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "nadssdayqdybfs@crisistextline.org",
+      "first_name": "Lindsay",
+      "last_name": "Martin",
+      "phone_number": "+16102022661",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/cf3c11dee48ba93261552258099d1d83ef6c14e5/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "596a1484ffa4624d089fbe7f74667fc8707ad5aa",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": false
+        },
+        "new_employee": {
+          "sms": false,
+          "email": false
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Wed, 08 Jun 2016 13:19:01 -0400",
+      "dismissed_at": "",
+      "notified_at": "Thu, 02 Jun 2016 14:05:47 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Thu, 02 Jun 2016 14:05:47 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5545009,
+      "account_id": 622060,
+      "login_id": 2564149,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "na+s5dqdybfs@crisistextline.org",
+      "first_name": "Nan",
+      "last_name": "Dummy",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/2210c9d78b5d1ea1d546a61ecbae8d3960cd3b3d/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "e4bb0285c149e09c07231c821386f85f15b2ebd3",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 19 Jan 2016 10:05:40 -0500",
+      "dismissed_at": "",
+      "notified_at": "Tue, 29 Nov -001 19:00:00 -0500",
+      "created_at": "Fri, 08 Jan 2016 15:15:08 -0500",
+      "updated_at": "Fri, 08 Jan 2016 15:15:47 -0500",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995827
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995827": 0
+      }
+    },
+    {
+      "id": 5533441,
+      "account_id": 622060,
+      "login_id": 2410141,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 2,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "naqsddybfs@crisistextline.org",
+      "first_name": "Nan",
+      "last_name": "Krafft",
+      "phone_number": "+12066129416",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/d960af40f83c167deddc2a6b07d6d365b5d10201/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "f50a76df7cdff4b048d2232a677290b41ee60a81",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": false
+        },
+        "swaps": {
+          "sms": false,
+          "email": false
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "02:00:00",
+      "sleep_end": "10:00:00",
+      "my_positions": [],
+      "last_login": "Wed, 08 Jun 2016 11:51:45 -0400",
+      "dismissed_at": "",
+      "notified_at": "Thu, 05 May 2016 14:24:03 -0400",
+      "created_at": "Thu, 07 Jan 2016 16:41:35 -0500",
+      "updated_at": "Thu, 05 May 2016 17:24:03 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5546452,
+      "account_id": 622060,
+      "login_id": 2564155,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "na+s6dqdybfs@crisistextline.org",
+      "first_name": "Nan Evan",
+      "last_name": "Dummy",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/27a60f1c5a911e237f7a262510cf9086cb1e7a40/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "33fdce57be1c2163e5056599cf50c718b9062e76",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Wed, 27 Jan 2016 10:20:56 -0500",
+      "dismissed_at": "",
+      "notified_at": "Tue, 29 Nov -001 19:00:00 -0500",
+      "created_at": "Fri, 08 Jan 2016 15:58:23 -0500",
+      "updated_at": "Mon, 08 Feb 2016 20:40:33 -0500",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995827
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995827": 0
+      }
+    },
+    {
+      "id": 5617432,
+      "account_id": 622060,
+      "login_id": 2729341,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "taasldiaqdybfs@crisistextline.org",
+      "first_name": "Natalia",
+      "last_name": "Dayan",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/8a6398f6ab90916add5fcb6e90a0d95791020029/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "43ce132a674dfcc65241edc25273b88cb911254d",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": false
+        },
+        "swaps": {
+          "sms": false,
+          "email": false
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": false
+        },
+        "new_employee": {
+          "sms": false,
+          "email": false
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 21 Jun 2016 18:59:45 -0400",
+      "dismissed_at": "",
+      "notified_at": "Mon, 25 Jan 2016 16:08:11 -0500",
+      "created_at": "Thu, 14 Jan 2016 15:08:42 -0500",
+      "updated_at": "Wed, 22 Jun 2016 15:59:24 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0
+      }
+    },
+    {
+      "id": 7611230,
+      "account_id": 622060,
+      "login_id": 2579092,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "mansedetqdybfs@crisistextline.org",
+      "first_name": "Ramneet",
+      "last_name": "Sachdev",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/84324dd3905594e3340235ba6ba0b32f645c96d2/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "f3d82684bad3d4b4459bf87450e053b875beb9e9",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 29 Nov -001 19:00:00 -0500",
+      "dismissed_at": "",
+      "notified_at": "Tue, 29 Nov -001 19:00:00 -0500",
+      "created_at": "Sun, 08 May 2016 11:46:42 -0400",
+      "updated_at": "Sun, 08 May 2016 11:46:42 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5617465,
+      "account_id": 622060,
+      "login_id": 2729230,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "baescdcakqdybfs@crisistextline.org",
+      "first_name": "Rebecca",
+      "last_name": "Kan",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/1b622cf8c17222cf19b76f88bec896a5168e50e7/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "862675defc91f8ac6b6821629b36d32f15d71247",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": false
+        },
+        "swaps": {
+          "sms": false,
+          "email": false
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": false
+        },
+        "new_employee": {
+          "sms": false,
+          "email": false
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true,
+          "email": false
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "08:00:00",
+      "my_positions": [],
+      "last_login": "Wed, 22 Jun 2016 19:33:35 -0400",
+      "dismissed_at": "",
+      "notified_at": "Fri, 03 Jun 2016 12:41:38 -0400",
+      "created_at": "Thu, 14 Jan 2016 15:11:21 -0500",
+      "updated_at": "Fri, 03 Jun 2016 12:41:41 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542969,
+      "account_id": 622060,
+      "login_id": 2557933,
+      "timezone_id": 11,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "baescdcaqdybfs@crisistextline.org",
+      "first_name": "Rebecca",
+      "last_name": "Ross",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/62eaf11037050211463b5da28fda259d8fb6db03/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "1cd8d5d74b38baea7dfbb5f1efaf6b572face2e3",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Mon, 20 Jun 2016 07:57:18 -0400",
+      "dismissed_at": "",
+      "notified_at": "Fri, 03 Jun 2016 12:41:06 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Sun, 05 Jun 2016 20:27:39 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/Chicago",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5533438,
+      "account_id": 622060,
+      "login_id": 2211928,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 2,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "raashdqdybfs@crisistextline.org",
+      "first_name": "Sarah",
+      "last_name": "Buckingham",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/a96ecc1cc97772f9bcfe89e50ff434aa08869f88/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "8a2f546cd26a1c34386914002014a81f84fcb304",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Sun, 19 Jun 2016 20:36:03 -0400",
+      "dismissed_at": "",
+      "notified_at": "Tue, 12 Apr 2016 08:20:08 -0400",
+      "created_at": "Thu, 07 Jan 2016 16:41:35 -0500",
+      "updated_at": "Sun, 08 May 2016 11:52:53 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542975,
+      "account_id": 622060,
+      "login_id": 2558608,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "aansidquaqdybfs@crisistextline.org",
+      "first_name": "Shaniqua",
+      "last_name": "Staples",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/188139ad731ca88793952ba7ae71a0b1e2e7ea3e/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "6eb8c8278264fa3ef56684025d42987bfe3aad85",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Mon, 20 Jun 2016 22:33:25 -0400",
+      "dismissed_at": "",
+      "notified_at": "Thu, 26 May 2016 10:52:23 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Sat, 04 Jun 2016 22:41:06 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 6831364,
+      "account_id": 622060,
+      "login_id": 2616277,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "aansndonqdybfs@crisistextline.org",
+      "first_name": "Shannon",
+      "last_name": "Green",
+      "phone_number": "+17083081686",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/7e05aba5a5fea1dfc5e1aed1062c469360588899/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "ceb1183730011a0a4590890a7aa432b36b4235af",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": true,
+          "email": true
+        },
+        "schedule": {
+          "sms": true,
+          "email": true
+        },
+        "reminders": {
+          "sms": true,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 29 Nov -001 19:00:00 -0500",
+      "dismissed_at": "",
+      "notified_at": "Tue, 29 Nov -001 19:00:00 -0500",
+      "created_at": "Tue, 12 Apr 2016 11:45:54 -0400",
+      "updated_at": "Tue, 12 Apr 2016 11:51:27 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542936,
+      "account_id": 622060,
+      "login_id": 2558392,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 2,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "earsrdiqdybfs@crisistextline.org",
+      "first_name": "Sherri",
+      "last_name": "Bishop",
+      "phone_number": "+13526539223",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/c222fc1c733fca1fceb5a29b5c361141c7fb6ae6/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "4fde18b95202b53edead789558e05f912c9a6c27",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Mon, 20 Jun 2016 08:44:05 -0400",
+      "dismissed_at": "",
+      "notified_at": "Wed, 15 Jun 2016 14:16:09 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:42 -0500",
+      "updated_at": "Wed, 15 Jun 2016 14:16:09 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542963,
+      "account_id": 622060,
+      "login_id": 2562736,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "iansidseqdybfs@crisistextline.org",
+      "first_name": "Shinise",
+      "last_name": "Muse",
+      "phone_number": "+12022716034",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/ac6540ba02e03de6b63be8410cdef9390f162e89/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "f40c788a051daf4628c38852de016ee7e12287d8",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": 1,
+          "email": 1
+        },
+        "swaps": {
+          "sms": 1,
+          "email": 0
+        },
+        "schedule": {
+          "sms": 0,
+          "email": 0
+        },
+        "reminders": {
+          "sms": 0,
+          "email": 0
+        },
+        "availability": {
+          "sms": 0,
+          "email": 1
+        },
+        "new_employee": {
+          "sms": 0,
+          "email": 0
+        },
+        "attendance": {
+          "sms": 0,
+          "email": 0
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 1,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Fri, 17 Jun 2016 12:10:45 -0400",
+      "dismissed_at": "",
+      "notified_at": "Mon, 23 May 2016 19:49:54 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Mon, 23 May 2016 19:49:54 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 8370386,
+      "account_id": 622060,
+      "login_id": 4038181,
+      "timezone_id": 11,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "oaksodqdybfs@crisistextline.org",
+      "first_name": "Shoko",
+      "last_name": "Morikawa",
+      "phone_number": "+12256204522",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/2631671518f04da95d409f3e86fa9798d750addc/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "0e8df1cd3189bd9859fd3b7da1594ec1255eba91",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Wed, 22 Jun 2016 21:03:16 -0400",
+      "dismissed_at": "",
+      "notified_at": "Wed, 22 Jun 2016 21:05:29 -0400",
+      "created_at": "Tue, 14 Jun 2016 16:27:59 -0400",
+      "updated_at": "Wed, 22 Jun 2016 21:05:29 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/Chicago",
+      "positions": [],
+      "locations": [
+        995815
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0
+      }
+    },
+    {
+      "id": 7862161,
+      "account_id": 622060,
+      "login_id": 3729936,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "dadsydqdybfs@crisistextline.org",
+      "first_name": "Teddy",
+      "last_name": "Maghrak",
+      "phone_number": "+16127430640",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/beea84dbb6e8a2e31d47da820fe26c6cd7e2d92f/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "6c8ff174176a788358aa0007606e22df6840fc10",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Thu, 23 Jun 2016 00:07:12 -0400",
+      "dismissed_at": "",
+      "notified_at": "Sat, 28 May 2016 19:41:41 -0400",
+      "created_at": "Mon, 23 May 2016 14:44:02 -0400",
+      "updated_at": "Wed, 22 Jun 2016 15:59:10 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 8373706,
+      "account_id": 622060,
+      "login_id": 2663629,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 2,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "nagsqddybfs@crisistextline.org",
+      "first_name": "Tong",
+      "last_name": "Xiang",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/eb4e9b3c05034ba04c207b73a58dbf924fff4fe0/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "12cf4a989e1eb9ad0972fb3fde81e039fb6dbc12",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Thu, 23 Jun 2016 11:18:19 -0400",
+      "dismissed_at": "",
+      "notified_at": "Tue, 29 Nov -001 19:00:00 -0500",
+      "created_at": "Tue, 14 Jun 2016 18:18:08 -0400",
+      "updated_at": "Tue, 14 Jun 2016 18:29:14 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0
+      }
+    }
+  ],
+  "locations": [
+    {
+      "id": 995815,
+      "account_id": 622060,
+      "is_default": 0,
+      "name": "On Platform",
+      "sort": 0,
+      "max_hours": 32,
+      "address": "",
+      "coordinates": null,
+      "latitude": 0,
+      "longitude": 0,
+      "place_id": "",
+      "place_confirmed": false,
+      "ip_address": "",
+      "created_at": "Fri, 08 Jan 2016 08:56:56 -0500",
+      "updated_at": "Fri, 08 Jan 2016 14:56:56 -0500",
+      "is_deleted": false,
+      "place": null
+    },
+    {
+      "id": 995827,
+      "account_id": 622060,
+      "is_default": 0,
+      "name": "Meeting",
+      "sort": 0,
+      "max_hours": 4,
+      "address": "",
+      "coordinates": null,
+      "latitude": 0,
+      "longitude": 0,
+      "place_id": "",
+      "place_confirmed": false,
+      "ip_address": "",
+      "created_at": "Fri, 08 Jan 2016 09:02:06 -0500",
+      "updated_at": "Fri, 08 Jan 2016 18:26:01 -0500",
+      "is_deleted": false,
+      "place": null
+    },
+    {
+      "id": 1285514,
+      "account_id": 622060,
+      "is_default": 0,
+      "name": "Shift Coverage ",
+      "sort": 0,
+      "max_hours": 0,
+      "address": "",
+      "coordinates": null,
+      "latitude": 0,
+      "longitude": 0,
+      "place_id": "0",
+      "place_confirmed": true,
+      "ip_address": "",
+      "created_at": "Thu, 05 May 2016 12:39:21 -0400",
+      "updated_at": "Thu, 05 May 2016 17:39:21 -0400",
+      "is_deleted": false,
+      "place": null
+    }
+  ]
+}

@@ -1,5 +1,4 @@
-global.CONFIG = require('../../config.js');
-var sampleData = require('../../sample_data/sampleData');
+var fs = require('fs');
 
 var WhenIWork = {
   get: function(term, params, cbFunction){
@@ -7,23 +6,11 @@ var WhenIWork = {
     //is the second argument. May need to change this
     //in the future depending on what gets passed to 'get'.
     cbFunction = [].slice.call(arguments).pop();  
-    if (term === 'users') {
-      cbFunction(sampleData.usersResponse);
-    }
-    else if (term === 'users/7889841') {
-      params({user: sampleData.usersResponse.users[2]});
-    }
-    else if (term === 'shifts') {
-      cbFunction(sampleData.shiftsResponse);
-    }
-    else if (term === 'user') {
-      cbFunction(sampleData.user);
-    }
+    readResponse (term, cbFunction);
   },
   //POST AND UPDATE ARE JUST EMPTY FUNCTIONS, SINCE WE'RE NOT USING THE RESPONSES.
   post: function(term, params, cbFunction) {
     //may need to account for different arguments passed in in future
-    if (term === 'users/profile') return {user: 'testUser'};
     if (cbFunction && typeof cbFunction === 'function') cbFunction();
     else if (cbFunction && typeof cbFunction !== 'function') {
       CONSOLE.WITH_TIME("Error! This callback function is not a function: ", cbFunction);
@@ -36,13 +23,13 @@ var WhenIWork = {
       CONSOLE.WITH_TIME("Error! This callback function is not a function: ", cbFunction);
     }
   },
-  delete: function(term, params, cbFunction) {
-    //may need to account for different arguments passed in in future.
-    if (cbFunction && typeof cbFunction === 'function') cbFunction();
-    else if (cbFunction && typeof cbFunction !== 'function') {
-      CONSOLE.WITH_TIME("Error! This callback function is not a function: ", cbFunction);
-    }
-  },
 };
+
+function readResponse (term, cbFunction) {
+  fs.readFile('./test/helpers/supervisorSampleData/response' + term + '.json', 'utf-8', function(err, data) {
+    if (err) console.log('FS ERROR', err);
+    cbFunction(data);
+  });
+}
 
 module.exports = WhenIWork;

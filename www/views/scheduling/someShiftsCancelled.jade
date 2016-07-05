@@ -26,3 +26,8 @@ block content
         input(type="hidden", name="email", value=email)
         input(type="hidden", name="token", value=token)
         input(type="submit", value="Delete other shifts")
+
+    form(action="/scheduling/login", method="get")
+        input(type="hidden", name="email", value=email)
+        input(type="hidden", name="token", value=token)
+        input(type="submit", value="See my updated schedule")

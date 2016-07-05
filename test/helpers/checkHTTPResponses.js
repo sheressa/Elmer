@@ -14,7 +14,7 @@ var WhenIWork = new wIW(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wh
 
 var date_format = 'YYYY-MM-DD HH:mm:ss';
 
-// sendRequest('request', timeOffRequests());
+// sendRequest('requests', timeOffRequests());
 // sendRequest('users', usersRequests());
 sendRequest('shifts', shiftsRequests());
 

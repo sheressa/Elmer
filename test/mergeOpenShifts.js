@@ -1,5 +1,5 @@
 var assert = require('assert')
-  , sampleData = require('./sampleData');
+  , sampleData = require(CONFIG.root_dir + '/sample_data/sampleData');
 var mergeOpenShiftsExportObject = require(CONFIG.root_dir + '/jobs/scheduling/MergeOpenShifts.js');
 
 describe('merge open shifts', function() {

@@ -1,5 +1,5 @@
 var assert = require('assert'),
-  sampleData = require('./sampleData'),
+  sampleData = require(CONFIG.root_dir + '/sample_data/sampleData'),
   timeOffRequests = require(CONFIG.root_dir + '/jobs/scheduling/TimeOffRequests');
 
 var requests = sampleData.requestsResponse.requests;

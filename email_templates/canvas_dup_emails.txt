@@ -1,0 +1,3 @@
+Hello Heather! 
+
+GoToWebinar user with email: %email matched two or more accounts on Canvas and therefore we could not give them credit for attending a GoToWebinar observation. The returned duplicate user objects are: %user

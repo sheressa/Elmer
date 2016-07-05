@@ -1,0 +1,2964 @@
+{
+  "messages": [
+    {
+      "id": 21296494,
+      "account_id": 622060,
+      "user_id": 5542948,
+      "request_id": 10282948,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Tue, 12 Jan 2016 14:20:13 -0500",
+      "updated_at": "Tue, 12 Jan 2016 14:20:13 -0500"
+    },
+    {
+      "id": 21296497,
+      "account_id": 622060,
+      "user_id": 5542948,
+      "request_id": 10282948,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 0,
+      "title": "",
+      "content": "Lindz to cover me for a doctors appointment",
+      "created_at": "Tue, 12 Jan 2016 14:20:13 -0500",
+      "updated_at": "Tue, 12 Jan 2016 14:20:13 -0500"
+    },
+    {
+      "id": 21438031,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 10357519,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Fri, 15 Jan 2016 10:41:25 -0500",
+      "updated_at": "Fri, 15 Jan 2016 10:41:25 -0500"
+    },
+    {
+      "id": 21438034,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 10357519,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 0,
+      "title": "",
+      "content": "My shift is from 4pm-Midnight!  ",
+      "created_at": "Fri, 15 Jan 2016 10:41:25 -0500",
+      "updated_at": "Fri, 15 Jan 2016 10:41:25 -0500"
+    },
+    {
+      "id": 21578998,
+      "account_id": 622060,
+      "user_id": 5533441,
+      "request_id": 10428472,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 18 Jan 2016 19:29:09 -0500",
+      "updated_at": "Mon, 18 Jan 2016 19:29:09 -0500"
+    },
+    {
+      "id": 21844981,
+      "account_id": 622060,
+      "user_id": 5533438,
+      "request_id": 10563802,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 25 Jan 2016 02:00:11 -0500",
+      "updated_at": "Mon, 25 Jan 2016 02:00:11 -0500"
+    },
+    {
+      "id": 21845467,
+      "account_id": 622060,
+      "user_id": 5533438,
+      "request_id": 10564102,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 25 Jan 2016 02:42:43 -0500",
+      "updated_at": "Mon, 25 Jan 2016 02:42:43 -0500"
+    },
+    {
+      "id": 22328401,
+      "account_id": 622060,
+      "user_id": 5533438,
+      "request_id": 10564102,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 1,
+      "title": "",
+      "content": "This request has been denied.",
+      "created_at": "Wed, 03 Feb 2016 12:30:21 -0500",
+      "updated_at": "Wed, 03 Feb 2016 12:30:21 -0500"
+    },
+    {
+      "id": 21845491,
+      "account_id": 622060,
+      "user_id": 5533438,
+      "request_id": 10564117,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 25 Jan 2016 02:44:55 -0500",
+      "updated_at": "Mon, 25 Jan 2016 02:44:55 -0500"
+    },
+    {
+      "id": 22064317,
+      "account_id": 622060,
+      "user_id": 5542963,
+      "request_id": 10674220,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Fri, 29 Jan 2016 03:19:21 -0500",
+      "updated_at": "Fri, 29 Jan 2016 03:19:21 -0500"
+    },
+    {
+      "id": 22064320,
+      "account_id": 622060,
+      "user_id": 5542963,
+      "request_id": 10674220,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 0,
+      "title": "",
+      "content": "Taking vacation time",
+      "created_at": "Fri, 29 Jan 2016 03:19:21 -0500",
+      "updated_at": "Fri, 29 Jan 2016 03:19:21 -0500"
+    },
+    {
+      "id": 22064329,
+      "account_id": 622060,
+      "user_id": 5542963,
+      "request_id": 10674223,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Fri, 29 Jan 2016 03:20:34 -0500",
+      "updated_at": "Fri, 29 Jan 2016 03:20:34 -0500"
+    },
+    {
+      "id": 22064332,
+      "account_id": 622060,
+      "user_id": 5542963,
+      "request_id": 10674223,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 0,
+      "title": "",
+      "content": "Vacation time",
+      "created_at": "Fri, 29 Jan 2016 03:20:34 -0500",
+      "updated_at": "Fri, 29 Jan 2016 03:20:34 -0500"
+    },
+    {
+      "id": 22246348,
+      "account_id": 622060,
+      "user_id": 5533438,
+      "request_id": 10674223,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 1,
+      "title": "",
+      "content": "This request has been denied.",
+      "created_at": "Tue, 02 Feb 2016 01:38:40 -0500",
+      "updated_at": "Tue, 02 Feb 2016 01:38:40 -0500"
+    },
+    {
+      "id": 22093648,
+      "account_id": 622060,
+      "user_id": 5533441,
+      "request_id": 10689148,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Fri, 29 Jan 2016 16:22:59 -0500",
+      "updated_at": "Fri, 29 Jan 2016 16:22:59 -0500"
+    },
+    {
+      "id": 22093651,
+      "account_id": 622060,
+      "user_id": 5533441,
+      "request_id": 10689148,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 0,
+      "title": "",
+      "content": "Will be on Platform for shift on Monday 2/15",
+      "created_at": "Fri, 29 Jan 2016 16:22:59 -0500",
+      "updated_at": "Fri, 29 Jan 2016 16:22:59 -0500"
+    },
+    {
+      "id": 22468747,
+      "account_id": 622060,
+      "user_id": 5542960,
+      "request_id": 10854436,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Fri, 05 Feb 2016 18:30:09 -0500",
+      "updated_at": "Fri, 05 Feb 2016 18:30:09 -0500"
+    },
+    {
+      "id": 28085324,
+      "account_id": 622060,
+      "user_id": 5542957,
+      "request_id": 13139369,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 0,
+      "title": "",
+      "content": "Submitted the initial request through Zenefits for the 17 and 18 off work. Wanted to follow up here to make sure it's entered correctly! Thank you!",
+      "created_at": "Sun, 01 May 2016 17:09:47 -0400",
+      "updated_at": "Sun, 01 May 2016 17:09:47 -0400"
+    },
+    {
+      "id": 28469153,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13139369,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Fri, 06 May 2016 07:22:28 -0400",
+      "updated_at": "Fri, 06 May 2016 07:22:28 -0400"
+    },
+    {
+      "id": 28085423,
+      "account_id": 622060,
+      "user_id": 5542957,
+      "request_id": 13139417,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 0,
+      "title": "",
+      "content": "Trying to enter time off request! I can work the 12a-4a piece if need be, just looking for the day time hours to be off ( July 17 4p-12a and July 18 4p-12a)",
+      "created_at": "Sun, 01 May 2016 17:10:59 -0400",
+      "updated_at": "Sun, 01 May 2016 17:10:59 -0400"
+    },
+    {
+      "id": 28469168,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13139417,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Fri, 06 May 2016 07:22:38 -0400",
+      "updated_at": "Fri, 06 May 2016 07:22:38 -0400"
+    },
+    {
+      "id": 28350110,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13253729,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Wed, 04 May 2016 16:45:15 -0400",
+      "updated_at": "Wed, 04 May 2016 16:45:15 -0400"
+    },
+    {
+      "id": 28350143,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13253747,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Wed, 04 May 2016 16:45:42 -0400",
+      "updated_at": "Wed, 04 May 2016 16:45:42 -0400"
+    },
+    {
+      "id": 28468751,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13305287,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Fri, 06 May 2016 07:01:05 -0400",
+      "updated_at": "Fri, 06 May 2016 07:01:05 -0400"
+    },
+    {
+      "id": 28468928,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13305389,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Fri, 06 May 2016 07:12:38 -0400",
+      "updated_at": "Fri, 06 May 2016 07:12:38 -0400"
+    },
+    {
+      "id": 33766321,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13305389,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 1,
+      "title": "",
+      "content": "This request has been denied.",
+      "created_at": "Tue, 21 Jun 2016 16:54:54 -0400",
+      "updated_at": "Tue, 21 Jun 2016 16:54:54 -0400"
+    },
+    {
+      "id": 28577219,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13358885,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Sun, 08 May 2016 12:32:11 -0400",
+      "updated_at": "Sun, 08 May 2016 12:32:11 -0400"
+    },
+    {
+      "id": 28577222,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13358885,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 0,
+      "title": "",
+      "content": "AT conference-- No additional coverage needed ",
+      "created_at": "Sun, 08 May 2016 12:32:11 -0400",
+      "updated_at": "Sun, 08 May 2016 12:32:11 -0400"
+    },
+    {
+      "id": 28670242,
+      "account_id": 622060,
+      "user_id": 5542951,
+      "request_id": 13405504,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 0,
+      "title": "",
+      "content": "If someone is interested in trading their Wednesday for my Tuesday 8hr shift. I'm sure we can work something out.",
+      "created_at": "Mon, 09 May 2016 17:45:31 -0400",
+      "updated_at": "Mon, 09 May 2016 17:45:31 -0400"
+    },
+    {
+      "id": 30023056,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13405504,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 23 May 2016 21:27:29 -0400",
+      "updated_at": "Mon, 23 May 2016 21:27:29 -0400"
+    },
+    {
+      "id": 29243347,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13672048,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Tue, 17 May 2016 12:53:44 -0400",
+      "updated_at": "Tue, 17 May 2016 12:53:44 -0400"
+    },
+    {
+      "id": 29243350,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13672048,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 0,
+      "title": "",
+      "content": "Vacation, ya'll ",
+      "created_at": "Tue, 17 May 2016 12:53:45 -0400",
+      "updated_at": "Tue, 17 May 2016 12:53:45 -0400"
+    },
+    {
+      "id": 29381029,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13699127,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Wed, 18 May 2016 22:13:59 -0400",
+      "updated_at": "Wed, 18 May 2016 22:13:59 -0400"
+    },
+    {
+      "id": 29897016,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 13965871,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 23 May 2016 10:18:10 -0400",
+      "updated_at": "Mon, 23 May 2016 10:18:10 -0400"
+    },
+    {
+      "id": 30934487,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 14423777,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 30 May 2016 20:53:05 -0400",
+      "updated_at": "Mon, 30 May 2016 20:53:05 -0400"
+    },
+    {
+      "id": 31386181,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 14625711,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Thu, 02 Jun 2016 16:23:49 -0400",
+      "updated_at": "Thu, 02 Jun 2016 16:23:49 -0400"
+    },
+    {
+      "id": 31898331,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 14840671,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 06 Jun 2016 15:33:21 -0400",
+      "updated_at": "Mon, 06 Jun 2016 15:33:21 -0400"
+    },
+    {
+      "id": 31898756,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 14840881,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 06 Jun 2016 15:36:15 -0400",
+      "updated_at": "Mon, 06 Jun 2016 15:36:15 -0400"
+    },
+    {
+      "id": 31900786,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 14841781,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 06 Jun 2016 15:47:31 -0400",
+      "updated_at": "Mon, 06 Jun 2016 15:47:31 -0400"
+    },
+    {
+      "id": 31924256,
+      "account_id": 622060,
+      "user_id": 5533441,
+      "request_id": 14852556,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 06 Jun 2016 17:51:30 -0400",
+      "updated_at": "Mon, 06 Jun 2016 17:51:30 -0400"
+    },
+    {
+      "id": 31924261,
+      "account_id": 622060,
+      "user_id": 5533441,
+      "request_id": 14852556,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 0,
+      "title": "",
+      "content": "Holiday Day off. Normal shift covered by Shaniqua. ",
+      "created_at": "Mon, 06 Jun 2016 17:51:31 -0400",
+      "updated_at": "Mon, 06 Jun 2016 17:51:31 -0400"
+    },
+    {
+      "id": 31924346,
+      "account_id": 622060,
+      "user_id": 5533441,
+      "request_id": 14852556,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 1,
+      "title": "",
+      "content": "This request has been canceled.",
+      "created_at": "Mon, 06 Jun 2016 17:52:01 -0400",
+      "updated_at": "Mon, 06 Jun 2016 17:52:01 -0400"
+    },
+    {
+      "id": 31924466,
+      "account_id": 622060,
+      "user_id": 5533441,
+      "request_id": 14852671,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 06 Jun 2016 17:52:33 -0400",
+      "updated_at": "Mon, 06 Jun 2016 17:52:33 -0400"
+    },
+    {
+      "id": 31924471,
+      "account_id": 622060,
+      "user_id": 5533441,
+      "request_id": 14852671,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 0,
+      "title": "",
+      "content": "Holiday Day off. Normal shift covered by Shaniqua.",
+      "created_at": "Mon, 06 Jun 2016 17:52:33 -0400",
+      "updated_at": "Mon, 06 Jun 2016 17:52:33 -0400"
+    },
+    {
+      "id": 32881661,
+      "account_id": 622060,
+      "user_id": 5542957,
+      "request_id": 15299946,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 0,
+      "title": "",
+      "content": "Just would like 4p-12am off. ",
+      "created_at": "Tue, 14 Jun 2016 13:42:11 -0400",
+      "updated_at": "Tue, 14 Jun 2016 13:42:11 -0400"
+    },
+    {
+      "id": 33878721,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15299946,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Wed, 22 Jun 2016 13:55:38 -0400",
+      "updated_at": "Wed, 22 Jun 2016 13:55:38 -0400"
+    },
+    {
+      "id": 33571641,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15623751,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 20 Jun 2016 12:37:34 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:37:34 -0400"
+    },
+    {
+      "id": 33571866,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15623881,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 20 Jun 2016 12:38:37 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:38:37 -0400"
+    },
+    {
+      "id": 33572451,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15624156,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 20 Jun 2016 12:41:13 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:41:13 -0400"
+    },
+    {
+      "id": 33572791,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15624311,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 20 Jun 2016 12:42:30 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:42:30 -0400"
+    },
+    {
+      "id": 33573441,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15624551,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 20 Jun 2016 12:46:04 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:46:04 -0400"
+    },
+    {
+      "id": 33575101,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15625191,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 20 Jun 2016 12:53:21 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:53:21 -0400"
+    },
+    {
+      "id": 33575471,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15625351,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 20 Jun 2016 12:54:42 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:54:42 -0400"
+    },
+    {
+      "id": 33575636,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15625351,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 1,
+      "title": "",
+      "content": "This request has been denied.",
+      "created_at": "Mon, 20 Jun 2016 12:55:27 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:55:27 -0400"
+    },
+    {
+      "id": 33575676,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15625461,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Mon, 20 Jun 2016 12:55:41 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:55:41 -0400"
+    },
+    {
+      "id": 33765246,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15717316,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Tue, 21 Jun 2016 16:49:18 -0400",
+      "updated_at": "Tue, 21 Jun 2016 16:49:18 -0400"
+    },
+    {
+      "id": 33775746,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15717316,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 1,
+      "title": "",
+      "content": "This request has been denied.",
+      "created_at": "Tue, 21 Jun 2016 17:51:27 -0400",
+      "updated_at": "Tue, 21 Jun 2016 17:51:27 -0400"
+    },
+    {
+      "id": 33766846,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15718066,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Tue, 21 Jun 2016 16:58:44 -0400",
+      "updated_at": "Tue, 21 Jun 2016 16:58:44 -0400"
+    },
+    {
+      "id": 33775776,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15722706,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Tue, 21 Jun 2016 17:51:44 -0400",
+      "updated_at": "Tue, 21 Jun 2016 17:51:44 -0400"
+    },
+    {
+      "id": 33777051,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "request_id": 15723361,
+      "swap_id": 0,
+      "conversation_id": 0,
+      "type": 2,
+      "title": "",
+      "content": "This request has been accepted.",
+      "created_at": "Tue, 21 Jun 2016 17:59:59 -0400",
+      "updated_at": "Tue, 21 Jun 2016 17:59:59 -0400"
+    }
+  ],
+  "total": 41,
+  "page": 0,
+  "requests": [
+    {
+      "id": 15723361,
+      "account_id": 622060,
+      "user_id": 5542963,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Sun, 17 Jul 2016 00:00:00 -0400",
+      "end_time": "Fri, 22 Jul 2016 23:59:59 -0400",
+      "created_at": "Tue, 21 Jun 2016 17:59:59 -0400",
+      "updated_at": "Tue, 21 Jun 2016 17:59:59 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 15722706,
+      "account_id": 622060,
+      "user_id": 5542939,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Sun, 03 Jul 2016 00:00:00 -0400",
+      "end_time": "Sun, 10 Jul 2016 23:59:59 -0400",
+      "created_at": "Tue, 21 Jun 2016 17:51:44 -0400",
+      "updated_at": "Tue, 21 Jun 2016 17:51:44 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 15718066,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Tue, 12 Jul 2016 00:00:00 -0400",
+      "end_time": "Fri, 15 Jul 2016 23:59:59 -0400",
+      "created_at": "Tue, 21 Jun 2016 16:58:44 -0400",
+      "updated_at": "Tue, 21 Jun 2016 16:58:44 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 15717316,
+      "account_id": 622060,
+      "user_id": 5542939,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 1,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Sun, 03 Jul 2016 00:00:00 -0400",
+      "end_time": "Sun, 03 Jul 2016 23:59:59 -0400",
+      "created_at": "Tue, 21 Jun 2016 16:49:18 -0400",
+      "updated_at": "Tue, 21 Jun 2016 17:51:27 -0400",
+      "canceled_by": 5542972
+    },
+    {
+      "id": 15625461,
+      "account_id": 622060,
+      "user_id": 5533438,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Sun, 03 Jul 2016 00:00:00 -0400",
+      "end_time": "Thu, 07 Jul 2016 23:59:59 -0400",
+      "created_at": "Mon, 20 Jun 2016 12:55:41 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:55:41 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 15625351,
+      "account_id": 622060,
+      "user_id": 5533438,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 1,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Sun, 03 Jul 2016 00:00:00 -0400",
+      "end_time": "Sun, 03 Jul 2016 23:59:59 -0400",
+      "created_at": "Mon, 20 Jun 2016 12:54:42 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:55:27 -0400",
+      "canceled_by": 5542972
+    },
+    {
+      "id": 15625191,
+      "account_id": 622060,
+      "user_id": 5617465,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Sun, 03 Jul 2016 00:00:00 -0400",
+      "end_time": "Sun, 03 Jul 2016 23:59:59 -0400",
+      "created_at": "Mon, 20 Jun 2016 12:53:21 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:53:21 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 15624551,
+      "account_id": 622060,
+      "user_id": 5542975,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Thu, 30 Jun 2016 00:00:00 -0400",
+      "end_time": "Sat, 02 Jul 2016 23:59:59 -0400",
+      "created_at": "Mon, 20 Jun 2016 12:46:04 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:46:04 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 15624311,
+      "account_id": 622060,
+      "user_id": 5542963,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Wed, 29 Jun 2016 00:00:00 -0400",
+      "end_time": "Wed, 29 Jun 2016 23:59:59 -0400",
+      "created_at": "Mon, 20 Jun 2016 12:42:30 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:42:30 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 15624156,
+      "account_id": 622060,
+      "user_id": 5542963,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Tue, 28 Jun 2016 00:00:00 -0400",
+      "end_time": "Tue, 28 Jun 2016 23:59:59 -0400",
+      "created_at": "Mon, 20 Jun 2016 12:41:13 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:41:13 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 15623881,
+      "account_id": 622060,
+      "user_id": 5542963,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Fri, 24 Jun 2016 00:00:00 -0400",
+      "end_time": "Fri, 24 Jun 2016 23:59:59 -0400",
+      "created_at": "Mon, 20 Jun 2016 12:38:37 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:38:37 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 15623751,
+      "account_id": 622060,
+      "user_id": 7611230,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Thu, 23 Jun 2016 00:00:00 -0400",
+      "end_time": "Thu, 23 Jun 2016 23:59:59 -0400",
+      "created_at": "Mon, 20 Jun 2016 12:37:34 -0400",
+      "updated_at": "Mon, 20 Jun 2016 12:37:34 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 15299946,
+      "account_id": 622060,
+      "user_id": 5542957,
+      "creator_id": 5542957,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 1,
+      "hours": 8,
+      "start_time": "Sun, 24 Jul 2016 00:00:00 -0400",
+      "end_time": "Sun, 24 Jul 2016 23:59:59 -0400",
+      "created_at": "Tue, 14 Jun 2016 13:42:11 -0400",
+      "updated_at": "Wed, 22 Jun 2016 13:55:38 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 14852671,
+      "account_id": 622060,
+      "user_id": 5533441,
+      "creator_id": 5533441,
+      "updater_id": 5533441,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Mon, 04 Jul 2016 07:00:00 -0400",
+      "end_time": "Mon, 04 Jul 2016 20:00:00 -0400",
+      "created_at": "Mon, 06 Jun 2016 17:52:33 -0400",
+      "updated_at": "Mon, 06 Jun 2016 17:52:33 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 14852556,
+      "account_id": 622060,
+      "user_id": 5533441,
+      "creator_id": 5533441,
+      "updater_id": 5533441,
+      "status": 1,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Mon, 04 Jul 2016 00:00:00 -0400",
+      "end_time": "Tue, 05 Jul 2016 23:59:59 -0400",
+      "created_at": "Mon, 06 Jun 2016 17:51:30 -0400",
+      "updated_at": "Mon, 06 Jun 2016 17:52:01 -0400",
+      "canceled_by": 5533441
+    },
+    {
+      "id": 14841781,
+      "account_id": 622060,
+      "user_id": 7611230,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Thu, 09 Jun 2016 00:00:00 -0400",
+      "end_time": "Thu, 09 Jun 2016 23:59:59 -0400",
+      "created_at": "Mon, 06 Jun 2016 15:47:31 -0400",
+      "updated_at": "Mon, 06 Jun 2016 15:47:31 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 14840881,
+      "account_id": 622060,
+      "user_id": 5617432,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Sat, 18 Jun 2016 00:00:00 -0400",
+      "end_time": "Mon, 20 Jun 2016 23:59:59 -0400",
+      "created_at": "Mon, 06 Jun 2016 15:36:15 -0400",
+      "updated_at": "Mon, 06 Jun 2016 15:36:15 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 14840671,
+      "account_id": 622060,
+      "user_id": 5542960,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Wed, 15 Jun 2016 00:00:00 -0400",
+      "end_time": "Fri, 17 Jun 2016 23:59:59 -0400",
+      "created_at": "Mon, 06 Jun 2016 15:33:21 -0400",
+      "updated_at": "Mon, 06 Jun 2016 15:33:21 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 14625711,
+      "account_id": 622060,
+      "user_id": 5542963,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Tue, 14 Jun 2016 00:00:00 -0400",
+      "end_time": "Tue, 14 Jun 2016 23:59:59 -0400",
+      "created_at": "Thu, 02 Jun 2016 16:23:48 -0400",
+      "updated_at": "Thu, 02 Jun 2016 16:23:48 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 14423777,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Sun, 12 Jun 2016 00:00:00 -0400",
+      "end_time": "Sun, 19 Jun 2016 23:59:59 -0400",
+      "created_at": "Mon, 30 May 2016 20:53:05 -0400",
+      "updated_at": "Mon, 30 May 2016 20:53:05 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 13965871,
+      "account_id": 622060,
+      "user_id": 6831364,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Wed, 01 Jun 2016 00:00:00 -0400",
+      "end_time": "Tue, 07 Jun 2016 23:59:59 -0400",
+      "created_at": "Mon, 23 May 2016 10:18:10 -0400",
+      "updated_at": "Mon, 23 May 2016 10:18:10 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 13699127,
+      "account_id": 622060,
+      "user_id": 5542960,
+      "creator_id": 5542960,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 1,
+      "hours": 8,
+      "start_time": "Sat, 04 Jun 2016 00:00:00 -0400",
+      "end_time": "Sat, 04 Jun 2016 23:59:59 -0400",
+      "created_at": "Wed, 18 May 2016 00:11:47 -0400",
+      "updated_at": "Wed, 18 May 2016 22:13:59 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 13672048,
+      "account_id": 622060,
+      "user_id": 5542936,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Sun, 22 May 2016 00:00:00 -0400",
+      "end_time": "Sat, 28 May 2016 23:59:59 -0400",
+      "created_at": "Tue, 17 May 2016 12:53:44 -0400",
+      "updated_at": "Tue, 17 May 2016 12:53:44 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 13405504,
+      "account_id": 622060,
+      "user_id": 5542951,
+      "creator_id": 5542951,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Tue, 14 Jun 2016 00:00:00 -0400",
+      "end_time": "Wed, 15 Jun 2016 23:59:59 -0400",
+      "created_at": "Mon, 09 May 2016 17:45:31 -0400",
+      "updated_at": "Mon, 23 May 2016 21:27:29 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 13358885,
+      "account_id": 622060,
+      "user_id": 7611224,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Fri, 13 May 2016 00:00:00 -0400",
+      "end_time": "Fri, 13 May 2016 23:59:59 -0400",
+      "created_at": "Sun, 08 May 2016 12:32:11 -0400",
+      "updated_at": "Sun, 08 May 2016 12:32:11 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 13305389,
+      "account_id": 622060,
+      "user_id": 5542939,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 1,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Thu, 07 Jul 2016 00:00:00 -0400",
+      "end_time": "Sat, 09 Jul 2016 23:59:59 -0400",
+      "created_at": "Fri, 06 May 2016 07:12:38 -0400",
+      "updated_at": "Tue, 21 Jun 2016 16:54:54 -0400",
+      "canceled_by": 5542972
+    },
+    {
+      "id": 13305287,
+      "account_id": 622060,
+      "user_id": 5542969,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Sat, 07 May 2016 00:00:00 -0400",
+      "end_time": "Sun, 08 May 2016 23:59:59 -0400",
+      "created_at": "Fri, 06 May 2016 07:01:05 -0400",
+      "updated_at": "Fri, 06 May 2016 07:01:05 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 13253747,
+      "account_id": 622060,
+      "user_id": 5542975,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Sun, 08 May 2016 00:00:00 -0400",
+      "end_time": "Sat, 14 May 2016 23:59:59 -0400",
+      "created_at": "Wed, 04 May 2016 16:45:42 -0400",
+      "updated_at": "Wed, 04 May 2016 16:45:42 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 13253729,
+      "account_id": 622060,
+      "user_id": 5542948,
+      "creator_id": 5542972,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Sun, 08 May 2016 00:00:00 -0400",
+      "end_time": "Sat, 14 May 2016 23:59:59 -0400",
+      "created_at": "Wed, 04 May 2016 16:45:15 -0400",
+      "updated_at": "Wed, 04 May 2016 16:45:15 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 13139417,
+      "account_id": 622060,
+      "user_id": 5542957,
+      "creator_id": 5542957,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 1,
+      "hours": 8,
+      "start_time": "Mon, 18 Jul 2016 00:00:00 -0400",
+      "end_time": "Mon, 18 Jul 2016 23:59:59 -0400",
+      "created_at": "Sun, 01 May 2016 17:10:59 -0400",
+      "updated_at": "Fri, 06 May 2016 07:22:38 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 13139369,
+      "account_id": 622060,
+      "user_id": 5542957,
+      "creator_id": 5542957,
+      "updater_id": 5542972,
+      "status": 2,
+      "type": 1,
+      "hours": 8,
+      "start_time": "Sun, 17 Jul 2016 00:00:00 -0400",
+      "end_time": "Sun, 17 Jul 2016 23:59:59 -0400",
+      "created_at": "Sun, 01 May 2016 17:09:47 -0400",
+      "updated_at": "Fri, 06 May 2016 07:22:28 -0400",
+      "canceled_by": 0
+    },
+    {
+      "id": 10854436,
+      "account_id": 622060,
+      "user_id": 5542960,
+      "creator_id": 5542960,
+      "updater_id": 0,
+      "status": 2,
+      "type": 1,
+      "hours": 32,
+      "start_time": "Wed, 23 Mar 2016 00:00:00 -0400",
+      "end_time": "Sat, 26 Mar 2016 23:59:59 -0400",
+      "created_at": "Fri, 05 Feb 2016 18:30:09 -0500",
+      "updated_at": "Fri, 05 Feb 2016 18:30:09 -0500",
+      "canceled_by": 0
+    },
+    {
+      "id": 10689148,
+      "account_id": 622060,
+      "user_id": 5533441,
+      "creator_id": 5533441,
+      "updater_id": 0,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Wed, 10 Feb 2016 00:00:00 -0500",
+      "end_time": "Tue, 16 Feb 2016 23:59:59 -0500",
+      "created_at": "Fri, 29 Jan 2016 16:22:59 -0500",
+      "updated_at": "Fri, 29 Jan 2016 16:22:59 -0500",
+      "canceled_by": 0
+    },
+    {
+      "id": 10674223,
+      "account_id": 622060,
+      "user_id": 5542963,
+      "creator_id": 5542963,
+      "updater_id": 0,
+      "status": 1,
+      "type": 1,
+      "hours": 12,
+      "start_time": "Thu, 25 Feb 2016 00:00:00 -0500",
+      "end_time": "Fri, 26 Feb 2016 23:59:59 -0500",
+      "created_at": "Fri, 29 Jan 2016 03:20:34 -0500",
+      "updated_at": "Tue, 02 Feb 2016 01:38:40 -0500",
+      "canceled_by": 5533438
+    },
+    {
+      "id": 10674220,
+      "account_id": 622060,
+      "user_id": 5542963,
+      "creator_id": 5542963,
+      "updater_id": 0,
+      "status": 2,
+      "type": 1,
+      "hours": 4,
+      "start_time": "Sun, 14 Feb 2016 16:00:00 -0500",
+      "end_time": "Sun, 14 Feb 2016 20:00:00 -0500",
+      "created_at": "Fri, 29 Jan 2016 03:19:21 -0500",
+      "updated_at": "Fri, 29 Jan 2016 03:19:21 -0500",
+      "canceled_by": 0
+    },
+    {
+      "id": 10564117,
+      "account_id": 622060,
+      "user_id": 5542975,
+      "creator_id": 5533438,
+      "updater_id": 0,
+      "status": 2,
+      "type": 1,
+      "hours": 8,
+      "start_time": "Sat, 06 Feb 2016 00:00:00 -0500",
+      "end_time": "Sun, 07 Feb 2016 23:59:59 -0500",
+      "created_at": "Mon, 25 Jan 2016 02:44:55 -0500",
+      "updated_at": "Mon, 25 Jan 2016 02:44:55 -0500",
+      "canceled_by": 0
+    },
+    {
+      "id": 10564102,
+      "account_id": 622060,
+      "user_id": 5542975,
+      "creator_id": 5533438,
+      "updater_id": 0,
+      "status": 1,
+      "type": 1,
+      "hours": 12,
+      "start_time": "Wed, 03 Feb 2016 00:00:00 -0500",
+      "end_time": "Thu, 04 Feb 2016 23:59:59 -0500",
+      "created_at": "Mon, 25 Jan 2016 02:42:43 -0500",
+      "updated_at": "Wed, 03 Feb 2016 12:30:21 -0500",
+      "canceled_by": 5533438
+    },
+    {
+      "id": 10563802,
+      "account_id": 622060,
+      "user_id": 5542936,
+      "creator_id": 5533438,
+      "updater_id": 0,
+      "status": 2,
+      "type": 1,
+      "hours": 32,
+      "start_time": "Tue, 26 Jan 2016 00:00:00 -0500",
+      "end_time": "Sun, 31 Jan 2016 23:59:59 -0500",
+      "created_at": "Mon, 25 Jan 2016 02:00:11 -0500",
+      "updated_at": "Mon, 25 Jan 2016 02:00:11 -0500",
+      "canceled_by": 0
+    },
+    {
+      "id": 10428472,
+      "account_id": 622060,
+      "user_id": 5533438,
+      "creator_id": 5533441,
+      "updater_id": 0,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Sun, 17 Jan 2016 00:00:00 -0500",
+      "end_time": "Thu, 21 Jan 2016 23:59:59 -0500",
+      "created_at": "Mon, 18 Jan 2016 19:29:09 -0500",
+      "updated_at": "Mon, 18 Jan 2016 19:29:09 -0500",
+      "canceled_by": 0
+    },
+    {
+      "id": 10357519,
+      "account_id": 622060,
+      "user_id": 5542972,
+      "creator_id": 5542972,
+      "updater_id": 0,
+      "status": 2,
+      "type": 0,
+      "hours": 0,
+      "start_time": "Wed, 17 Feb 2016 00:00:00 -0500",
+      "end_time": "Wed, 17 Feb 2016 23:59:59 -0500",
+      "created_at": "Fri, 15 Jan 2016 10:41:25 -0500",
+      "updated_at": "Fri, 15 Jan 2016 10:41:25 -0500",
+      "canceled_by": 0
+    },
+    {
+      "id": 10282948,
+      "account_id": 622060,
+      "user_id": 5542948,
+      "creator_id": 5542948,
+      "updater_id": 0,
+      "status": 2,
+      "type": 1,
+      "hours": 4,
+      "start_time": "Wed, 27 Jan 2016 12:00:00 -0500",
+      "end_time": "Wed, 27 Jan 2016 16:00:00 -0500",
+      "created_at": "Tue, 12 Jan 2016 14:20:13 -0500",
+      "updated_at": "Tue, 12 Jan 2016 14:20:13 -0500",
+      "canceled_by": 0
+    }
+  ],
+  "users": [
+    {
+      "id": 5533438,
+      "account_id": 622060,
+      "login_id": 2211928,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 2,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "raaghgqawefghx@crisistextline.org",
+      "first_name": "Sarah",
+      "last_name": "Buckingham",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/a96ecc1cc97772f9bcfe89e50ff434aa08869f88/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "8a2f546cd26a1c34386914002014a81f84fcb304",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Sun, 19 Jun 2016 20:36:03 -0400",
+      "dismissed_at": "",
+      "notified_at": "Tue, 12 Apr 2016 08:20:08 -0400",
+      "created_at": "Thu, 07 Jan 2016 16:41:35 -0500",
+      "updated_at": "Sun, 08 May 2016 11:52:53 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5533441,
+      "account_id": 622060,
+      "login_id": 2410141,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 2,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "nqagwgeafghx@crisistextline.org",
+      "first_name": "Nan",
+      "last_name": "Krafft",
+      "phone_number": "+12066129416",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/d960af40f83c167deddc2a6b07d6d365b5d10201/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "f50a76df7cdff4b048d2232a677290b41ee60a81",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": false
+        },
+        "swaps": {
+          "sms": false,
+          "email": false
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "02:00:00",
+      "sleep_end": "10:00:00",
+      "my_positions": [],
+      "last_login": "Wed, 08 Jun 2016 11:51:45 -0400",
+      "dismissed_at": "",
+      "notified_at": "Thu, 05 May 2016 14:24:03 -0400",
+      "created_at": "Thu, 07 Jan 2016 16:41:35 -0500",
+      "updated_at": "Thu, 05 May 2016 17:24:03 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542936,
+      "account_id": 622060,
+      "login_id": 2558392,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 2,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "eragrgiaqwefghx@crisistextline.org",
+      "first_name": "Sherri",
+      "last_name": "Bishop",
+      "phone_number": "+13526539223",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/c222fc1c733fca1fceb5a29b5c361141c7fb6ae6/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "4fde18b95202b53edead789558e05f912c9a6c27",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Mon, 20 Jun 2016 08:44:05 -0400",
+      "dismissed_at": "",
+      "notified_at": "Wed, 15 Jun 2016 14:16:09 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:42 -0500",
+      "updated_at": "Wed, 15 Jun 2016 14:16:09 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542939,
+      "account_id": 622060,
+      "login_id": 2560408,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "isaghgaaqwefghx@crisistextline.org",
+      "first_name": "Elisha",
+      "last_name": "Ferguson",
+      "phone_number": "+17326426770",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/3404f26167eb23a68443f3d53fb16084d955eae4/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "7386ffec8e582a5f3362281d014c8c9ea3ec3f10",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Wed, 22 Jun 2016 19:19:11 -0400",
+      "dismissed_at": "",
+      "notified_at": "Sat, 28 May 2016 03:59:23 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Wed, 01 Jun 2016 17:46:19 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542948,
+      "account_id": 622060,
+      "login_id": 2558026,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "njagqgwaefghx@crisistextline.org",
+      "first_name": "Jen",
+      "last_name": "James",
+      "phone_number": "+15109193420",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/9d2db811f7a5a19a26b5c02c369847a64c41b97f/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "7afff7e1d7b0c2898e9f9d9adc8d6c531b9cdc72",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": false
+        },
+        "new_employee": {
+          "sms": false,
+          "email": false
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 21 Jun 2016 15:47:28 -0400",
+      "dismissed_at": "",
+      "notified_at": "Tue, 31 May 2016 12:21:46 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Mon, 20 Jun 2016 08:13:11 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542951,
+      "account_id": 622060,
+      "login_id": 2557960,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "nnagygjaqwefghx@crisistextline.org",
+      "first_name": "Danny",
+      "last_name": "Johnson",
+      "phone_number": "+13132899460",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/ad32e2291849818e698a681a58a8db1cce41f7e8/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "c7bcc1dfe844dada55b59f9e39f7e7f49d2f508d",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 21 Jun 2016 22:02:39 -0400",
+      "dismissed_at": "",
+      "notified_at": "Thu, 26 May 2016 11:06:49 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Thu, 26 May 2016 17:04:59 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542957,
+      "account_id": 622060,
+      "login_id": 2558662,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "ndagsgaaymlqwefghx@crisistextline.org",
+      "first_name": "Lindsay",
+      "last_name": "Marrinan-Levy",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/2c12f327eb1ac6204421f2fd97b0e9353a6a2ec8/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "0c67b7413a10ef25325332d9dc7cbf997c60086e",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 1,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Mon, 20 Jun 2016 14:44:39 -0400",
+      "dismissed_at": "",
+      "notified_at": "Mon, 20 Jun 2016 13:00:26 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Mon, 20 Jun 2016 14:44:53 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542960,
+      "account_id": 622060,
+      "login_id": 2561821,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "ndagsgaayqwefghx@crisistextline.org",
+      "first_name": "Lindsay",
+      "last_name": "Martin",
+      "phone_number": "+16102022661",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/cf3c11dee48ba93261552258099d1d83ef6c14e5/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "596a1484ffa4624d089fbe7f74667fc8707ad5aa",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": false
+        },
+        "new_employee": {
+          "sms": false,
+          "email": false
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Wed, 08 Jun 2016 13:19:01 -0400",
+      "dismissed_at": "",
+      "notified_at": "Thu, 02 Jun 2016 14:05:47 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Thu, 02 Jun 2016 14:05:47 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542963,
+      "account_id": 622060,
+      "login_id": 2562736,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "inagigsaeqwefghx@crisistextline.org",
+      "first_name": "Shinise",
+      "last_name": "Muse",
+      "phone_number": "+12022716034",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/ac6540ba02e03de6b63be8410cdef9390f162e89/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "f40c788a051daf4628c38852de016ee7e12287d8",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": 1,
+          "email": 1
+        },
+        "swaps": {
+          "sms": 1,
+          "email": 0
+        },
+        "schedule": {
+          "sms": 0,
+          "email": 0
+        },
+        "reminders": {
+          "sms": 0,
+          "email": 0
+        },
+        "availability": {
+          "sms": 0,
+          "email": 1
+        },
+        "new_employee": {
+          "sms": 0,
+          "email": 0
+        },
+        "attendance": {
+          "sms": 0,
+          "email": 0
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 1,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Fri, 17 Jun 2016 12:10:45 -0400",
+      "dismissed_at": "",
+      "notified_at": "Mon, 23 May 2016 19:49:54 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Mon, 23 May 2016 19:49:54 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542969,
+      "account_id": 622060,
+      "login_id": 2557933,
+      "timezone_id": 11,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "beagcgcaaqwefghx@crisistextline.org",
+      "first_name": "Rebecca",
+      "last_name": "Ross",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/62eaf11037050211463b5da28fda259d8fb6db03/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "1cd8d5d74b38baea7dfbb5f1efaf6b572face2e3",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Mon, 20 Jun 2016 07:57:18 -0400",
+      "dismissed_at": "",
+      "notified_at": "Fri, 03 Jun 2016 12:41:06 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Sun, 05 Jun 2016 20:27:39 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/Chicago",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542972,
+      "account_id": 622060,
+      "login_id": 2560678,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 2,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "rragegtatqwefghx@crisistextline.org",
+      "first_name": "Garrett",
+      "last_name": "Shotwell",
+      "phone_number": "+13122863526",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/c61d1fe4728e7ec2a9ea8b83d1c6160c9d0f95b7/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "c850a821bbf3417f3a70413840a863561fd5ee2c",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": true,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Thu, 23 Jun 2016 13:12:15 -0400",
+      "dismissed_at": "",
+      "notified_at": "Wed, 22 Jun 2016 12:55:29 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Wed, 22 Jun 2016 13:55:30 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5542975,
+      "account_id": 622060,
+      "login_id": 2558608,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "anagigqauaqwefghx@crisistextline.org",
+      "first_name": "Shaniqua",
+      "last_name": "Staples",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/188139ad731ca88793952ba7ae71a0b1e2e7ea3e/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "6eb8c8278264fa3ef56684025d42987bfe3aad85",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Mon, 20 Jun 2016 22:33:25 -0400",
+      "dismissed_at": "",
+      "notified_at": "Thu, 26 May 2016 10:52:23 -0400",
+      "created_at": "Fri, 08 Jan 2016 12:52:43 -0500",
+      "updated_at": "Sat, 04 Jun 2016 22:41:06 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 5617432,
+      "account_id": 622060,
+      "login_id": 2729341,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "taaglgiaaqwefghx@crisistextline.org",
+      "first_name": "Natalia",
+      "last_name": "Dayan",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/8a6398f6ab90916add5fcb6e90a0d95791020029/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "43ce132a674dfcc65241edc25273b88cb911254d",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": false
+        },
+        "swaps": {
+          "sms": false,
+          "email": false
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": false
+        },
+        "new_employee": {
+          "sms": false,
+          "email": false
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 21 Jun 2016 18:59:45 -0400",
+      "dismissed_at": "",
+      "notified_at": "Mon, 25 Jan 2016 16:08:11 -0500",
+      "created_at": "Thu, 14 Jan 2016 15:08:42 -0500",
+      "updated_at": "Wed, 22 Jun 2016 15:59:24 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0
+      }
+    },
+    {
+      "id": 5617465,
+      "account_id": 622060,
+      "login_id": 2729230,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "beagcgcaakqwefghx@crisistextline.org",
+      "first_name": "Rebecca",
+      "last_name": "Kan",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/1b622cf8c17222cf19b76f88bec896a5168e50e7/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "862675defc91f8ac6b6821629b36d32f15d71247",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 40,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": false
+        },
+        "swaps": {
+          "sms": false,
+          "email": false
+        },
+        "schedule": {
+          "sms": false,
+          "email": false
+        },
+        "reminders": {
+          "sms": false,
+          "email": false
+        },
+        "availability": {
+          "sms": false,
+          "email": false
+        },
+        "new_employee": {
+          "sms": false,
+          "email": false
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true,
+          "email": false
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "08:00:00",
+      "my_positions": [],
+      "last_login": "Wed, 22 Jun 2016 19:33:35 -0400",
+      "dismissed_at": "",
+      "notified_at": "Fri, 03 Jun 2016 12:41:38 -0400",
+      "created_at": "Thu, 14 Jan 2016 15:11:21 -0500",
+      "updated_at": "Fri, 03 Jun 2016 12:41:41 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 6831364,
+      "account_id": 622060,
+      "login_id": 2616277,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "anagngoanqwefghx@crisistextline.org",
+      "first_name": "Shannon",
+      "last_name": "Green",
+      "phone_number": "+17083081686",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/7e05aba5a5fea1dfc5e1aed1062c469360588899/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "ceb1183730011a0a4590890a7aa432b36b4235af",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": true,
+          "email": true
+        },
+        "schedule": {
+          "sms": true,
+          "email": true
+        },
+        "reminders": {
+          "sms": true,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 29 Nov -001 19:00:00 -0500",
+      "dismissed_at": "",
+      "notified_at": "Tue, 29 Nov -001 19:00:00 -0500",
+      "created_at": "Tue, 12 Apr 2016 11:45:54 -0400",
+      "updated_at": "Tue, 12 Apr 2016 11:51:27 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        995827,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "995827": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 7611224,
+      "account_id": 622060,
+      "login_id": 2924530,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "leagygqawefghx@crisistextline.org",
+      "first_name": "Kaley",
+      "last_name": "Leshem",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/09f74bc22a2d5cec4e9dab3ec386448d6627abcb/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "0b319e2222257b4cb5af9b67826916816f21fcfa",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 21 Jun 2016 09:46:01 -0400",
+      "dismissed_at": "",
+      "notified_at": "Tue, 29 Nov -001 19:00:00 -0500",
+      "created_at": "Sun, 08 May 2016 11:45:33 -0400",
+      "updated_at": "Tue, 10 May 2016 15:45:52 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "1285514": 0
+      }
+    },
+    {
+      "id": 7611230,
+      "account_id": 622060,
+      "login_id": 2579092,
+      "timezone_id": 0,
+      "country_id": 233,
+      "migration_id": 0,
+      "role": 3,
+      "is_payroll": false,
+      "is_trusted": 0,
+      "type": 1,
+      "email": "mnagegeatqwefghx@crisistextline.org",
+      "first_name": "Ramneet",
+      "last_name": "Sachdev",
+      "phone_number": "",
+      "employee_code": "",
+      "avatar": {
+        "url": "https://avatars.wheniwork.com/84324dd3905594e3340235ba6ba0b32f645c96d2/%s",
+        "size": "%s"
+      },
+      "password": false,
+      "activated": true,
+      "is_hidden": false,
+      "uuid": "f3d82684bad3d4b4459bf87450e053b875beb9e9",
+      "notes": "",
+      "affiliate": 0,
+      "is_private": true,
+      "infotips": "",
+      "hours_preferred": 0,
+      "hours_max": 0,
+      "hourly_rate": 0,
+      "alert_settings": {
+        "timeoff": {
+          "sms": false,
+          "email": true
+        },
+        "swaps": {
+          "sms": false,
+          "email": true
+        },
+        "schedule": {
+          "sms": false,
+          "email": true
+        },
+        "reminders": {
+          "sms": false,
+          "email": true
+        },
+        "availability": {
+          "sms": false,
+          "email": true
+        },
+        "new_employee": {
+          "sms": false,
+          "email": true
+        },
+        "attendance": {
+          "sms": false,
+          "email": false
+        },
+        "workchat": {
+          "alerts": true,
+          "badge_icon": true,
+          "in_app": true
+        }
+      },
+      "reminder_time": 2,
+      "sleep_start": "23:00:00",
+      "sleep_end": "05:00:00",
+      "my_positions": [],
+      "last_login": "Tue, 29 Nov -001 19:00:00 -0500",
+      "dismissed_at": "",
+      "notified_at": "Tue, 29 Nov -001 19:00:00 -0500",
+      "created_at": "Sun, 08 May 2016 11:46:42 -0400",
+      "updated_at": "Sun, 08 May 2016 11:46:42 -0400",
+      "deleted_at": "",
+      "is_deleted": false,
+      "timezone_name": "America/New_York",
+      "positions": [],
+      "locations": [
+        995815,
+        1285514
+      ],
+      "position_rates": [],
+      "position_quality": [],
+      "sort": {
+        "995815": 0,
+        "1285514": 0
+      }
+    }
+  ]
+}

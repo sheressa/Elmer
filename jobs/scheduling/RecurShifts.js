@@ -10,6 +10,8 @@ new CronJob(CONFIG.time_interval.recur_and_publish_shifts_cron_job_string, funct
   recurNewlyCreatedShifts();
 }, null, true);
 
+recurNewlyCreatedShifts();
+
 function recurNewlyCreatedShifts(optionalNoShiftsForTesting) {
   var batchPostRequestBody = [];
   var requestTaskArray = [];
@@ -117,6 +119,9 @@ function recurNewlyCreatedShifts(optionalNoShiftsForTesting) {
         After batch of shifts is created, we want to publish all shifts. (Note that passing in the `published` param
         in the requests that are batched doesn't actually publish them; we need to make a separate request to another route.)
       **/
+
+      //The response at this point doesn't include error status codes so we're looking for a message that indicates an error
+      if (response && response.message && /error/.test(response.message)) CONSOLE_WITH_TIME("Error in RecurShift Batch Response: ", response);
 
       var startDateToRetrieveUnpublishedShifts = moment().add(-12, 'hours').format('YYYY-MM-DD HH:mm:ss');
       var endDateToRetrieveUnpublishedShifts = moment().add(12, 'hours').format('YYYY-MM-DD HH:mm:ss');
