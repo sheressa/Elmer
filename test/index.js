@@ -7,6 +7,7 @@ process.env.NODE_ENV = 'test';
 global.KEYS = require('../keys.js');
 global.CONFIG = require('../config.js');
 //tests
+var recurOpenShifts = require('./recurOpenShifts.js');
 var colorize = require('./colorize.js');
 var attendanceSync = require('./attendanceSync.js');
 var loginUserCreation = require('./loginUserCreation.js');
