@@ -1,7 +1,6 @@
-var WhenIWork = require('wheniwork-unofficial');
-var api = new WhenIWork(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password);
+'use strict';
 
-var merge = require('../jobs/scheduling/MergeOpenShifts').mergeOpenShifts;
+const merge = require('../jobs/scheduling/MergeOpenShifts').mergeOpenShifts;
 
 module.exports.merge = function() {
   merge();

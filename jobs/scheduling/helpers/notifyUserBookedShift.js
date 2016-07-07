@@ -1,9 +1,11 @@
-var wIWSupervisorsAPI = CONFIG.WhenIWorkSuper;
-var moment = require('moment');
-var retrieveAndSortSupervisorsByShift = require('./sortUsersByShift');
-var composeEmail = require(CONFIG.root_dir + '/email_templates/composeNotifyBookedShift');
-var mandrill = require('mandrill-api/mandrill');
-var mandrill_client = new mandrill.Mandrill(KEYS.mandrill.api_key);
+'use strict';
+
+const wIWSupervisorsAPI = CONFIG.WhenIWorkSuper;
+const moment = require('moment');
+const retrieveAndSortSupervisorsByShift = require('./sortUsersByShift');
+const composeEmail = require(CONFIG.root_dir + '/email_templates/composeNotifyBookedShift');
+const mandrill = require('mandrill-api/mandrill');
+const mandrill_client = new mandrill.Mandrill(KEYS.mandrill.api_key);
 
 function notifyUserBookedShift (shifts, users) {
   var userIdToInfo = filterUsersToObject(users);
@@ -39,7 +41,7 @@ function mandrillEachUser (shifts, userIdToInfo, shiftsToSup){
     results.push(contents);
 
     // if the user has canonicalEmail in their notes use that, otherwise use user.email.
-    var email = /canonicalEmail/.test(user.notes) ? JSON.parse(user_data).canonicalEmail : user.email;
+    var email = /canonicalEmail/.test(user.notes) ? JSON.parse(user.notes).canonicalEmail : user.email;
 
     var message = {
       subject: "You're signed up for a new CTL shift!",

@@ -1,5 +1,7 @@
-var fs = require('fs');
-var sha1 = require('sha1');
+'use strict';
+
+const fs = require('fs');
+const sha1 = require('sha1');
 
 function fromCSV(infile, outfile) {
   var out = '';
@@ -15,7 +17,7 @@ function fromCSV(infile, outfile) {
 }
 
 function generate(email) {
-  var out = hash(email)
+  var out = hash(email);
   CONSOLE_WITH_TIME(out);
   return out;
 }
@@ -28,7 +30,7 @@ function getFullPath(filename) {
   }
 }
 
-function hash(email, hash) {
+function hash(email) {
   return sha1(email + KEYS.secret_key);
 }
 

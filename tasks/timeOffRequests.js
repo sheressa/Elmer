@@ -1,9 +1,9 @@
-var WhenIWork = require('wheniwork-unofficial');
-var api = new WhenIWork(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password);
-var moment = require('moment');
-var date_format = 'YYYY-MM-DD HH:mm:ss';
+'use strict';
 
-var fs = require('fs');
+const api = CONFIG.WhenIWork;
+const moment = require('moment');
+const date_format = 'YYYY-MM-DD HH:mm:ss';
+const fs = require('fs');
 
 /* 
   timeOffRequests: Returns a csv (written to file) of timeOffRequests for designated timeframe. 

@@ -1,21 +1,13 @@
-var express   = require('express');
-var WhenIWork = CONFIG.WhenIWork;
-var api = require('./initWhenIWorkAPI');
-var createSecondAPI = require('./initSecondWhenIWorkAPIWithParams');
-var moment    = require('moment');
-var sha1      = require('sha1');
-var stathat   = require(CONFIG.root_dir + '/lib/stathat');
-var returnColorizedShift = require(CONFIG.root_dir + '/lib/ColorizeShift').go;
-var querystring = require('querystring');
-var helpers = require(CONFIG.root_dir + '/www/scheduling/helpers');
-var shiftSchedulingRouter = require('./shifts');
-var router = express.Router();
-var wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
-var chooseRegShiftToCancelPageStartDateFormat = 'dddd h:mm a'; // Wednesday 4:00 p;
-var chooseRegShiftToCancelPageEndDateFormat = 'h:mm a z'; // 6:00 pm ES;
-var chooseMakeupShiftToCancelPageStartDateFormat = 'dddd, MMM Do YYYY - h:mm a'; // Wednesday, Mar 30th 2016 - 4:00 p;
-var chooseMakeupShiftToCancelPageEndDateFormat = 'h:mm a z'; // 6:00 pm ES;
-var scheduleShiftsURL = '/scheduling/login?';
+'use strict';
+
+const express   = require('express');
+const api = CONFIG.WhenIWork;
+const createSecondAPI = CONFIG.WhenIWorkDynamic;
+const stathat   = require(CONFIG.root_dir + '/lib/stathat');
+const querystring = require('querystring');
+const helpers = require(CONFIG.root_dir + '/www/scheduling/helpers');
+const shiftSchedulingRouter = require('./shifts');
+const router = express.Router();
 
 router.use('/shifts', shiftSchedulingRouter);
 

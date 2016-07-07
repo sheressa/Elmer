@@ -1,5 +1,5 @@
-var wiw = require('wheniwork-unofficial');
-var moment = require('moment-timezone');
+'use strict';
+const moment = require('moment-timezone');
 moment.tz.setDefault("America/New_York");
 
 global.CONSOLE_WITH_TIME = function(){
@@ -15,7 +15,6 @@ global.CONSOLE_WITH_TIME = function(){
   console.log('[' + new Date() + ']', message.slice(0, message.length-1));
 };
 
-var CONFIG = {};
 /**
   Accepts a string returned from WIW formatted like this:
   "Wed, 01 Jun 2016, 12:00:00 -500"
@@ -42,12 +41,19 @@ global.MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE = function(timestring) {
   return firstPart + ' ' + timeZonePart;
 };
 
+const CONFIG = {};
+
 CONFIG.WhenIWork = process.env.NODE_ENV === 'test' ?
   require('./test/helpers/base') :
-  require('./jobs/scheduling/base');
+  require('./api_wiw/WiWCCApi');
+
+CONFIG.WhenIWorkDynamic = process.env.NODE_ENV === 'test' ?
+  require('./test/helpers/base') :
+  require('./api_wiw/WiWDynamic');
+
 CONFIG.WhenIWorkSuper = process.env.NODE_ENV === 'test' ?
   require('./test/helpers/mockWiWSupervisors') :
-  require('./jobs/scheduling/WiWSupervisorsApi');
+  require('./api_wiw/WiWSuperApi');
 
 CONFIG.root_dir = __dirname;
 

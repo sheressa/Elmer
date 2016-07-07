@@ -1,9 +1,11 @@
-var moment = require('moment');
-var WhenIWork = require('wheniwork-unofficial');
-var api = new WhenIWork(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password);
+'use strict';
+
+const api = CONFIG.WhenIWork;
+const moment = require('moment');
+
 // Sat, 16 Jan 2016 14:00:00 -0500
-var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
-var out_format = 'ddd h:mm A';
+const wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
+const out_format = 'ddd h:mm A';
 
 module.exports.dumpSchedules = function () {
   // We want to see shifts 8 days out from now.

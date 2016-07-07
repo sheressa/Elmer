@@ -1,5 +1,7 @@
-var recurrer = require('../jobs/scheduling/RecurOpenShifts');
-var moment = require('moment');
+'use strict';
+
+const recurrer = require('../jobs/scheduling/RecurOpenShifts');
+const moment = require('moment');
 
 module.exports.recurFromUnixTimestamp = function (from) {
   from = parseInt(from);

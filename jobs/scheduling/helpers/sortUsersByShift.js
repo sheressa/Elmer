@@ -21,6 +21,7 @@ function writeToFile (fileName, text) {
   });
 }
 **/
+'use strict';
 
 var gravatar = require('gravatar');
 

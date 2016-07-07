@@ -1,26 +1,14 @@
-var express = require('express')
-  , WhenIWork = require('wheniwork-unofficial')
-  , api = require('../initWhenIWorkAPI')
-  , moment = require('moment')
-  , sha1 = require('sha1')
-  , helpers = require(CONFIG.root_dir + '/www/scheduling/helpers')
-  ;
+'use strict';
 
-var retrieveAndRenderShiftsToDelete = require('./controllers/retrieveAndRenderShiftsToDelete')
-  , deleteShiftsAndRedirect = require('./controllers/deleteShiftsAndRedirect')
-  , retrieveShiftsAndOwnersWithinTimeInterval = require('./controllers/retrieveShiftsAndOwnersWithinTimeInterval')
-  , renderShiftDeleteSuccess = require('./controllers/renderShiftDeleteSuccess')
-  ;
+const express = require('express');
+const api = CONFIG.WhenIWork;
 
-var router = express.Router();
+const retrieveAndRenderShiftsToDelete = require('./controllers/retrieveAndRenderShiftsToDelete');
+const deleteShiftsAndRedirect = require('./controllers/deleteShiftsAndRedirect');
+const retrieveShiftsAndOwnersWithinTimeInterval = require('./controllers/retrieveShiftsAndOwnersWithinTimeInterval');
+const renderShiftDeleteSuccess = require('./controllers/renderShiftDeleteSuccess');
 
-var wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ'
-  , chooseRegShiftToCancelPageStartDateFormat = 'dddd h:mm a' // Wednesday 4:00 p
-  , chooseRegShiftToCancelPageEndDateFormat = 'h:mm a z' // 6:00 pm ES
-  , chooseMakeupShiftToCancelPageStartDateFormat = 'dddd, MMM Do YYYY - h:mm a' // Wednesday, Mar 30th 2016 - 4:00 p
-  , chooseMakeupShiftToCancelPageEndDateFormat = 'h:mm a z' // 6:00 pm ES
-  , scheduleShiftsURL = '/scheduling/login?'
-  ;
+const router = express.Router();
 
 router.get('/', function(req, res) {
   retrieveAndRenderShiftsToDelete(req, res, api);

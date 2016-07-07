@@ -1,8 +1,8 @@
-var CronJob = require('cron').CronJob;
-var WhenIWork = require('./base');
-var returnColorizedShift = require('../../lib/ColorizeShift').go;
+'use strict';
 
-var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
+const CronJob = require('cron').CronJob;
+const WhenIWork = CONFIG.WhenIWork;
+const returnColorizedShift = require('../../lib/ColorizeShift').go;
 
 new CronJob(CONFIG.time_interval.open_shifts, function () {
     mergeOpenShifts();

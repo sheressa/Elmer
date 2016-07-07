@@ -1,13 +1,13 @@
-var WhenIWork = require('wheniwork-unofficial');
-var api = new WhenIWork(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password);
+'use strict';
 
-var churnedUserEmailList = require('../churnedUserEmailList');
+const api = CONFIG.WhenIWork;
+const churnedUserEmailList = require('../churnedUserEmailList');
 
 /**
   To run this task, add a "churnedUserList.js" file to the root directory exporting
   an array of email strings that need to be deleted. (Formatted like emails.example.js)
 
-  Then run: node console removedChurned go.
+  Then run: node console removeChurned go.
 **/
 
 module.exports.go = function () {

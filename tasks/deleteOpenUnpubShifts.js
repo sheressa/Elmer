@@ -1,5 +1,6 @@
-var WhenIWork = require('wheniwork-unofficial');
-var api = new WhenIWork(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password);
+'use strict';
+
+const api = CONFIG.WhenIWork;
 
 module.exports.go = function() {
 	for (var i = 0; i < 365; i+=7) {
