@@ -5,6 +5,7 @@ var fs = require('fs');
 var async = require('async');
 var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var stathat = require(CONFIG.root_dir + '/lib/stathat');
+var notifyUserBookedShift = require('./helpers/notifyUserBookedShift');
 
 new CronJob(CONFIG.time_interval.recur_and_publish_shifts_cron_job_string, function () {
   recurNewlyCreatedShifts();
@@ -48,6 +49,7 @@ function recurNewlyCreatedShifts(optionalNoShiftsForTesting) {
     var newShifts = allShifts.filter(function(shift) {
       return !shift.notes;
     });
+    if (newShifts.length) notifyUserBookedShift.notifyUserBookedShift(newShifts, response.users);
 
     stathat.increment('Scheduling - Shifts Recurred', newShifts.length);
 
