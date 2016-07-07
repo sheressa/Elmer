@@ -25,18 +25,18 @@ canvas.scrapeCanvasAssignments = function(courseID, filter){
 };
 
 //finds all canvas users with a specific name
-canvas.scrapeCanvasUsers = function(name) {
+canvas.scrapeCanvasUsers = function(email) {
 
-  options.url = 'https://crisistextline.instructure.com/api/v1/accounts/1/users?search_term=' + name;
+  options.url = 'https://crisistextline.instructure.com/api/v1/accounts/1/users?search_term=' + email;
 
   return Request(options)
   .then(function(response){
-    if (response === '[]') throw 'No user with that name found.';
     response = JSON.parse(response);
+    if (Array.isArray(response) && response.length === 0) throw 'No user with that email found.';
     return response;
   })
   .catch(function(err){
-    CONSOLE_WITH_TIME('Canvas call to get the user named ' + name + ' failed:', err);
+    CONSOLE_WITH_TIME('Canvas call to get the user with email ' + email + ' failed:', err);
   });
 
 };
@@ -73,7 +73,7 @@ canvas.updateUserGrade = function(user, course, assignment, grade) {
 
   function callback(error, response, body){
     if(!error && response.statusCode == 200){
-      CONSOLE_WITH_TIME('Canvas update succeeded for user ID ', user_id);
+      CONSOLE_WITH_TIME('Canvas update succeeded for user ID ', user);
     } else {
       CONSOLE_WITH_TIME("Canvas error message: ", response, response.statusCode);
     }
@@ -83,20 +83,13 @@ canvas.updateUserGrade = function(user, course, assignment, grade) {
 
 };
 
-findWiWUserInCanvas = function(name, email) {
+findWiWUserInCanvas = function(email) {
   //collects canvas user ID, courseID, and assignment ID based on the WiW
   //user ID, then calls the update grade function, which needs all three.
   var userID, courseID, assignmentID;
 
-  canvas.scrapeCanvasUsers(name)
+  canvas.scrapeCanvasUsers(email)
   .then(function(users) {
-    users = users.filter(function(user) {
-      //Note that here we are checking that both name and email match in
-      //Canvas and WiW. This is pretty strict. In the future, we could make
-      //it more tolerant depending on trainers' preferences. However, this
-      //avoids conflicts where people have the same name but different emails.
-      return user.login_id == email;
-    });
     if (users.length === 0) throw 'No combination of that name and email was found in Canvas.';
     userID = users[0].id;
     return users[0].id;
@@ -124,8 +117,6 @@ findWiWUserInCanvas = function(name, email) {
   });
 
 };
-
-// findWiWUserInCanvas("John Rauschenberg", 'john@crisistextline.org');
 
 module.exports = {findWiWUserInCanvas: findWiWUserInCanvas, canvas: canvas};
 

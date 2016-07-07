@@ -116,7 +116,7 @@ CONFIG.time_interval = {
   // How many days in advance we show open shifts
   days_of_open_shift_display: 15,
 
-  // How many days until we consider users no longer new
+  // How many days until we consider users no longer new--we use this in checking for new WiW users who have booked first shifts
   days_until_older_user: 21,
 
   // Number of days in a week

@@ -2,7 +2,7 @@ var CronJob = require('cron').CronJob;
 var wIWUserAPI = CONFIG.WhenIWork;
 var wIWSupervisorsAPI = CONFIG.WhenIWorkSuper;
 
-var updateCanvas = require('./updateCanvas.js');
+var updateCanvas = require('./helpers/updateCanvas.js');
 var stathat = require(CONFIG.root_dir + '/lib/stathat');
 var moment = require('moment');
 var retrieveAndSortSupervisorsByShift = require('./helpers/sortUsersByShift');
@@ -86,7 +86,7 @@ function listUsersWithTwoOrMoreShifts(users) {
 function removeOlderUsers (users) {
   return users.filter(function(user) {
     var created = moment(new Date(user.created_at));
-    return moment().diff(created, 'days') < CONFIG.time_interval.days_of_open_shift_display;
+    return moment().diff(created, 'days') < CONFIG.time_interval.days_until_older_user;
   });
 }
 
@@ -136,7 +136,7 @@ function twoShiftNotification(users, usersToNotify) {
           shifts: usersToNotify[user.id]
         };
         
-        updateCanvas.findWiWUserInCanvas(user.first_name + " " + user.last_name, email);
+        updateCanvas.findWiWUserInCanvas(email);
       }
     }
 
