@@ -101,11 +101,11 @@ module.exports.timeOffRequests = function (endTimeDate, daysBack) {
       req = mergedResponse.allRequests[key];
       user = mergedResponse.allUsers[req.user_id];
       // this order must match the keys described above.
-      reqString = user.email + "," + user.firstName + "," + user.lastName + "," + 
+      reqString = user.email + "," + user.firstName.replace(/,/g, '') + "," + user.lastName.replace(/,/g, '') + "," + 
         req.id + "," + req.account_id + "," + req.user_id + "," + req.creator_id + "," + 
         req.updater_id + "," + req.status + "," + req.type + "," + req.hours + "," + 
-        req.start_time.split(',').join('') + "," + req.end_time.split(',').join('') + "," + 
-        req.created_at.split(',').join('') + "," + req.updated_at.split(',').join('') + 
+        req.start_time.replace(/,/g, '') + "," + req.end_time.replace(/,/g, '') + "," + 
+        req.created_at.replace(/,/g, '') + "," + req.updated_at.replace(/,/g, '') + 
         "," + req.canceled_by + "\n";
 
       CSVFormatedString += reqString;
