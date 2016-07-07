@@ -37,7 +37,7 @@ function retrieveShiftsAndOwnersWithinTimeInterval(req, res, whenIWorkAPI) {
     location_id: [ CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts ]
   };
 
-  whenIWorkAPI.get('shifts', query, function(response) {
+  whenIWorkAPI.get('shifts?include_objects=false', query, function(response) {
     var shifts = response.shifts
       , shift
       , userShiftData = {}

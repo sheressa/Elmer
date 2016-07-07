@@ -18,7 +18,7 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
 
   var altEmail = helpers.generateAltEmail(email);
 
-  whenIWorkAPI.get('users', function (dataResponse) {
+  whenIWorkAPI.get('users?include_objects=false', function (dataResponse) {
     var users = dataResponse.users
       , user
       , templateData
@@ -38,7 +38,7 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
           location_id: [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts]
         };
 
-        whenIWorkAPI.get('shifts', query, function(response) {
+        whenIWorkAPI.get('shifts?include_objects=false', query, function(response) {
           var url = scheduleShiftsURL + 'email=' + encodeURIComponent(email) + '&token=' + req.query.token;
           if (!response.shifts || !response.shifts.length) {
             var error = "You don't seem to have booked any shifts to delete! If this message is sent in error, contact support@crisistextline.org";

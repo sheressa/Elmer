@@ -46,7 +46,7 @@ function getUsersToClean() {
   return new Promise(function (resolve, reject) {
     var users, email;
     var uidsToClean = [];
-    api.get('users', function (res) {
+    api.get('users?include_objects=false', function (res) {
       users = res.users;
 
       users.forEach(function (e, i, arr) {

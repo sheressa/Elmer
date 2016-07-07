@@ -61,7 +61,7 @@ function findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTimeMomentObj, w
     location_id: CONFIG.locationID.regular_shifts
   };
 
-  WhenIWork.get('shifts', filter, function(data) {
+  WhenIWork.get('shifts?include_objects=false', filter, function(data) {
     for (var i = 0; i < data.shifts.length; i++) {
       shift = data.shifts[i];
       if (JSON.parse(shift.is_open)) {

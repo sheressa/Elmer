@@ -20,7 +20,7 @@ module.exports.usersTimezones = function () {
 
   function getTimezones () {
     return new Promise(function(resolve, reject){
-      api.get('timezones', function(response) {
+      api.get('timezones?include_objects=false', function(response) {
         if (!response) reject(response);
         else resolve(response);
       });
@@ -29,7 +29,7 @@ module.exports.usersTimezones = function () {
 
   function getUsersPromise () {
     return new Promise(function(resolve, reject){
-      api.get('users', {}, function(response) {
+      api.get('users?include_objects=false', {}, function(response) {
         if (!response.users) reject(response);
         else resolve(response);
       });

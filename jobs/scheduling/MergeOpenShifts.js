@@ -18,7 +18,7 @@ function mergeOpenShifts() {
     location_id: [ CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts ]
   };
 
-  WhenIWork.get('shifts', query, function (data) {
+  WhenIWork.get('shifts?include_objects=false', query, function (data) {
     processDataAndMakeMergeAPICalls(data);
   });
 }
