@@ -16,6 +16,7 @@ const WhenIWork = {
       params({user: sampleData.usersResponse.users[2]});
     }
     else if (term === 'shifts') {
+      console.log('shifts from wheniwork mock ', sampleData.shiftsResponse);
       cbFunction(sampleData.shiftsResponse);
     }
     else if (term === 'user') {

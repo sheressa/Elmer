@@ -1,3 +1,7 @@
+process.env.NODE_ENV = 'test';
+global.KEYS = require('../keys.js');
+global.CONFIG = require('../config.js');
+
 var assert = require('assert'),
   sampleData = require(CONFIG.root_dir + '/sample_data/sampleData'),
   timeOffRequests = require(CONFIG.root_dir + '/jobs/scheduling/TimeOffRequests');
@@ -6,6 +10,7 @@ var requests = sampleData.requestsResponse.requests;
 var shiftsResponse = {
   shifts: sampleData.shiftsResponse.shifts.slice(0,4)
 };
+console.log('shifts at the beginning of this dope file ', shiftsResponse)
 
 describe('Time Off Requests', function() {
   describe('Creation of Time Off Search Params', function() {
@@ -111,11 +116,22 @@ describe('Time Off Requests', function() {
     });
 
     it('should create new open shifts for all shifts deleted', function () {
+      this.timeout(5000)
+      console.log('open shift requests ', openShiftRequests);
+      console.log('shiftsResponse ', shiftsResponse);
+
       openShiftRequests.forEach(function(req, idx) {
+        console.log('start time params', req.params)
         assert.equal(req.method, "post");
         assert.equal(req.url, "/2/shifts");
+
+          console.log('start time ',req.params.start_time, shiftsResponse.shifts[idx].start_time)
+          console.log('end time ', req.params.end_time, shiftsResponse.shifts[idx].end_time)
+
         assert.equal(req.params.start_time, shiftsResponse.shifts[idx].start_time);
         assert.equal(req.params.end_time, shiftsResponse.shifts[idx].end_time);
+
+
         assert.equal(req.params.notes, "SHIFT COVERAGE");
         assert.equal(req.params.location_id, CONFIG.locationID.makeup_and_extra_shifts);
       });
