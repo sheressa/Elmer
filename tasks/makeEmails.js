@@ -22,7 +22,7 @@ for (var i in emails) {
 // node console makeEmails go
 module.exports.go = function () {
   var batchRequestArray = [];
-  api.get('users', function (data) {
+  api.get('users?include_objects=false', function (data) {
     data.users.forEach(function (obj, i, arr) {
       updateNotes(obj, batchRequestArray);
     });

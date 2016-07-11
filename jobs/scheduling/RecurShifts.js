@@ -32,7 +32,7 @@ function recurNewlyCreatedShifts() {
                     "end": endDateToRetrieveShifts
                   };
 
-  WhenIWork.get('shifts', postData, function(response) {
+  WhenIWork.get('shifts?include_objects=false', postData, function(response) {
     var allShifts = response.shifts;
     if (typeof allShifts !== 'object') {
       CONSOLE_WITH_TIME('NO SHIFTS RETURNED.');
@@ -145,7 +145,7 @@ function recurNewlyCreatedShifts() {
             "unpublished": true
           };
           // Getting all shifts created in the timeframe defined above in 'postData' that are unpublished.
-          WhenIWork.get('shifts', postData, function(response) {
+          WhenIWork.get('shifts?include_objects=false', postData, function(response) {
             if (!response.shifts) CONSOLE_WITH_TIME("[Error 146] RecurShifts response missing .shifts", response);
             else {
               var unpublishedShifts = response.shifts.filter(function(shift) {
@@ -180,7 +180,7 @@ function recurNewlyCreatedShifts() {
             "unpublished": true
           };
 
-          WhenIWork.get('shifts', postData, function(response) {
+          WhenIWork.get('shifts?include_objects=false', postData, function(response) {
             if (!response.shifts) CONSOLE_WITH_TIME("[Error 181] RecurShifts response missing .shifts", response);
             else {
               var unpublishedShifts = response.shifts.filter(function(shift) {
@@ -234,7 +234,7 @@ function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
     end: nextWeekShiftEndTime
   };
 
-  WhenIWork.get('shifts', openShiftQuery, function(response) {
+  WhenIWork.get('shifts?include_objects=false', openShiftQuery, function(response) {
     var openShifts = response.shifts;
     if (typeof openShifts !== 'object' || openShifts.length === 0) {
       CONSOLE_WITH_TIME('NO OPEN SHIFTS RETURNED TO DECREMENT.');

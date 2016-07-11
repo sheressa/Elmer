@@ -11,7 +11,7 @@ module.exports.go = function () {
     locationId: [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts]
   };
 
-  api.get('shifts', filter, function (results) {
+  api.get('shifts?include_objects=false', filter, function (results) {
     var openShifts = results.shifts.filter(function (e) {
 	    return e.is_open;
     });

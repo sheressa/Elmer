@@ -14,7 +14,7 @@ module.exports.dumpSchedules = function () {
     end: '+8 days'
   };
 
-  api.get('shifts', params, function (data) {
+  api.get('shifts?include_objects=false', params, function (data) {
     var user_shifts = {};
     var shift;
 
@@ -33,7 +33,7 @@ module.exports.dumpSchedules = function () {
     }
 
     // Now we need to get the email addresses
-    api.get('users', function (data) {
+    api.get('users?include_objects=false', function (data) {
       var user;
       for (var i in data.users) {
         user = data.users[i];
@@ -79,7 +79,7 @@ module.exports.clearProd = function() {
       include_allopen: true
     };
 
-    api.get('shifts', query, function (data) {
+    api.get('shifts?include_objects=false', query, function (data) {
       var shifts_to_delete = [];
       for (var i in data.shifts) {
         shifts_to_delete.push(data.shifts[i].id);

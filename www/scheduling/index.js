@@ -87,7 +87,7 @@ function getTimezones(req, res) {
 function checkUser(email, first, last, callback) {
   var altEmail = helpers.generateAltEmail(email);
   var newUser;
-  api.get('users', function (users) {
+  api.get('users?include_objects=false', function (users) {
     users = users.users;
     for (var i in users) {
       if (users[i].email == email || users[i].email == altEmail) {

@@ -12,7 +12,7 @@ module.exports.go = function() {
 			"unpublished": true
 		};
 		var batchRequest = [];
-		api.get('shifts', postData, function(response) {
+		api.get('shifts?include_objects=false', postData, function(response) {
 			response.shifts.forEach(function(shift) {
 				if (shift.is_open && !shift.published) {
 					var shiftDeleteRequest = {

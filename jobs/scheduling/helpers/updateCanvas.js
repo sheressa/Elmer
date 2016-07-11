@@ -1,5 +1,4 @@
 var Request = require('request-promise');
-var WhenIWork = CONFIG.WhenIWork;
 var options = {
   headers: {
     Authorization: KEYS.canvas.api_key,
