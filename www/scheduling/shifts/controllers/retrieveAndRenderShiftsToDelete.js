@@ -40,7 +40,6 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
 
         // Need to not add `include_objects=false`, otherwise query returns all shifts. No idea why.
         whenIWorkAPI.get('shifts', query, function(response) {
-          console.log('SHIFTS ', response)
           var url = scheduleShiftsURL + 'email=' + encodeURIComponent(email) + '&token=' + req.query.token;
           if (!response.shifts || !response.shifts.length) {
             var error = "You don't seem to have booked any shifts to delete! If this message is sent in error, contact support@crisistextline.org";
