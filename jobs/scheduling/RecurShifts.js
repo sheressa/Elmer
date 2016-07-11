@@ -1,11 +1,12 @@
-var CronJob = require('cron').CronJob;
-var WhenIWork = CONFIG.WhenIWork;
-var moment = require('moment-timezone');
-var fs = require('fs');
-var async = require('async');
-var wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
-var stathat = require(CONFIG.root_dir + '/lib/stathat');
-var notifyUserBookedShift = require('./helpers/notifyUserBookedShift');
+'use strict';
+
+const CronJob = require('cron').CronJob;
+const WhenIWork = CONFIG.WhenIWork;
+const moment = require('moment-timezone');
+const async = require('async');
+const wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
+const stathat = require(CONFIG.root_dir + '/lib/stathat');
+const notifyUserBookedShift = require('./helpers/notifyUserBookedShift');
 
 new CronJob(CONFIG.time_interval.recur_and_publish_shifts_cron_job_string, function () {
   recurNewlyCreatedShifts();
@@ -13,7 +14,7 @@ new CronJob(CONFIG.time_interval.recur_and_publish_shifts_cron_job_string, funct
 
 recurNewlyCreatedShifts();
 
-function recurNewlyCreatedShifts(optionalNoShiftsForTesting) {
+function recurNewlyCreatedShifts() {
   var batchPostRequestBody = [];
   var requestTaskArray = [];
   var unpublishedShiftIDStorageForTesting;
@@ -207,7 +208,7 @@ function recurNewlyCreatedShifts(optionalNoShiftsForTesting) {
         }
       }
       async.waterfall(requestTaskArray, function(err, startDate, endDate, unpublishedShiftIDs) {
-        publishPayload = {
+        const publishPayload = {
           'ids': unpublishedShiftIDs
         };
         WhenIWork.post('shifts/publish/', publishPayload);

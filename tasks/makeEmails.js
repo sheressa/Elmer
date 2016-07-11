@@ -7,10 +7,10 @@
   We want to return the proper (un-transformed) email address, so we use this
   task to store it in WiW.
 **/
+'use strict';
 
-var WhenIWork = require('wheniwork-unofficial');
-var api = new WhenIWork(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password);
-var emails = require('./canonicalEmails');
+const api = CONFIG.WhenIWork;
+const emails = require('./canonicalEmails');
 
 // Create an array indexed by the admin+ email address, ex:
 // { 'admin+banana@crisistextline.org': 'banana' }
@@ -27,8 +27,9 @@ module.exports.go = function () {
       updateNotes(obj, batchRequestArray);
     });
     api.post('batch', batchRequestArray, function(response) {
-      CONSOLE_WITH_TIME
-      ('Batch user update post request response: ', response);
+      //The response at this point doesn't include error status codes so we're looking for a message that indicates an error
+      if (response && response.message && /error/.test(response.message)) CONSOLE_WITH_TIME("Error in Task Make Emails Batch Response: ", response);
+      else (CONSOLE_WITH_TIME("Task Make Emails Batch Post Success"));
     });
   });
 };

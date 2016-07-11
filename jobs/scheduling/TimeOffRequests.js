@@ -1,10 +1,11 @@
-var CronJob = require('cron').CronJob;
-var WhenIWork = require('./base');
-var moment = require('moment-timezone');
-var fs = require('fs');
-var returnColorizedShift = require(CONFIG.root_dir + '/lib/ColorizeShift').go;
+'use strict';
 
-var date_format = 'YYYY-MM-DD HH:mm:ss';
+const CronJob = require('cron').CronJob;
+const WhenIWork = CONFIG.WhenIWork;
+const moment = require('moment-timezone');
+const returnColorizedShift = require(CONFIG.root_dir + '/lib/ColorizeShift').go;
+
+const date_format = 'YYYY-MM-DD HH:mm:ss';
 
 new CronJob(CONFIG.time_interval.time_off_requests_cron_job_string, function () {
     handleTimeOffRequests();

@@ -1,9 +1,7 @@
-var WhenIWork = require('wheniwork-unofficial');
-var api = new WhenIWork(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password);
-var moment = require('moment');
-var date_format = 'YYYY-MM-DD HH:mm:ss';
+'use strict';
 
-var fs = require('fs');
+const api = CONFIG.WhenIWork;
+const fs = require('fs');
 
 /* 
   usersTimezones: Returns a csv (written to file) of users with their Timezones.
@@ -54,11 +52,9 @@ module.exports.usersTimezones = function () {
       // Mark which users have not set their timezone
       if (user.timezone_id === 0) user.timezone_name = "Not Set";
       // This order must match the keys described above.
-      reqString = user.email.replace(/,/g, '') + "," + user.first_name.replace(/,/g, '') + "," + 
+      CSVFormattedString += user.email.replace(/,/g, '') + "," + user.first_name.replace(/,/g, '') + "," + 
       user.last_name.replace(/,/g, '') + "," + user.timezone_name.replace(/,/g, '') +  "," + 
       timezones[user.timezone_id] + "\n";
-
-      CSVFormattedString += reqString;
     });
 
     return CSVFormattedString;
