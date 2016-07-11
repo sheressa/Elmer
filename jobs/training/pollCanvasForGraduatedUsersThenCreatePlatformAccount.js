@@ -17,9 +17,10 @@ throttler.configure({
 });
 
 new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
-  pollCanvasForGraduatedUsersThenCreatePlatformAccount();
-}, null, true);
-
+    pollCanvasForGraduatedUsersThenCreatePlatformAccount();
+  }, null, true);
+//invoking the function here runs the job every time the application starts
+pollCanvasForGraduatedUsersThenCreatePlatformAccount();
 // Polls Canvas for people who’ve passed the "Graduation" course
 function pollCanvasForGraduatedUsersThenCreatePlatformAccount() {
   request('accounts/' + KEYS.canvas.accountID + '/courses', 'GET')
@@ -32,7 +33,7 @@ function pollCanvasForGraduatedUsersThenCreatePlatformAccount() {
         request('courses/' + course.id + '/assignments', 'GET')
           .then(function (assignments) {
             return assignments.filter(function (assignment) {
-              return assignment.name.indexOf('Platform Ready!') >= 0;
+              return assignment.name.indexOf(CONFIG.Canvas_graduation) >= 0;
             });
           })
           .then(function (assignments) {
