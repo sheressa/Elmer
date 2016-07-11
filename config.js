@@ -70,6 +70,10 @@ CONFIG.wiwAccountID = {
 CONFIG.GTW_attendance_minimum = 5400;
 //used in AttendanceSync.js to set the hour range over which we query GTW sessions
 CONFIG.GTW_time_range_query = 72;
+//Name of the graduation assignment in Canvas
+CONFIG.Canvas_graduation = 'Platform Ready!';
+//Name of the GoToWebinar assignment in Canvas
+CONFIG.Canvas_webinar = 'Attend An Observation';
 
 CONFIG.time_interval = {
   // runs every day at 5am

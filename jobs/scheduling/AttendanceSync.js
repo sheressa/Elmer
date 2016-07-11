@@ -10,7 +10,8 @@ var fs = require('fs');
 new CronJob(CONFIG.time_interval.gtw_attendance_sync_with_canvas, function () {
    startJobByQueryingForGTWSessions();
 }, null, true);
-
+//invoking the function here runs the job every time the application starts
+startJobByQueryingForGTWSessions();
 //gets all webinar sessions in a specified time period
 function startJobByQueryingForGTWSessions(){
   var keysArr = [];
@@ -149,7 +150,7 @@ function findCanvasUserByName(GTWUser){
 
 //scrapes canvas for user by name, course and assignment id's
 function queryForCanvasCoursesAndAssignments(userID){
-  var assignmentQuery = {search_term:'Attend 1 Observation'},
+  var assignmentQuery = {search_term: CONFIG.Canvas_webinar},
   Eurl = 'https://crisistextline.instructure.com/api/v1/users/'+userID+'/enrollments';
       //scrape for user's enrollments in order to get course ID
   canvas.scrapeCanvasEnroll(Eurl)
