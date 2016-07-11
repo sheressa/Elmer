@@ -1,3 +1,7 @@
+process.env.NODE_ENV = 'test';
+global.KEYS = require('../keys.js');
+global.CONFIG = require('../config.js');
+
 var api = require('./helpers/base.js'),
   assert = require('assert'), 
   sampleData = require('../sample_data/sampleData.js'),

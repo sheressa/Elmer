@@ -117,6 +117,9 @@ function recurNewlyCreatedShifts() {
       }
     });
 
+
+      console.log('AFTER THIS WE DONT GET BACK UP')
+
     WhenIWork.post('batch', batchPostRequestBody, function(response) {
       /**
         After batch of shifts is created, we want to publish all shifts. (Note that passing in the `published` param
@@ -207,6 +210,7 @@ function recurNewlyCreatedShifts() {
           requestTaskArray.push(task);
         }
       }
+      console.log('async waterfall')
       async.waterfall(requestTaskArray, function(err, startDate, endDate, unpublishedShiftIDs) {
         const publishPayload = {
           'ids': unpublishedShiftIDs
@@ -215,6 +219,7 @@ function recurNewlyCreatedShifts() {
       });
     });
   });
+  console.log('about to return ', batchPostRequestBody)
   // Returning these params for testing.
   return {publishPayload: unpublishedShiftIDStorageForTesting, requestTaskArray: requestTaskArray, batchPostRequestBody: batchPostRequestBody};
 }

@@ -1,3 +1,4 @@
+'use strict';
 var assert = require('assert');
 var updateCanvas = require('../jobs/scheduling/helpers/updateCanvas.js');
 var WiWUser = [7889841];

@@ -1,6 +1,3 @@
-global.KEYS = require('../keys.js');
-global.CONFIG = require('../config.js');
-
 var api = require('./helpers/base.js');
 
 var assert = require('assert');
