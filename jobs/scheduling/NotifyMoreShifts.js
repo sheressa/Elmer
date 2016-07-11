@@ -17,7 +17,7 @@ notifyMoreShifts();
 function notifyMoreShifts() {
   var result;
   var query = {
-    end: '+' + CONFIG.time_interval.one_week + ' days',
+    end: '+' + CONFIG.time_interval.days_of_open_shift_display + ' days',
     location_id: CONFIG.locationID.regular_shifts
   };
 
@@ -59,6 +59,12 @@ function objectHasOwnKeys(obj) {
   return numberOfKeys;
 }
 
+function parseShiftStartTime(shiftStartTime) {
+  //slicing the shift time for just the day of week and start time;
+  //we want to match those rather than date to see if a shift is recurring
+  return shiftStartTime.slice(0,3) + shiftStartTime.slice(16);
+}
+
 function tallyUserShifts(shifts) {
   var users = {};
 
@@ -66,9 +72,14 @@ function tallyUserShifts(shifts) {
     if (typeof users[shift.user_id] == 'undefined') {
       users[shift.user_id] = [];
     }
-    users[shift.user_id].push(shift.start_time);
+    //filter here to ensure that we're not counting one weekly shift 
+    //that recurs twice during the 15 day window as two weekly shifts
+    if (users[shift.user_id].every(function(shiftTime) {
+      return parseShiftStartTime(shiftTime) !== parseShiftStartTime(shift.start_time);
+    })) {
+      users[shift.user_id].push(shift.start_time);
+    }
   });
-
   return users; 
 }
 

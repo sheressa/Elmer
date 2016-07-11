@@ -15,6 +15,13 @@ describe('Notify More Shifts', function() {
 
     });
 
+    it('does not count one weekly shift that recurs twice during the 15 day window as two weekly shifts', function (done) {
+
+      assert(!usersToNotify['5674724']);
+      done();
+
+    });
+
     it('creates correct post object for users not yet notified', function (done) {
     
       var expectedBatchPosts = [ { method: 'PUT', url: '/2/users/5674723', params: { notes: '{"two_shift_notification":true}' } } ];
