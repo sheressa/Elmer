@@ -3,37 +3,36 @@
   with testing. Modify the get request below as desired and retrieved data will 
   be written to sampleResponse. 
 **/
+'use strict';
 
-var moment = require('moment-timezone');
-var fs = require('fs');
+const moment = require('moment-timezone');
+const fs = require('fs');
 
-var wIW = require('wheniwork-unofficial');
 global.KEYS = require('../../keys.js');
 global.CONFIG = require('../../config.js');
-var WhenIWork = new wIW(KEYS.wheniwork.api_key, KEYS.wheniwork.username, KEYS.wheniwork.password);
+const WhenIWork = CONFIG.WhenIWork;
+const dateFormat = 'YYYY-MM-DD HH:mm:ss';
 
-var date_format = 'YYYY-MM-DD HH:mm:ss';
-
-// sendRequest('requests', timeOffRequests());
-// sendRequest('users', usersRequests());
+sendRequest('requests', timeOffRequests());
+sendRequest('users', usersRequests());
 sendRequest('shifts', shiftsRequests());
 
 function timeOffRequests() {
   //Using moment.js to format time as WIW expects
-  var startDateToRetrieveRequests = moment().format(date_format);
-  var endDateToRetrieveRequests = moment()
+  const startDateToRetrieveRequests = moment().format(dateFormat);
+  const endDateToRetrieveRequests = moment()
     .add(CONFIG.time_interval.months_to_search_for_time_off_requests, 'months')
-    .format(date_format);
-  var timeOffSearchParams = {
-    "start": startDateToRetrieveRequests,
-    "end": endDateToRetrieveRequests,
+    .format(dateFormat);
+  const timeOffSearchParams = {
+    start: startDateToRetrieveRequests,
+    end: endDateToRetrieveRequests,
   };
 
   return timeOffSearchParams;
 }
 
 function usersRequests() {
-  var usersSearchParams = {
+  const usersSearchParams = {
     location_id: CONFIG.locationID.regular_shifts
   };
 
@@ -41,7 +40,7 @@ function usersRequests() {
 }
 
 function shiftsRequests() {
-  var query = {
+  const query = {
     location_id: CONFIG.locationID.regular_shifts,
     end: '+' + CONFIG.time_interval.days_of_open_shift_display + ' days'
   };
@@ -53,8 +52,9 @@ function sendRequest (term, params) {
   //Get all time off requests within timeOffSearchParams
   WhenIWork.get(term, params, function(response) {
     console.log(`${term} returns ${response}`);
-    fs.writeFile(`sampleResponse/httpResponse1${capitalizeFirstLetter(term)}.json`, JSON.stringify(response), (err) => {
-      if (err) throw err;
+    fs.writeFile(`sampleResponse/httpResponse1${capitalizeFirstLetter(term)}.json`, 
+                 JSON.stringify(response), (err) => {
+      if (err) console.log(err);
       console.log('It\'s saved!');
     });
   });

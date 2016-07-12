@@ -130,7 +130,10 @@ CONFIG.time_interval = {
   days_until_older_user: 21,
 
   // Number of days in a week
-  one_week: 7
+  one_week: 7,
+
+  // Number of days in the future to dump shifts for
+  dumpShiftsDays: 28,
 };
 
 CONFIG.numberOfCounselorsPerShift = {

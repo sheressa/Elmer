@@ -90,7 +90,7 @@ function listUsersWithTwoOrMoreShifts(users) {
     if (users[i].length >= 2) usersWithTwoOrMoreShifts[i] = users[i];
   }
 
-  stathat.log('Scheduling - Two Shifts', objectHasOwnKeys(usersWithTwoOrMoreShifts));
+  stathat.increment('Scheduling - Two Shifts', objectHasOwnKeys(usersWithTwoOrMoreShifts));
   return usersWithTwoOrMoreShifts;
 }
 
