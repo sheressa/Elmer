@@ -10,7 +10,7 @@ var composeEmail = require('../../email_templates/composeNotifyMoreShifts');
 var mandrill = require('mandrill-api/mandrill');
 var mandrill_client = new mandrill.Mandrill(KEYS.mandrill.api_key);
 
-new CronJob(CONFIG.time_interval.cron_twice_per_day, notifyMoreShifts);
+new CronJob(CONFIG.time_interval.cron_twice_per_day, notifyMoreShifts, null, true);
 
 notifyMoreShifts();
 
@@ -37,7 +37,7 @@ function notifyMoreShifts() {
 
         retrieveAndSortSupervisorsByShift(wIWSupervisorsAPI, CONFIG.locationID.supervisor_on_platform, CONFIG.wiwAccountID.supervisors)
         .then(function(shiftsToSup){
-          mandrillEachUser(twoShiftNotificationResult.usersBeingNotified, shiftsToSup);  
+          mandrillEachUser(twoShiftNotificationResult.usersBeingNotified, shiftsToSup);
         })
         .catch(function(err){
           CONSOLE_WITH_TIME(err);
@@ -72,7 +72,7 @@ function tallyUserShifts(shifts) {
     if (typeof users[shift.user_id] == 'undefined') {
       users[shift.user_id] = [];
     }
-    //filter here to ensure that we're not counting one weekly shift 
+    //filter here to ensure that we're not counting one weekly shift
     //that recurs twice during the 15 day window as two weekly shifts
     if (users[shift.user_id].every(function(shiftTime) {
       return parseShiftStartTime(shiftTime) !== parseShiftStartTime(shift.start_time);
@@ -80,7 +80,7 @@ function tallyUserShifts(shifts) {
       users[shift.user_id].push(shift.start_time);
     }
   });
-  return users; 
+  return users;
 }
 
 function listUsersWithTwoOrMoreShifts(users) {
@@ -114,7 +114,7 @@ function parseUserNotes(notes) {
       CONSOLE_WITH_TIME("Error parsing JSON in notifyMoreShifts: ", e, "\nNotes: ", notes);
       user_data = {};
     }
-  } 
+  }
   return user_data;
 }
 
@@ -146,7 +146,7 @@ function twoShiftNotification(users, usersToNotify) {
           email: email,
           shifts: usersToNotify[user.id]
         };
-        
+
         updateCanvas.findWiWUserInCanvas(email);
       }
     }
@@ -183,7 +183,7 @@ function mandrillEachUser(userWithAllInfo, shiftToSup) {
           "Reply-To": "support@crisistextline.org",
       }
     };
-    
+
     results.push(message);
 
     mandrill_client.messages.send({message: message}, CONSOLE_WITH_TIME);
