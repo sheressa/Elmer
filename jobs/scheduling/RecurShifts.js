@@ -32,7 +32,7 @@ function recurNewlyCreatedShifts() {
                     "end": endDateToRetrieveShifts
                   };
 
-  WhenIWork.get('shifts?include_objects=false', postData, function(response) {
+  WhenIWork.get('shifts', postData, function(response) {
     var allShifts = response.shifts;
     if (typeof allShifts !== 'object') {
       CONSOLE_WITH_TIME('NO SHIFTS RETURNED.');
