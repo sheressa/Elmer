@@ -26,10 +26,12 @@ function pollCanvasForGraduatedUsersThenCreatePlatformAccount() {
   request('accounts/' + KEYS.canvas.accountID + '/courses', 'GET')
     .then(function (courses) {
       courses.forEach(function (course) {
+        // var sD = moment().subtract(24, "hours").toJSON();
         /**
           Excluding courses that we don’t need to parse for graduations, because they’re either test courses or not related to CTL training.
         **/
         if (KEYS.canvas.coursesWeDoNotParseForGraduatedUsers.indexOf(course.id) >= 0) return;
+<<<<<<< 25e9f2c35a1d8a1be42e942b9968948f87d55495
         request('courses/' + course.id + '/assignments', 'GET')
           .then(function (assignments) {
             return assignments.filter(function (assignment) {
@@ -65,17 +67,89 @@ function getLogs(assignment) {
                   email: res.primary_email.toLowerCase()
                 };
                 updatePlatform(body);
+=======
+        request('/audit/grade_change/courses/'+course.id, 'GET')
+        .then(function(gradebook){
+          var assignments = gradebook.linked.assignments;
+          var platformReadyId;
+          var finalExamId;
+          for(var i = 0; i<assignments.length; i++){
+              if (assignments[i].name.indexOf(CONFIG.Canvas_final)>=0){
+                finalExamId = assignments[i].id; 
               }
-            });
-        });
-      }).catch(function (error) {
-        if (error.toString().indexOf('TypeError') >= 0) {
-          CONSOLE_WITH_TIME('Throttled, retrying in 1 second: ' + assignment.id);
-          setTimeout(getLogs.bind(this, assignment), 1000);
-        }
-      });
-}
+              if (assignments[i].name.indexOf(CONFIG.Canvas_graduation)>=0){
+                platformReadyId = assignments[i].id; 
+>>>>>>> added check for two assignments before platform creation functionality
+              }
+              if(i==assignments.length-1 && finalExamId && platformReadyId){
+                checker(gradebook, finalExamId, platformReadyId)
+                return;
+              }
+          }
+        })
+      })
+    })  
+};
 
+//checks whether a student is eligible for profile creation
+function checker(gradebook, finalID, platformID){
+  console.log(finalID, platformID)
+  //first, we get the id's of final exam and graduation assignments
+  var events = gradebook.events;
+  var users = gradebook.linked.users;
+  var finalExamId = finalID;
+  var platformReadyId = platformID;
+  var students = {};
+  var graduates = {};
+  var gstudents = [];
+  var startDate = moment().subtract(6, "hours");
+
+  //second, we check if a user graduated within the last 6 hours and if the user received 85+ on their final exam
+  for(var j=0; j<events.length; j++){
+    if (events[j].links.assignment==finalExamId && events[j].grade_after>=85){
+      if(!students[events[j].links.student]) {
+        students[events[j].links.student] = {final:1};
+      } else {
+        students[events[j].links.student].final = 1;
+      }
+    }
+    if (events[j].links.assignment==platformReadyId && startDate.isBefore(events[j].created_at)){
+      if(!students[events[j].links.student]){
+          students[events[j].links.student] = {grad:1};
+      } 
+      else {
+          students[events[j].links.student].grad = 1;
+      }
+    }
+    if (students[events[j].links.student]) {
+      if(students[events[j].links.student].grad && students[events[j].links.student].final){
+      graduates[events[j].links.student]=2;
+      delete students[events[j].links.student];
+      }
+    }
+  }
+  //then, we prepare user objects to be updated
+  for(var k=0; k<users.length; k++){
+    if (graduates[users[k].id]){
+        gstudents.push(users[k]);
+    }
+    if(k==users.length-1 && gstudents.length) createEmail(gstudents);
+  }
+};
+
+// creates the body of a platform post request
+function createEmail(graduates) {
+  CONSOLE_WITH_TIME('Graduating users ', graduates)
+  for(var i=0; i<graduates.length; i++){
+      var name = graduates[i].name.split(' ');
+      var body = {
+        firstName: name[0],
+        lastName: name[1],
+        email: graduates[i].login_id
+      };
+      updatePlatform(body);
+    }
+}
 // Creates a platform account for users who have passed the "Graduation" course
 function updatePlatform(body) {
   //checks that we don't POST more than once to the platform w the same information
