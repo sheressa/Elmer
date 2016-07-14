@@ -123,7 +123,7 @@ const findWiWUserInCanvas = function(email) {
 
   canvas.scrapeCanvasUsers(email)
   .then(function(users) {
-    if (users.length === 0) throw 'No combination of that name and email was found in Canvas.';
+    if (users.length === 0) throw 'That email was not found in Canvas.';
     userID = users[0].id;
     return users[0].id;
   })
@@ -146,7 +146,7 @@ const findWiWUserInCanvas = function(email) {
     return canvas.updateUserGrade(userID, courseID, assignment[0].id, 'pass');
   })
   .catch(function(err) {
-    CONSOLE_WITH_TIME(`Finding the user ${name} with email ${email} in Canvas failed: ${err}`);
+    CONSOLE_WITH_TIME(`Finding the user with the email ${email} in Canvas failed: ${err}`);
   });
 
 };

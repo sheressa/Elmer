@@ -1,3 +1,5 @@
+'use strict';
+
 var CronJob = require('cron').CronJob;
 var wIWUserAPI = CONFIG.WhenIWork;
 var wIWSupervisorsAPI = CONFIG.WhenIWorkSuper;
@@ -18,26 +20,25 @@ function notifyMoreShifts() {
   var result;
   var query = {
     end: '+' + CONFIG.time_interval.days_of_open_shift_display + ' days',
-    location_id: CONFIG.locationID.regular_shifts
+    location_id: CONFIG.locationID.regular_shifts + ", " + CONFIG.locationID.makeup_and_extra_shifts
   };
 
   wIWUserAPI.get('shifts', query, function (response) {
     var usersTally = tallyUserShifts(response.shifts);
-    var usersWithTwoOrMore = listUsersWithTwoOrMoreShifts(usersTally);
 
-    if (objectHasOwnKeys(usersWithTwoOrMore)) {
+    if (objectHasOwnKeys(usersTally)) {
       var filteredUsers = removeOlderUsers(response.users);
-      var twoShiftNotificationResult = twoShiftNotification(filteredUsers, usersWithTwoOrMore);
+      var shiftNotificationResult = shiftNotification(filteredUsers, usersTally);
       // Assigning this result for testing
-      result = twoShiftNotificationResult;
+      result = shiftNotificationResult;
 
-      if (objectHasOwnKeys(twoShiftNotificationResult.usersBeingNotified)) {
+      if (objectHasOwnKeys(shiftNotificationResult.usersBeingNotified)) {
 
-        batchPost(twoShiftNotificationResult.updateUserNotes);
+        batchPost(shiftNotificationResult.updateUserNotes);
 
         retrieveAndSortSupervisorsByShift(wIWSupervisorsAPI, CONFIG.locationID.supervisor_on_platform, CONFIG.wiwAccountID.supervisors)
         .then(function(shiftsToSup){
-          mandrillEachUser(twoShiftNotificationResult.usersBeingNotified, shiftsToSup);
+          mandrillEachUser(shiftNotificationResult.usersBeingNotified, shiftsToSup);
         })
         .catch(function(err){
           CONSOLE_WITH_TIME(err);
@@ -59,39 +60,16 @@ function objectHasOwnKeys(obj) {
   return numberOfKeys;
 }
 
-function parseShiftStartTime(shiftStartTime) {
-  //slicing the shift time for just the day of week and start time;
-  //we want to match those rather than date to see if a shift is recurring
-  return shiftStartTime.slice(0,3) + shiftStartTime.slice(16);
-}
-
 function tallyUserShifts(shifts) {
   var users = {};
 
   shifts.forEach(function(shift){
-    if (typeof users[shift.user_id] == 'undefined') {
+    if (typeof users[shift.user_id] === 'undefined') {
       users[shift.user_id] = [];
     }
-    //filter here to ensure that we're not counting one weekly shift
-    //that recurs twice during the 15 day window as two weekly shifts
-    if (users[shift.user_id].every(function(shiftTime) {
-      return parseShiftStartTime(shiftTime) !== parseShiftStartTime(shift.start_time);
-    })) {
-      users[shift.user_id].push(shift.start_time);
-    }
+    users[shift.user_id].push(shift.start_time);
   });
   return users;
-}
-
-function listUsersWithTwoOrMoreShifts(users) {
-  var usersWithTwoOrMoreShifts = {};
-
-  for (var i in users) {
-    if (users[i].length >= 2) usersWithTwoOrMoreShifts[i] = users[i];
-  }
-
-  stathat.increment('Scheduling - Two Shifts', objectHasOwnKeys(usersWithTwoOrMoreShifts));
-  return usersWithTwoOrMoreShifts;
 }
 
 function removeOlderUsers (users) {
@@ -118,7 +96,7 @@ function parseUserNotes(notes) {
   return user_data;
 }
 
-function twoShiftNotification(users, usersToNotify) {
+function shiftNotification(users, usersToNotify) {
   // users is an array of user objects, usersToNotify is hash from userID: [shift start times]
   var usersBeingNotified = {};
   var updateUserNotes = [];
@@ -130,8 +108,8 @@ function twoShiftNotification(users, usersToNotify) {
 
       user_data = parseUserNotes(user.notes);
 
-      if (user_data.two_shift_notification === undefined) {
-        user_data.two_shift_notification = true;
+      if (user_data[CONFIG.WiWUserNotes.shiftNotification] === undefined) {
+        user_data[CONFIG.WiWUserNotes.shiftNotification] = true;
         updateUserNotes.push({
           method: 'PUT',
           url: '/2/users/' + user.id,

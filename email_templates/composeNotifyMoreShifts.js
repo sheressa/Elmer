@@ -7,14 +7,12 @@ const composeSupTiles = require('./createSupervisorTiles.js');
 function composeEmail (user, shiftToSup) {
   const body = composeSupTiles(user.shifts[0], shiftToSup);
 
-  const shifts = user.shifts.map((shift) => {
-      return moment(shift, dateFormat).format('dddd, MMMM Do YYYY, h:mm a') + ' ET';
-    }).join('</p> <p>');
+  const shift = moment(user.shifts[0], dateFormat).format('dddd, MMMM Do YYYY, h:mm a') + ' ET';
 
   const intro = `<div>` +
     `<p> Hey ${user.firstName}! </p>` +
-    `<p> Woohoo! You signed up for ${user.shifts.length} weekly shifts. We've got you down for: </p>` +
-    `<p>${shifts}</p>` +
+    `<p> Woohoo! You signed up for your first shift. We've got you down for: </p>` +
+    `<p>${shift}</p>` +
     `<p> As promised, you'll be in good hands. Here are the supervisors who will have your back on your first shift: </p>` +
     `<div style='display: flex; text-align:center'>`;
 
