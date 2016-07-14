@@ -1,7 +1,9 @@
-global.CONFIG = require('../../config.js');
-var sampleData = require('../../sample_data/sampleData');
+'use strict';
 
-var WhenIWork = {
+global.CONFIG = require('../../config.js');
+const sampleData = require('../../sample_data/sampleData');
+
+const WhenIWork = {
   get: function(term, params, cbFunction){
     //Below line is in case there are no params and a callback
     //is the second argument. May need to change this
