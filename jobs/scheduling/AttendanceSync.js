@@ -150,7 +150,7 @@ function findCanvasUserByName(GTWUser){
 
 //scrapes canvas for user by name, course and assignment id's
 function queryForCanvasCoursesAndAssignments(userID){
-  var assignmentQuery = {search_term: CONFIG.Canvas_webinar},
+  var assignmentQuery = {search_term: CONFIG.canvas.assignments.webinarAttended},
   Eurl = 'https://crisistextline.instructure.com/api/v1/users/'+userID+'/enrollments';
       //scrape for user's enrollments in order to get course ID
   canvas.scrapeCanvasEnroll(Eurl)

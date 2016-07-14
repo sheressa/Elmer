@@ -33,7 +33,7 @@ function pollCanvasForGraduatedUsersThenCreatePlatformAccount() {
         request('courses/' + course.id + '/assignments', 'GET')
           .then(function (assignments) {
             return assignments.filter(function (assignment) {
-              return assignment.name.indexOf(CONFIG.Canvas_graduation) >= 0;
+              return assignment.name.indexOf(CONFIG.canvas.assignments.platformReady) >= 0;
             });
           })
           .then(function (assignments) {

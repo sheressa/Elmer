@@ -1,11 +1,13 @@
-var Request = require('request-promise');
-var options = {
+'use strict';
+
+const Request = require('request-promise');
+const options = {
   headers: {
     Authorization: KEYS.canvas.api_key,
     'User-Agent': 'Request-Promise',
   }
 };
-var canvas = {};
+const canvas = {};
 
 //finds all assignments in a specific canvas course
 canvas.scrapeCanvasAssignments = function(courseID, filter){
@@ -23,7 +25,7 @@ canvas.scrapeCanvasAssignments = function(courseID, filter){
 
 };
 
-//finds all canvas users with a specific name
+//finds all canvas users with a specific email address
 canvas.scrapeCanvasUsers = function(email) {
 
   options.url = 'https://crisistextline.instructure.com/api/v1/accounts/1/users?search_term=' + email;
@@ -104,9 +106,9 @@ canvas.updateUserGrade = function(user, course, assignment, grade) {
 
   function callback(error, response, body){
     if(!error && response.statusCode == 200){
-      CONSOLE_WITH_TIME('Canvas update succeeded for user ID ', user);
+      CONSOLE_WITH_TIME(`Canvas update succeeded for user ID ${user}`);
     } else {
-      CONSOLE_WITH_TIME("Canvas error message: ", response, response.statusCode);
+      CONSOLE_WITH_TIME(`Canvas error message: ${response} ${response.statusCode}`);
     }
   }
 
@@ -114,10 +116,10 @@ canvas.updateUserGrade = function(user, course, assignment, grade) {
 
 };
 
-findWiWUserInCanvas = function(email) {
+const findWiWUserInCanvas = function(email) {
   //collects canvas user ID, courseID, and assignment ID based on the WiW
   //user ID, then calls the update grade function, which needs all three.
-  var userID, courseID, assignmentID;
+  var userID, courseID;
 
   canvas.scrapeCanvasUsers(email)
   .then(function(users) {
@@ -137,14 +139,14 @@ findWiWUserInCanvas = function(email) {
     return courses[0].course_id;
   })
   .then(function(courseID) {
-    return canvas.scrapeCanvasAssignments(courseID, 'Schedule Your Shifts');
+    return canvas.scrapeCanvasAssignments(courseID, CONFIG.canvas.assignments.scheduledShifts);
   })
   .then(function(assignment) {
     if (assignment.length === 0) throw "No 'Schedule Your Shifts' assignment for that user was found in Canvas.";
     return canvas.updateUserGrade(userID, courseID, assignment[0].id, 'pass');
   })
   .catch(function(err) {
-    CONSOLE_WITH_TIME("Finding the user " + name + " with email " + email + " in Canvas failed: ", err);
+    CONSOLE_WITH_TIME(`Finding the user ${name} with email ${email} in Canvas failed: ${err}`);
   });
 
 };
