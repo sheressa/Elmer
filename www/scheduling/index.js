@@ -1,5 +1,8 @@
 'use strict';
 
+global.KEYS = require('../../keys.js');
+global.CONFIG = require('../../config.js');
+
 const express   = require('express');
 const api = CONFIG.WhenIWork;
 const createSecondAPI = CONFIG.WhenIWorkDynamic;
@@ -83,7 +86,9 @@ function getTimezones(req, res) {
   var url = '/scheduling/login';
   res.render('scheduling/timezone', {url: url, params: req.query, timezones: timezones});
 }
-
+checkUser('mbogorodova@yahoo.com', 'Mariya', 'Bog', function(user){
+  console.log('wiw full user ',user)
+})
 function checkUser(email, first, last, callback) {
   var altEmail = helpers.generateAltEmail(email);
   var newUser;
@@ -123,6 +128,7 @@ function checkUser(email, first, last, callback) {
       }
       secondAPI.post('users/alerts', postBody, function () {});
       secondAPI.post('users/profile', {email: email}, function (profile) {
+        console.log(profile)
         CONSOLE_WITH_TIME("User Successfully created", profile.user.email);
         callback(profile.user);
       });
