@@ -117,7 +117,7 @@ function recurNewlyCreatedShifts() {
       }
     });
 
-
+    var batch = JSON.parse(JSON.stringify(batchPostRequestBody));
       console.log('AFTER THIS WE DONT GET BACK UP')
 
     WhenIWork.post('batch', batchPostRequestBody, function(response) {
@@ -219,9 +219,10 @@ function recurNewlyCreatedShifts() {
       });
     });
   });
-  console.log('about to return ', batchPostRequestBody)
-  // Returning these params for testing.
+
   return {publishPayload: unpublishedShiftIDStorageForTesting, requestTaskArray: requestTaskArray, batchPostRequestBody: batchPostRequestBody};
+
+  // Returning these params for testing.
 }
 
 function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
@@ -285,10 +286,11 @@ function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
       //The response at this point doesn't include error status codes so we're looking for a message that indicates an error
       if (response && response.message && /error/.test(response.message)) CONSOLE_WITH_TIME("[ERROR 278] in Job RecurShift Batch Response: ", response);
       else CONSOLE_WITH_TIME('Successful Response from decrementing week prior\'s shifts by one, and week after\'s open shifts by one');
+
     });
   });
-  // Returning payload for testing.
-  return batchPayload;
+    // Returning payload for testing.
+    return batchPayload;
 
 }
 

@@ -34,15 +34,14 @@ var testShift = { id: 284948029,
 
 
 describe('recurShifts', function() {
-
-  console.log('RESULTS ', result)
+  console.log('results ', result)
     it('should create a request task array', function (done) {
       assert.equal(result.requestTaskArray.length, 28);
       done();
     });
 
-    xit('should create a batch post request body', function (done) {
-      assert.equal(result.batchPostRequestBody[0].params.id, 284948099);
+    it('should create a batch post request body', function (done) {
+      assert.equal(result.batchPostRequestBody[0].params[0].id, 284948099);
       done();
     });
 
@@ -53,9 +52,8 @@ describe('recurShifts', function() {
 
     it('decrements previous and next week\'s open shifts by one', function (done) {
       var decrementResult = recurNewlyCreatedShifts.decrementPrevWeeksAndNextWeeksOpenShiftsByOne(testShift);
+      console.log('decrement ', decrementResult)
       assert.equal(decrementResult[0].url, '/2/shifts/284948029');
       done();
     });
-
 });
-
