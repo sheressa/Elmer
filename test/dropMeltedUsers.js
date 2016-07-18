@@ -1,3 +1,5 @@
+'use strict';
+//we shouldn't be querying the real canvas API in testing, this will be revised
 var assert = require('assert');
 var dropMeltedUsers = require('../jobs/scheduling/dropMeltedUsers.js');
 var updateCanvas = require('../jobs/scheduling/helpers/updateCanvas.js');
@@ -16,11 +18,12 @@ describe('drop melted users', function() {
         done();
       });
     });
-
-    it('should find melted users in Canvas', function (done) {
+    //this test fails because user 1734 is no longer 'inactive' in course 60
+    xit('should find melted users in Canvas', function (done) {
       var canvasUserID = 1734;
       updateCanvas.canvas.retrieveEnrollment(60, 'inactive')
       .then(function(result) {
+        console.log('result ', result)
         assert.equal(result[0].user_id, canvasUserID);
         done();
       });

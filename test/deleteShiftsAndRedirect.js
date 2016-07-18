@@ -1,8 +1,8 @@
 'use strict';
-var api = require('./helpers/base.js'),
-  assert = require('assert'), 
-  sampleData = require('../sample_data/sampleData.js'),
-  deleteShiftsAndRedirect = require(CONFIG.root_dir + '/www/scheduling/shifts/controllers/deleteShiftsAndRedirect')
+const api = require('./helpers/base.js');
+const  assert = require('assert');
+const sampleData = require('../sample_data/sampleData.js');
+const deleteShiftsAndRedirect = require(CONFIG.root_dir + '/www/scheduling/shifts/controllers/deleteShiftsAndRedirect')
   ;
 describe('delete shifts and redirect', function() {
   var userEmail = 'amudantest@test.com';
