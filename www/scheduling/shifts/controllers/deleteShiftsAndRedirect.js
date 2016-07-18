@@ -30,12 +30,12 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
   var query = {
     user_id: req.query.userID,
     start: '-1 day',
-    end: '+50 years',
+    end: '+6 years',
     unpublished: true,
     location_id: [ CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts ]
   };
 
-  whenIWorkAPI.get('shifts?include_objects=false', query, function (data) {
+  whenIWorkAPI.get('shifts', query, function (data) {
     var parentShiftID;
     var shift;
     var batchPayload = [];
