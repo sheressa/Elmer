@@ -1,3 +1,5 @@
+'use strict';
+
 var CronJob = require('cron').CronJob;
 var WhenIWork = CONFIG.WhenIWork;
 var moment = require('moment-timezone');
@@ -8,9 +10,7 @@ var eventEmitter = new events.EventEmitter();
 var WIWDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 var shiftQueryDateFormat = 'YYYY-MM-DD HH:mm:ss';
 
-var cronJob = new CronJob(CONFIG.time_interval.open_shifts, function () {
-  runJob();
-}, null, true);
+var cronJob = new CronJob(CONFIG.time_interval.open_shifts, runJob, null, true);
 
 function runJob() {
   var now = moment().minute(0).second(0);
@@ -22,11 +22,12 @@ runJob();
 
 // Recurs open shifts one and two weeks in the future.
 function recurOpenShifts(now) {
-  if (now.hours() % 2 == 1) {
+  if (now.hours() % 2 === 1) {
     CONSOLE_WITH_TIME('running at an odd hour. abort.');
     return 'running at an odd hour. abort.';
   }
-  // Each time this cron runs, we run this function over the previous four shift times for failsafe redundancy.
+  // Each time this cron runs, we run this function over the previous four shift
+  // times for failsafe redundancy.
   for (var i = 0; i < 5; i++) {
     // Because we're making async calls in a loop, we pass targetTime through callback
     // so that it's defined locally for each scope.
@@ -39,7 +40,8 @@ function recurOpenShifts(now) {
 
 /**
   Checks if open shifts are already present weeksFromNowToCheck number of weeks from the targetTime
-  Callback params: callback(extraOpenShiftsToDelete, correctNumberOfShiftsToSet, targetTimeMomentObj);
+  Callback params: callback(extraOpenShiftsToDelete, correctNumberOfShiftsToSet,
+  targetTimeMomentObj);
 **/
 function findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTimeMomentObj, weeksFromNowToCheck, callback) {
   var extraOpenShiftsToDelete = [];
@@ -61,7 +63,7 @@ function findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTimeMomentObj, w
     location_id: CONFIG.locationID.regular_shifts
   };
 
-  WhenIWork.get('shifts?include_objects=false', filter, function(data) {
+  WhenIWork.get('shifts', filter, function(data) {
     for (var i = 0; i < data.shifts.length; i++) {
       shift = data.shifts[i];
       if (JSON.parse(shift.is_open)) {
@@ -85,7 +87,7 @@ function findExtraOpenShiftsToDeleteAndOccupiedShiftCount(targetTimeMomentObj, w
       eventEmitter.emit('recurOpenShiftsData', {countOfOpenShifts: countOfOpenShifts, countOfOccupiedShifts: countOfOccupiedShifts, extraOpenShiftsToDelete: extraOpenShiftsToDelete});
     }
     callback(extraOpenShiftsToDelete, correctNumberOfShiftsToSet, weeksFromNowToCheck, targetTimeMomentObj);
-    return;  
+    return;
   });
 
 }
@@ -114,8 +116,8 @@ function incrementFutureOpenShiftsUpOrDown(extraOpenShiftsToDelete, correctNumbe
     newOpenShiftParams = colorizeShift(newOpenShiftParams);
 
     var newOpenShiftRequest = {
-      method: "post",
-      url: "/2/shifts",
+      method: `post`,
+      url: `/2/shifts`,
       params: newOpenShiftParams
     };
     batchPayload.push(newOpenShiftRequest);
@@ -128,8 +130,8 @@ function incrementFutureOpenShiftsUpOrDown(extraOpenShiftsToDelete, correctNumbe
   **/
   extraOpenShiftsToDelete.forEach(function(shiftID) {
     var shiftDeleteRequest = {
-      method: "delete",
-      url: "/2/shifts/" + shiftID,
+      method: `delete`,
+      url: `/2/shifts/` + shiftID,
       params: {}
     };
     batchPayload.push(shiftDeleteRequest);
@@ -150,10 +152,10 @@ function returnMaxOpenShiftCountForTime(targetTimeMomentObj) {
 
 // Exporting modularized functions for testability
 module.exports = {
-  recurOpenShifts: recurOpenShifts,
-  returnMaxOpenShiftCountForTime: returnMaxOpenShiftCountForTime,
-  findExtraOpenShiftsToDeleteAndOccupiedShiftCount: findExtraOpenShiftsToDeleteAndOccupiedShiftCount,
-  incrementFutureOpenShiftsUpOrDown: incrementFutureOpenShiftsUpOrDown,
-  cronJob: cronJob,
+  recurOpenShifts,
+  returnMaxOpenShiftCountForTime,
+  findExtraOpenShiftsToDeleteAndOccupiedShiftCount,
+  incrementFutureOpenShiftsUpOrDown,
+  cronJob,
   eventEmitter: eventEmitter
 };
