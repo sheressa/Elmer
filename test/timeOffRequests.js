@@ -1,7 +1,4 @@
-process.env.NODE_ENV = 'test';
-global.KEYS = require('../keys.js');
-global.CONFIG = require('../config.js');
-
+'use strict';
 var assert = require('assert'),
   sampleData = require(CONFIG.root_dir + '/sample_data/sampleData'),
   timeOffRequests = require(CONFIG.root_dir + '/jobs/scheduling/TimeOffRequests');
@@ -114,7 +111,6 @@ describe('Time Off Requests', function() {
     });
 
     it('should create new open shifts for all shifts deleted', function () {
-      // this.timeout(5000)
       openShiftRequests.forEach(function(req, idx) {
         assert.equal(req.method, "post");
         assert.equal(req.url, "/2/shifts");

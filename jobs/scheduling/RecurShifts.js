@@ -26,10 +26,10 @@ function recurNewlyCreatedShifts() {
   var startDateToRetrieveShifts = moment().add(-1, 'days').format('YYYY-MM-DD HH:mm:ss');
   var endDateToRetrieveShifts = moment().add(CONFIG.time_interval.weeks_to_search_for_recurred_shifts, 'weeks').format('YYYY-MM-DD HH:mm:ss');
   var postData = {
-                    "include_open": false,
-                    "location_id": CONFIG.locationID.regular_shifts,
-                    "start": startDateToRetrieveShifts,
-                    "end": endDateToRetrieveShifts
+                    'include_open': false,
+                    'location_id': CONFIG.locationID.regular_shifts,
+                    'start': startDateToRetrieveShifts,
+                    'end': endDateToRetrieveShifts
                   };
 
   WhenIWork.get('shifts', postData, function(response) {
@@ -82,10 +82,10 @@ function recurNewlyCreatedShifts() {
           endDate = moment(endDate, 'L').add(CONFIG.time_interval.chain_buffer_days, 'days').format('L');
       }
 
-      shift.chain = {"week":"1","until":endDate};
+      shift.chain = {'week':'1','until':endDate};
       shift.acknowledged = 1;
-      var urlIDRoute = "/2/shifts/" + shift.id;
-      shift = {"method": "put", "url": urlIDRoute, "params": shift};
+      var urlIDRoute = '/2/shifts/' + shift.id;
+      shift = {'method': 'put', 'url': urlIDRoute, 'params': shift};
 
       batchPostRequestBody.push(shift);
 
@@ -100,25 +100,22 @@ function recurNewlyCreatedShifts() {
       **/
       for (var i = 0; i < CONFIG.time_interval.years_to_recur_shift - 1; i++) {
         var newShift = {
-          "method": "post",
-          "url": "/2/shifts",
-          "params": {
-            "start_time": moment(workingShift.start_time, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
-            "end_time": moment(workingShift.end_time, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
-            "notes": workingShift.notes,
-            "acknowledged": workingShift.acknowledged,
-            "chain": {"week": "1", "until": moment(workingShift.chain.until, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format('L')},
-            "location_id": workingShift.location_id,
-            "user_id": workingShift.user_id
+          'method': 'post',
+          'url': '/2/shifts',
+          'params': {
+            'start_time': moment(workingShift.start_time, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
+            'end_time': moment(workingShift.end_time, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
+            'notes': workingShift.notes,
+            'acknowledged': workingShift.acknowledged,
+            'chain': {'week': '1', 'until': moment(workingShift.chain.until, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format('L')},
+            'location_id': workingShift.location_id,
+            'user_id': workingShift.user_id
           }
         };
         batchPostRequestBody.push(newShift);
         workingShift = newShift.params;
       }
     });
-
-    var batch = JSON.parse(JSON.stringify(batchPostRequestBody));
-      console.log('AFTER THIS WE DONT GET BACK UP')
 
     WhenIWork.post('batch', batchPostRequestBody, function(response) {
       /**
@@ -141,11 +138,11 @@ function recurNewlyCreatedShifts() {
             throw in a flag `“unpublished": true` in order to include unpublished shifts in our search results.
           **/
           var postData = {
-            "include_open": false,
-            "location_id": CONFIG.locationID.regular_shifts,
-            "start": startDateToRetrieveUnpublishedShifts,
-            "end": endDateToRetrieveUnpublishedShifts,
-            "unpublished": true
+            'include_open': false,
+            'location_id': CONFIG.locationID.regular_shifts,
+            'start': startDateToRetrieveUnpublishedShifts,
+            'end': endDateToRetrieveUnpublishedShifts,
+            'unpublished': true
           };
           // Getting all shifts created in the timeframe defined above in 'postData' that are unpublished.
           WhenIWork.get('shifts', postData, function(response) {
@@ -176,11 +173,11 @@ function recurNewlyCreatedShifts() {
           endDate = moment(endDate).add(1, 'days').format('YYYY-MM-DD HH:mm:ss');
 
           var postData = {
-            "include_open": false,
-            "location_id": CONFIG.locationID.regular_shifts,
-            "start": startDate,
-            "end": endDate,
-            "unpublished": true
+            'include_open': false,
+            'location_id': CONFIG.locationID.regular_shifts,
+            'start': startDate,
+            'end': endDate,
+            'unpublished': true
           };
 
           WhenIWork.get('shifts', postData, function(response) {
@@ -210,7 +207,6 @@ function recurNewlyCreatedShifts() {
           requestTaskArray.push(task);
         }
       }
-      console.log('async waterfall')
       async.waterfall(requestTaskArray, function(err, startDate, endDate, unpublishedShiftIDs) {
         const publishPayload = {
           'ids': unpublishedShiftIDs
@@ -220,7 +216,8 @@ function recurNewlyCreatedShifts() {
     });
   });
 
-  return {publishPayload: unpublishedShiftIDStorageForTesting, requestTaskArray: requestTaskArray, batchPostRequestBody: batchPostRequestBody};
+    return {publishPayload: unpublishedShiftIDStorageForTesting, requestTaskArray: requestTaskArray, batchPostRequestBody: batchPostRequestBody};
+
 
   // Returning these params for testing.
 }

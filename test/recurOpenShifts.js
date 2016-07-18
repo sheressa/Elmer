@@ -1,3 +1,4 @@
+'use strict';
 var assert = require('assert');
 var moment = require('moment-timezone');
 var now = moment().minute(0).second(0);
@@ -24,7 +25,7 @@ describe('recurOpenShifts', function() {
       eventEmitter.on('recurOpenShiftsData', testData);
       function testData(data) {
         result = data;
-        assert.equal(result.countOfOccupiedShifts, 6);
+        assert.equal(result.countOfOccupiedShifts, 7);
         eventEmitter.removeAllListeners('recurOpenShiftsData');
       }
       recurOpenShifts.recurOpenShifts(targetTime);

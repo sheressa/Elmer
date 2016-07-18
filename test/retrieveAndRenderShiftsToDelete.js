@@ -1,3 +1,4 @@
+'use strict';
 var api = require('./helpers/base.js');
 
 var assert = require('assert');
@@ -95,7 +96,7 @@ describe('retrieveAndRenderShiftsToDelete should retrieve shifts and render them
           return this;
         },
         render: function(routeToRender, templateData) {
-          assert.equal(templateData.makeupShifts[0].id, 281883880);
+          assert.equal(templateData.makeupShifts[1].id, 281883880);
           done();
         }
       };

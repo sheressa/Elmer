@@ -1,7 +1,4 @@
-global.KEYS = require('../keys.js');
-global.CONFIG = require('../config.js');
-
-
+'use strict';
 var assert = require('assert'),
 	attendance = require(CONFIG.root_dir + '/jobs/scheduling/AttendanceSync.js'),
 	GTWSampleUsers = require('./GTWsampleData.js').userArr,
