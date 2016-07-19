@@ -217,7 +217,7 @@ function recurNewlyCreatedShifts() {
   });
 
   // Returning these params for testing.
-    return {publishPayload: unpublishedShiftIDStorageForTesting, requestTaskArray: requestTaskArray, batchPostRequestBody: batchPostRequestBody};
+  return {publishPayload: unpublishedShiftIDStorageForTesting, requestTaskArray: requestTaskArray, batchPostRequestBody: batchPostRequestBody};
 }
 
 function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
@@ -284,8 +284,8 @@ function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
 
     });
   });
-    // Returning payload for testing.
-    return batchPayload;
+  // Returning payload for testing.
+  return batchPayload;
 
 }
 

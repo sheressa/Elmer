@@ -1,3 +1,4 @@
+'use strict';
 var assert = require('assert')
   , sampleData = require(CONFIG.root_dir + '/sample_data/sampleData');
 var mergeOpenShiftsExportObject = require(CONFIG.root_dir + '/jobs/scheduling/MergeOpenShifts.js');

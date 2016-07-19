@@ -1,14 +1,16 @@
 'use strict';
 
+global.KEYS = require('../../keys.js');
 global.CONFIG = require('../../config.js');
-const sD = require('../../sample_data/sampleData');
+const originalSampleData = require('../../sample_data/sampleData');
 
 function WhenIWork(key, email, password){
   return this;
 } 
 
 WhenIWork.prototype.get =  function(term, params, cbFunction){
-  const sampleData = JSON.parse(JSON.stringify(sD));
+  //this breaks the reference link, so that we don't cache sample data and instead get fresh data on every call
+  const sampleData = JSON.parse(JSON.stringify(originalSampleData));
   //Below line is in case there are no params and a callback
   //is the second argument. May need to change this
   //in the future depending on what gets passed to 'get'.
@@ -34,7 +36,8 @@ WhenIWork.prototype.get =  function(term, params, cbFunction){
 }
 //POST AND UPDATE ARE JUST EMPTY FUNCTIONS, SINCE WE'RE NOT USING THE RESPONSES.
 WhenIWork.prototype.post = function(term, params, cbFunction) {
-  const sampleData = JSON.parse(JSON.stringify(sD));
+  //this breaks the reference link, so that we don't cache sample data and instead get fresh data on every call
+  const sampleData = JSON.parse(JSON.stringify(originalSampleData));
   //may need to account for different arguments passed in in future
   if (term === 'users/profile') {
     var test = {user: params.email};
@@ -61,6 +64,7 @@ WhenIWork.prototype.delete = function(term, params, cbFunction) {
     CONSOLE.WITH_TIME("Error! This callback function is not a function: ", cbFunction);
   }
 }
-const api = new WhenIWork('k','e','p');
+
+var api = new WhenIWork(KEYS.test.wheniwork.api_key, KEYS.test.wheniwork.username, KEYS.test.wheniwork.password)
 
 module.exports = api;
