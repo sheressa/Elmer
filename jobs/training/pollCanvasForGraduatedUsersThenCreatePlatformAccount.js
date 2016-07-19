@@ -1,5 +1,5 @@
+'use strict';
 var fetch = require('node-fetch');
-var fs = require('fs');
 var crypto = require('crypto');
 var internalRequest = require('request');
 var moment = require('moment');
@@ -7,7 +7,6 @@ var throttler = require('throttled-request')(internalRequest);
 var CronJob = require('cron').CronJob;
 
 var SLACK_CHANNEL = '#graduates';
-var timeout = 0;
 var emailsDone = [];
 
 // throttles requests so no more than 5 are made a second
@@ -26,63 +25,25 @@ function pollCanvasForGraduatedUsersThenCreatePlatformAccount() {
   request('accounts/' + KEYS.canvas.accountID + '/courses', 'GET')
     .then(function (courses) {
       courses.forEach(function (course) {
-        // var sD = moment().subtract(24, "hours").toJSON();
         /**
           Excluding courses that we don’t need to parse for graduations, because they’re either test courses or not related to CTL training.
         **/
         if (KEYS.canvas.coursesWeDoNotParseForGraduatedUsers.indexOf(course.id) >= 0) return;
-<<<<<<< 25e9f2c35a1d8a1be42e942b9968948f87d55495
-        request('courses/' + course.id + '/assignments', 'GET')
-          .then(function (assignments) {
-            return assignments.filter(function (assignment) {
-              return assignment.name.indexOf(CONFIG.canvas.assignments.platformReady) >= 0;
-            });
-          })
-          .then(function (assignments) {
-            assignments.forEach(function (assignment) {
-              setTimeout(getLogs.bind(this, assignment), timeout);
-              timeout += 1000;
-            });
-          });
-      });
-    });
-}
-
-// gets grading logs for assignments from relevant courses
-function getLogs(assignment) {
-  CONSOLE_WITH_TIME('Graduating from assignment: ' + assignment.id);
-  var startDate = moment().subtract(6, "hours").toJSON();
-  request('audit/grade_change/assignments/' + assignment.id, 'GET', [
-      'start_time=' + startDate
-    ])
-      .then(function (logs) {
-        logs.events.forEach(function (log) {
-
-            request('users/' + log.links.student + '/profile', 'GET').then(function (res) {
-              if (res.primary_email) {
-                var name = res.sortable_name.split(', ');
-                var body = {
-                  firstName: name[1],
-                  lastName: name[0],
-                  email: res.primary_email.toLowerCase()
-                };
-                updatePlatform(body);
-=======
         request('/audit/grade_change/courses/'+course.id, 'GET')
         .then(function(gradebook){
           var assignments = gradebook.linked.assignments;
           var platformReadyId;
           var finalExamId;
           for(var i = 0; i<assignments.length; i++){
-              if (assignments[i].name.indexOf(CONFIG.Canvas_final)>=0){
-                finalExamId = assignments[i].id; 
+              if (assignments[i].name.indexOf(CONFIG.canvas.assignments.finalExam)>=0){
+                finalExamId = assignments[i].quiz_id; 
               }
-              if (assignments[i].name.indexOf(CONFIG.Canvas_graduation)>=0){
+              if (assignments[i].name.indexOf(CONFIG.canvas.assignments.platformReady)>=0){
                 platformReadyId = assignments[i].id; 
->>>>>>> added check for two assignments before platform creation functionality
               }
               if(i==assignments.length-1 && finalExamId && platformReadyId){
-                checker(gradebook, finalExamId, platformReadyId)
+                var ids = {courseId: assignments[i].course_id, finalExamId: finalExamId, platformReadyId: platformReadyId}
+                platformReadyChecker(gradebook, ids)
                 return;
               }
           }
@@ -91,64 +52,52 @@ function getLogs(assignment) {
     })  
 };
 
-//checks whether a student is eligible for profile creation
-function checker(gradebook, finalID, platformID){
-  console.log(finalID, platformID)
-  //first, we get the id's of final exam and graduation assignments
+//checks whether a student is platform ready
+function platformReadyChecker(gradebook, ids){
   var events = gradebook.events;
-  var users = gradebook.linked.users;
-  var finalExamId = finalID;
-  var platformReadyId = platformID;
-  var students = {};
-  var graduates = {};
-  var gstudents = [];
   var startDate = moment().subtract(6, "hours");
-
-  //second, we check if a user graduated within the last 6 hours and if the user received 85+ on their final exam
-  for(var j=0; j<events.length; j++){
-    if (events[j].links.assignment==finalExamId && events[j].grade_after>=85){
-      if(!students[events[j].links.student]) {
-        students[events[j].links.student] = {final:1};
-      } else {
-        students[events[j].links.student].final = 1;
-      }
+  var platformReady = {};
+  //check if a user graduated within the last 6 hours 
+  events.forEach(function(event){
+    if (event.links.assignment==ids.platformReadyId && startDate.isBefore(event.created_at)){
+      platformReady[event.links.student]='student';
     }
-    if (events[j].links.assignment==platformReadyId && startDate.isBefore(events[j].created_at)){
-      if(!students[events[j].links.student]){
-          students[events[j].links.student] = {grad:1};
-      } 
-      else {
-          students[events[j].links.student].grad = 1;
-      }
-    }
-    if (students[events[j].links.student]) {
-      if(students[events[j].links.student].grad && students[events[j].links.student].final){
-      graduates[events[j].links.student]=2;
-      delete students[events[j].links.student];
-      }
-    }
-  }
-  //then, we prepare user objects to be updated
-  for(var k=0; k<users.length; k++){
-    if (graduates[users[k].id]){
-        gstudents.push(users[k]);
-    }
-    if(k==users.length-1 && gstudents.length) createEmail(gstudents);
-  }
+  });
+  //check if the users got 85+ on final exam
+  finalExamChecker(platformReady, ids.finalExamId, ids.courseId, gradebook.linked.users);
 };
 
+//checks whether a student got 85+ on final exam
+function finalExamChecker(studentObj, finalExamId, courseId, users){
+  request('courses/' +courseId+ '/quizzes/' + finalExamId+'/submissions', 'GET', ['per_page=100'])
+    .then(function (quizzes) {
+      quizzes.quiz_submissions.forEach(function(quiz){
+      if(studentObj[quiz.user_id] && quiz.score<85) {
+          delete studentObj[quiz.user_id];
+        }
+      });
+      if(studentObj){
+        return studentObj;
+      }
+    })
+    .then(function(students){
+      users.forEach(function(user){
+        if (students[user.id]) createEmail(user);
+      });
+    });
+}
+
 // creates the body of a platform post request
-function createEmail(graduates) {
-  CONSOLE_WITH_TIME('Graduating users ', graduates)
-  for(var i=0; i<graduates.length; i++){
-      var name = graduates[i].name.split(' ');
-      var body = {
-        firstName: name[0],
-        lastName: name[1],
-        email: graduates[i].login_id
-      };
-      updatePlatform(body);
-    }
+function createEmail(student) {
+  CONSOLE_WITH_TIME('Graduating user ', student)
+    var name = student.name.split(' ');
+    var body = {
+      firstName: name[0],
+      lastName: name[1],
+      email: student.login_id
+    };
+    updatePlatform(body);
+    
 }
 // Creates a platform account for users who have passed the "Graduation" course
 function updatePlatform(body) {
@@ -175,7 +124,6 @@ function updatePlatform(body) {
 }
 
 // HELPER FUNCTIONS
-
 // allows our request function to return promises upon success
 function convertIds(text) {
   var regex = /":(\d+),/g;
