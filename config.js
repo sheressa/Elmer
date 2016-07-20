@@ -79,6 +79,7 @@ CONFIG.canvas = {
     scheduledShifts: 'Schedule Your Shifts',
     platformReady: 'Platform Ready!',
     webinarAttended: 'Attend An Observation',
+    finalExam: 'Final Exam'
   },
 };
 
