@@ -12,7 +12,7 @@ global.CONSOLE_WITH_TIME = function(){
       message+=arguments[key]+ " ";
     }
   }
-  console.log('[' + new Date() + ']', message.slice(0, message.length-1));
+  console.log('[' + moment().format('llll Z') + ']', message.slice(0, message.length-1));
 };
 
 /**
