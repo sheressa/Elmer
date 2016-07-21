@@ -4,7 +4,7 @@ const CronJob = require('cron').CronJob;
 const WhenIWork = CONFIG.WhenIWork;
 const returnColorizedShift = require('../../lib/ColorizeShift').go;
 
-new CronJob(CONFIG.time_interval.open_shifts, function () {
+new CronJob(CONFIG.time_interval.openShifts, function () {
     mergeOpenShifts();
 }, null, true);
 

@@ -79,7 +79,7 @@ CONFIG.canvas = {
     scheduledShifts: 'Schedule Your Shifts',
     platformReady: 'Platform Ready!',
     webinarAttended: 'Attend An Observation',
-    finalExam: 'Final Exam'
+    finalExam: 'Final Exam',
   },
 };
 
@@ -105,7 +105,7 @@ CONFIG.time_interval = {
   time_off_requests_cron_job_string: '0 */5 * * * *',
 
   // How often do we create new openshifts and merge duplicate openshifts
-  open_shifts: '0 0 */2 * * *', // every two hours
+  openShifts: '0 0 */2 * * *', // every two hours
 
   // Runs twice a day / every twelve hours
   cron_twice_per_day: '0 0 */12 * * *',
