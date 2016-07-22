@@ -18,7 +18,7 @@ function mergeOpenShifts() {
     location_id: [ CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts ]
   };
 
-  WhenIWork.get('shifts?include_objects=false', query, function (data) {
+  WhenIWork.get('shifts', query, function (data) {
     processDataAndMakeMergeAPICalls(data);
   });
 }
@@ -60,7 +60,7 @@ function processDataAndMakeMergeAPICalls(data) {
       //The response at this point doesn't include error status codes so we're looking for a message that indicates an error
       if (response && response.message && /error/.test(response.message)) CONSOLE_WITH_TIME("[ERROR 61] in Job MergeOpenShifts Batch Response: ", response);
       else (CONSOLE_WITH_TIME("Job MergeOpenShifts Batch Post Success"));
-    });      
+    });
   }
 }
 
@@ -110,7 +110,7 @@ function makeBatchPayloadRequestsToMergeOpenShifts(arrayOfShiftsForSameTimeInt, 
   return batchPayload;
 }
 
-module.exports = { 
-  mergeOpenShifts: mergeOpenShifts, 
+module.exports = {
+  mergeOpenShifts: mergeOpenShifts,
   processDataAndMakeMergeAPICalls: processDataAndMakeMergeAPICalls
 };
