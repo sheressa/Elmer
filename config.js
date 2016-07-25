@@ -48,7 +48,7 @@ CONFIG.WhenIWork = process.env.NODE_ENV === 'test' ?
   require('./api_wiw/WiWCCApi');
 
 CONFIG.WhenIWorkDynamic = process.env.NODE_ENV === 'test' ?
-  require('./test/helpers/base') :
+  require('./test/helpers/secondAPI') :
   require('./api_wiw/WiWDynamic');
 
 CONFIG.WhenIWorkSuper = process.env.NODE_ENV === 'test' ?

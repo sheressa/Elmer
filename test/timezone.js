@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert');
 var getTimezones = require('../www/scheduling/index.js');
 

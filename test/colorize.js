@@ -1,3 +1,4 @@
+'use strict';
 var colorize = require('../lib/ColorizeShift').go
   , dateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ'
   , moment = require('moment')

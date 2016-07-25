@@ -1,3 +1,4 @@
+'use strict';
 var assert = require('assert'),
   sampleData = require(CONFIG.root_dir + '/sample_data/sampleData'),
   timeOffRequests = require(CONFIG.root_dir + '/jobs/scheduling/TimeOffRequests');
@@ -6,7 +7,6 @@ var requests = sampleData.requestsResponse.requests;
 var shiftsResponse = {
   shifts: sampleData.shiftsResponse.shifts.slice(0,4)
 };
-
 describe('Time Off Requests', function() {
   describe('Creation of Time Off Search Params', function() {
     it('should create start and end times with the correct format for searching', function () {

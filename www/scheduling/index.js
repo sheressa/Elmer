@@ -123,7 +123,7 @@ function checkUser(email, first, last, callback) {
       }
       secondAPI.post('users/alerts', postBody, function () {});
       secondAPI.post('users/profile', {email: email}, function (profile) {
-        CONSOLE_WITH_TIME("User Successfully created", profile.user.email);
+        CONSOLE_WITH_TIME('User Successfully created', profile.user.email);
         callback(profile.user);
       });
     });

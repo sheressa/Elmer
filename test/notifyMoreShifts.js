@@ -1,3 +1,4 @@
+'use strict';
 var assert = require('assert');
 var notifyMoreShiftsObj = require('../jobs/scheduling/NotifyMoreShifts.js');
 var fs = require('fs');
