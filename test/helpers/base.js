@@ -1,7 +1,5 @@
 'use strict';
 
-global.KEYS = require('../../keys.js');
-global.CONFIG = require('../../config.js');
 const originalSampleData = require('../../sample_data/sampleData');
 
 function WhenIWork(key, email, password){

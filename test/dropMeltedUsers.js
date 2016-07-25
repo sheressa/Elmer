@@ -7,7 +7,7 @@ var WiWUsers = require('../sample_data/sampleData').usersResponse;
 
 describe('drop melted users', function() {
 
-    it('should find courses in Canvas', function (done) {
+    xit('should find courses in Canvas', function (done) {
       this.timeout(3000)
       var resultIsLong = false;
       updateCanvas.canvas.retrieveCourses()

@@ -1,12 +1,13 @@
 {
-  "name": "application-name",
+  "name": "Elmer",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "./node_modules/.bin/forever start launch.json",
     "stop": "./node_modules/.bin/forever stop express; ./node_modules/.bin/forever stop cron; exit 0;",
     "restart": "./node_modules/.bin/forever restart express; ./node_modules/.bin/forever restart cron; exit 0;",
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha --reporter spec 'test/index.js'"
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha --reporter spec 'test/index.js'",
+    "test-travis": "NODE_ENV=test ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec test/index.js"
   },
   "dependencies": {
     "async": "^1.5.2",
@@ -38,12 +39,13 @@
     "wheniwork-unofficial": "^0.2.2"
   },
   "devDependencies": {
+    "coveralls": "^2.11.11",
     "eslint": "^2.13.1",
     "eslint-config-airbnb": "^9.0.1",
     "eslint-plugin-import": "^1.10.2",
     "eslint-plugin-jsx-a11y": "^1.5.5",
     "eslint-plugin-react": "^5.2.2",
-    "mocha": "^2.4.5",
-    "nock": "^7.2.2"
+    "istanbul": "^0.4.4",
+    "mocha": "^2.4.5"
   }
 }
