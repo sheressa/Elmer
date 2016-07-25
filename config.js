@@ -88,6 +88,10 @@ CONFIG.GTW_attendance_minimum = 5400;
 //used in AttendanceSync.js to set the hour range over which we query GTW sessions
 CONFIG.GTW_time_range_query = 72;
 
+CONFIG.WiWUserNotes = {
+  shiftNotification: 'firstShiftNotification'
+};
+
 CONFIG.time_interval = {
   // runs every day at 5am
   gtw_attendance_sync_with_canvas:'0 0 5 * * *',

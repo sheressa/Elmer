@@ -24,7 +24,9 @@ function filterUsersToObject (users){
     var created = moment(new Date(user.created_at));
     // Only includes users who have already received the two_shift_notification note
     // or are at least 'days_of_open_shift_display' old and will never get that user note
-    if (/two_shift_notification/.test(user.notes) || moment().diff(created, 'days') >= CONFIG.time_interval.days_until_older_user) usersObj[user.id] = user;
+    var shiftNotification = new RegExp(CONFIG.WiWUserNotes.shiftNotification,`g`);
+    //the first part of the or statement will be unncessary below once we go through and change all user notes
+    if (/two_shift_notification/.test(user.notes) || shiftNotification.test(user.notes) || moment().diff(created, 'days') >= CONFIG.time_interval.days_until_older_user) usersObj[user.id] = user;
   });
   return usersObj;
 }
