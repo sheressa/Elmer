@@ -4,7 +4,7 @@ const api = CONFIG.WhenIWork;
 const churnedUserEmailList = require('../churnedUserEmailList');
 
 /**
-  To run this task, add a "churnedUserList.js" file to the root directory exporting
+  To run this task, add a "churnedUserEmailList.js" file to the root directory exporting
   an array of email strings that need to be deleted. (Formatted like emails.example.js)
 
   Then run: node console removeChurned go.
@@ -13,19 +13,20 @@ const churnedUserEmailList = require('../churnedUserEmailList');
 module.exports.go = function () {
   var userList = [];
   getUsersToClean().then(function (users) {
-    CONSOLE_WITH_TIME(users);
-    users.forEach(function (e, i) {
-      if (typeof userList[i%10] !== 'object') {
-        userList[i%10] = [];
+    CONSOLE_WITH_TIME('user ',users);
+    deactivateUser(users);
+    users.forEach(function (user, index) {
+      if (typeof userList[index%10] !== 'object') {
+        userList[index%10] = [];
       }
 
-      userList[i%10].push(e);
+      userList[index%10].push(user);
     });
 
     var promises = [];
-    userList.forEach(function (e) {
+    userList.forEach(function (user) {
       promises.push(new Promise(function (resolve, reject) {
-        getUserShifts(e).then(function (shifts) {
+        getUserShifts(user).then(function (shifts) {
           resolve(shifts);
         });
       }));
@@ -42,28 +43,49 @@ module.exports.go = function () {
   });
 };
 
+function deactivateUsers(users){
+  users.forEach(function(user){
+    api.update('users/'+user, {location:[CONFIG.locationID.inactive_users]} )
+    .catch(function(error){
+      CONSOLE_WITH_TIME('Call to deactivate WiW churned user has failed');
+    });
+  });
+}
+
 function getUsersToClean() {
   return new Promise(function (resolve, reject) {
     var users, email;
     var uidsToClean = [];
     api.get('users?include_objects=false', function (res) {
       users = res.users;
+      users.forEach(function (user, index, arr) {
+        if (user.notes){
+          var y = JSON.parse(user.notes).canonicalEmail;
+          console.log('y ', y)
+        }
 
-      users.forEach(function (e, i, arr) {
-        try {
-          email = JSON.parse(e.notes).canonicalEmail;
-        } catch (e) {
-          email = e.email;
+        if(y){
+          email = JSON.parse(user.notes).canonicalEmail;
+          if(user.last_name=='Bogorodova'){
+           console.log(user)
+           console.log(email)
+          }
+        } else {
+          console.log('IN THE CORRECT ONE')
+          email = user.email;
+          console.log('emaillll ', email)
         }
 
         if (churnedUserEmailList.indexOf(email) >= 0) {
-          uidsToClean.push(e.id);
+          console.log(user.first_name)
+          uidsToClean.push(user.id);
         }
       });
 
       api.get('requests?include_objects=false', {start: '-3 months', end: '+3 months'}, function (res) {
-        res.requests.forEach(function (e, i, arr) {
-          var p = uidsToClean.indexOf(e.user_id);
+        console.log('inside of api get requests')
+        res.requests.forEach(function (req, index, arr) {
+          var p = uidsToClean.indexOf(req.user_id);
 
           if (p >= 0) {
             uidsToClean.splice(p, 1);
@@ -77,6 +99,7 @@ function getUsersToClean() {
 }
 
 function getUserShifts(users) {
+  console.log('inside of getUserShifts')
   return new Promise(function (resolve, reject) {
     var shiftLists = [];
     var params = {
@@ -89,8 +112,8 @@ function getUserShifts(users) {
     var shifts = [];
 
     api.get('shifts?include_objects=false', params, function (res) {
-      res.shifts.forEach(function(e, i, arr) {
-        shifts.push(e.id);
+      res.shifts.forEach(function(shift, index, arr) {
+        shifts.push(shift.id);
       });
 
       resolve(shifts);

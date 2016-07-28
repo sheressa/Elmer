@@ -1,8 +1,5 @@
 'use strict';
 
-global.KEYS = require('../../keys.js');
-global.CONFIG = require('../../config.js');
-
 const express   = require('express');
 const api = CONFIG.WhenIWork;
 const createSecondAPI = CONFIG.WhenIWorkDynamic;
@@ -86,9 +83,7 @@ function getTimezones(req, res) {
   var url = '/scheduling/login';
   res.render('scheduling/timezone', {url: url, params: req.query, timezones: timezones});
 }
-checkUser('mbogorodova@yahoo.com', 'Mariya', 'Bog', function(user){
-  console.log('wiw full user ',user)
-})
+
 function checkUser(email, first, last, callback) {
   var altEmail = helpers.generateAltEmail(email);
   var newUser;
@@ -96,6 +91,12 @@ function checkUser(email, first, last, callback) {
     users = users.users;
     for (var i in users) {
       if (users[i].email == email || users[i].email == altEmail) {
+          if(users[i].location.indexOf(CONFIG.locationID.inactive_users)>=0){
+            api.update('users/'+users[i].id, {location: [CONFIG.locationID.makeup_and_extra_shifts, CONFIG.locationID.regular_shifts]})
+            .catch(function(error){
+              CONSOLE_WITH_TIME('Update call to WiW reactivation failed ', error);
+            })
+          }
         callback(users[i]);
         return;
       }
