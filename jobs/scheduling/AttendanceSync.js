@@ -1,3 +1,4 @@
+'use strict';
 var CronJob = require('cron').CronJob;
 var canvas = require('../../canvas.js');
 var bignumJSON = require('json-bignum');
@@ -123,7 +124,10 @@ function findCanvasUsersByEmail(GTWusers){
         return;}
       var userID = canvasUsers[0].id;
       queryForCanvasCoursesAndAssignments(userID);
-    });
+    })
+    .catch(function(err){
+      CONSOLE_WITH_TIME('Call to Canvas for user', emailQuery.search_term, 'has failed.')
+    })
   });
 }
 
@@ -145,7 +149,10 @@ function findCanvasUserByName(GTWUser){
       return;}
     var userID = canvasUsers[0].id;
     queryForCanvasCoursesAndAssignments(userID);
-  });
+  })
+  .catch(function(err){
+    CONSOLE_WITH_TIME('Call to Canvas for', nameQuery.search_term, 'has failed.')
+  })
 }
 
 //scrapes canvas for user by name, course and assignment id's
@@ -168,13 +175,22 @@ function queryForCanvasCoursesAndAssignments(userID){
     .then(function(assignment){
     //gives canvas user credit for attending a GTW observation
     markAttendanceInCanvas(courseID, assignment[0].id, userID);
+    })
+    .catch(function(err){
+      CONSOLE_WITH_TIME('Call to Canvas for attendance assignment in course', courseID, 'has failed.');
     });
+  })
+  .catch(function(err){
+      CONSOLE_WITH_TIME('Call to Canvas for user enrollment has failed.');
   });
 }
 
 //gives credit for attending a GTW webinar on Canvas to a user
 function markAttendanceInCanvas(courseID, assignmentID, userID){
- canvas.updateGradeCanvas(courseID, assignmentID, userID, 'pass');
+ canvas.updateGradeCanvas(courseID, assignmentID, userID, 'pass')
+  .catch(function(err){
+    CONSOLE_WITH_TIME('Call to post user', userID, 'grade in course', courseID, 'assignmentID', assignmentID, 'has failed.')
+  })
 }
 
 //HELPERS
