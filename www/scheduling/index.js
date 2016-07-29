@@ -16,7 +16,6 @@ router.get('/login', function (req, res) {
     res.status(403).send('Access denied.');
     return;
   }
-  var email = req.query.email;
   checkUser(req.query.email, req.query.fn, req.query.ln, function (user) {
     // If they are coming via the timezone route (they've selected a timezone)
     // Note this is all done in the background
@@ -30,7 +29,7 @@ router.get('/login', function (req, res) {
           notes[user.notes.trim()] = true;
         }
       }
-      notes['timezoneSet'] = true;
+      notes.timezoneSet = true;
       // Update the profile to reflect that they set their timezone
       api.update('users/' + user.id, {notes: JSON.stringify(notes), timezone_id: req.query.timezone});
     }
