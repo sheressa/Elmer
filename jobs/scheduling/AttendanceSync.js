@@ -220,7 +220,7 @@ function emailTrainer(user, option){
     from_email: 'support@crisistextline.org',
     from_name: 'Crisis Text Line',
     to: [{
-        email: 'mariya@crisistextline.org',
+        email: 'heather@crisistextline.org',
         name: 'Heather',
         type: 'to'
     }]
