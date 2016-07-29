@@ -1,3 +1,4 @@
+[![Coverage Status](https://coveralls.io/repos/github/CrisisTextLine/Elmer/badge.svg?branch=master)](https://coveralls.io/github/CrisisTextLine/Elmer?branch=master)
 # Elmer
 Elmer, like da glue, holds everything together. Currently, it extends the functionality of our scheduling app [WhenIWork](http://wheniwork.com/) by supporting our custom use cases. Quite generally--among other functionality--it supports:
 

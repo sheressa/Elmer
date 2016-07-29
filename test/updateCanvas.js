@@ -8,9 +8,9 @@ var canvasUser = 1734;
 var trainingCourseID = 49;
 var scheduleYourShiftsAssignmentID = 676;
 
-describe('update Canvas', function() {
+xdescribe('update Canvas', function() {
 
-    xit('gives a user a passing grade in Canvas on the "Schedule Your Shifts" assignment', function (done) {
+    it('gives a user a passing grade in Canvas on the "Schedule Your Shifts" assignment', function (done) {
       this.timeout(3000)
       updateCanvas.canvas.updateUserGrade(canvasUser, trainingCourseID, scheduleYourShiftsAssignmentID, 'complete')
       .then(function(result) {

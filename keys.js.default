@@ -16,7 +16,7 @@ KEYS.wheniwork = {
 };
 
 KEYS.GTW = {
-  org_id: TODO,
+  org_id: 'TODO',
   api_key:'TODO'
 };
 
@@ -61,8 +61,8 @@ KEYS.test.wheniwork = {
 };
 
 KEYS.test.GTW = {
-  org_id: TODO,
-  api_key:'TODO'
+  org_id: 'TODO',
+  api_key: 'TODO'
 };
 
 KEYS.test.canvas = {
