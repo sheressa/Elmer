@@ -1,9 +1,9 @@
 'use strict';
 
-const api = CONFIG.WhenIWork;
 const moment = require('moment');
 const dateFormat = 'YYYY-MM-DD HH:mm:ss';
 const fs = require('fs');
+const getReqForTimeoff = require(CONFIG.root_dir + '/api_wiw/WiWRequests').getTimeoff;
 
 /* 
   To run this task: node console timeOffRequests timeOffRequests
@@ -23,8 +23,7 @@ module.exports.timeOffRequests = function (options = {}, callback = exportCSV) {
   const daysBack = options.daysBack || 14;
   const reqParams = createDateParams(endTimeDate, daysBack);
 
-  getRequestsPromise(reqParams)
-  .then(mergeResponses)
+  getReqForTimeoff(reqParams)
   .then(reformatForCSV)
   .then(callback)
   .catch(function(err){
@@ -35,57 +34,7 @@ module.exports.timeOffRequests = function (options = {}, callback = exportCSV) {
 function createDateParams(endTimeDate, daysBack) {
   const end = endTimeDate.format(dateFormat);
   const start = moment(end, dateFormat).subtract(daysBack, 'days').format(dateFormat);
-  return {start: start, end: end};
-}
-
-function getRequestsPromise (params) {
-  const allResponses = [];
-  let lastReqId;
-  return new Promise(function(resolve, reject){
-    // Scoped a recursive IIFE into the promise so that I can resolve out.
-    (function makeGetRequest () {
-      api.get('requests', params, function(response) {
-        if (!response.requests) reject(response);
-        allResponses.push(response);
-        // The WiW API responds with a maximum of 200 requests, so if we received fewer (conservatively 100) we can resolve.
-        if (response.requests.length < 100) resolve(allResponses);
-        // If we received over 100 requests make a new request starting from the last object Id we received. 
-        else {
-          lastReqId = response.requests[response.requests.length-10].id;
-          params.max_id = lastReqId;
-          makeGetRequest ();
-        }
-      });
-    })();
-
-  });
-
-}
-
-function mergeResponses (responses){
-  const allUsers = {};
-  const allRequests = {};
-  // merge the users and time off requests from all responses
-  responses.forEach(function(response){
-    response.requests.forEach(function(req){
-      if (!allRequests[req.id]) {
-        allRequests[req.id] = req;
-      }
-    });
-    response.users.forEach(function(user){
-      if (!allUsers[user.id]) {
-        allUsers[user.id] = {};
-        allUsers[user.id].email = /canonicalEmail/.test(user.notes) ? 
-        JSON.parse(user.notes).canonicalEmail : 
-        user.email;
-        allUsers[user.id].firstName = user.first_name;
-        allUsers[user.id].lastName = user.last_name;
-
-      }
-    });
-  });
-
-  return ({allUsers:allUsers, allRequests:allRequests});
+  return {start, end};
 }
 
 function reformatForCSV (mergedResponse) {
