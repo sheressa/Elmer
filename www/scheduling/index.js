@@ -1,5 +1,8 @@
 'use strict';
 
+global.KEYS = require('../../keys.js');
+global.CONFIG = require('../../config.js');
+
 const express   = require('express');
 const api = CONFIG.WhenIWork;
 const createSecondAPI = CONFIG.WhenIWorkDynamic;
@@ -8,6 +11,7 @@ const querystring = require('querystring');
 const helpers = require(CONFIG.root_dir + '/www/scheduling/helpers');
 const shiftSchedulingRouter = require('./shifts');
 const router = express.Router();
+const request = require('request');
 
 router.use('/shifts', shiftSchedulingRouter);
 
@@ -84,32 +88,100 @@ function getTimezones(req, res) {
   res.render('scheduling/timezone', {url: url, params: req.query, timezones: timezones});
 }
 
+function reactivate(user){
+  console.log('reactivate')
+  return new Promise(function(resolve, reject){
+    api.update('users/'+user.id, {reactivate:true}, function(res){
+      console.log('RES ', res)
+      if (res) resolve(res);
+      else reject('User reactivation failed');
+    });
+  });
+}
+
+function allUsers(email, altEmail, callback){
+  return new Promise (function(resolve, reject){
+
+    var options = {
+        method: 'get',
+        url: 'https://api.wheniwork.com/2/users?include_objects=false&show_deleted=true',
+        headers: {'W-Token': '62f81047e8c5e26cb0351f6fd883cbc436cb5a6f'},
+    };
+
+    request(options, function (error, response, body) {
+        if (error) {
+            console.log(error);
+            callback(error);
+        } else {
+          var users = JSON.parse(body).users;
+          for (var i in users) {
+            if (users[i].email == email && !users[i].is_deleted || users[i].email == altEmail && !users[i].is_deleted) {
+
+                if(users[i].locations.indexOf(CONFIG.locationID.inactive_users)>=0){
+                  api.update('users/'+users[i].id, {location: [CONFIG.locationID.makeup_and_extra_shifts, CONFIG.locationID.regular_shifts]})
+                  .catch(function(error){
+                    CONSOLE_WITH_TIME('Update call to WiW reactivation failed ', error);
+                  })
+                }
+                callback(users[i]);
+                resolve(users[i]);
+
+            } else if(users[i].is_deleted && users[i].email === email || users[i].is_deleted && users[i].email === altEmail){
+                reactivate(users[i])
+                .then(function(){
+                  callback(user[i]);
+                  resolve(user[i]);
+                })
+                .catch(function(error){
+                  CONSOLE_WITH_TIME('User', user[i].login_id,'reactivation failed', error)
+                })
+            }
+          }
+        }
+    });
+  });
+}
+
+function createUser(newUser){
+
+  return new Promise(function(resolve, reject){
+    stathat.increment('Scheduling - Accounts Created', 1);
+
+    api.post('users', newUser, function (data) {
+      var secondAPI = createSecondAPI(KEYS.wheniwork.api_key, altEmail, KEYS.wheniwork.default_password, function (error) { CONSOLE_WITH_TIME('Error creating secondAPI within createUser: ', error)});
+
+      var alert = {sms: false, email: false};
+      var alerts = ['timeoff', 'swaps', 'schedule', 'reminders', 'availability', 'new_employee', 'attendance'];
+      var postBody = {};
+
+      for (var i in alerts) {
+        postBody[alerts[i]] = alert;
+      }
+
+      secondAPI.post('users/alerts', postBody, function () {});
+      secondAPI.post('users/profile', {email: email}, function (profile) {
+        CONSOLE_WITH_TIME('User Successfully created', profile.user.email);
+        callback(profile.user);
+        resolve(profile.user);
+      });
+
+    })
+    .catch(function(error){
+      reject('User creation failed, error: ' +  error);
+    });
+  });
+}
+
 function checkUser(email, first, last, callback) {
   var altEmail = helpers.generateAltEmail(email);
   var newUser;
-  api.get('users?include_objects=false', function (users) {
-    users = users.users;
-    for (var i in users) {
-      if (users[i].email == email || users[i].email == altEmail) {
-          if(users[i].location.indexOf(CONFIG.locationID.inactive_users)>=0){
-            api.update('users/'+users[i].id, {location: [CONFIG.locationID.makeup_and_extra_shifts, CONFIG.locationID.regular_shifts]})
-            .catch(function(error){
-              CONSOLE_WITH_TIME('Update call to WiW reactivation failed ', error);
-            })
-          }
-        callback(users[i]);
-        return;
-      }
-    }
-    stathat.increment('Scheduling - Accounts Created', 1);
-    /**
-      At this point, we didn't find the user so let's create it.
-      When someone already has an email registered with WhenIWork, but it's
-      attached to another organization's account, the account collides. Hence,
-      We need to create a new account using a faked email.
-    **/
+
+  allUsers(email, altEmail, callback)
+  .then(function(data){
+    if(data){return;}
     newUser = {
       role: 3,
+      //i think we can create accounts with regular emails now
       email: altEmail,
       first_name: first,
       last_name: last,
@@ -118,22 +190,10 @@ function checkUser(email, first, last, callback) {
       password: KEYS.wheniwork.default_password,
       notes: JSON.stringify({ canonicalEmail: email })
     };
-
-    api.post('users', newUser, function (data) {
-      var secondAPI = createSecondAPI(KEYS.wheniwork.api_key, altEmail, KEYS.wheniwork.default_password, function (error) { CONSOLE_WITH_TIME('Error creating secondAPI within checkUser: ', error)});
-      var alert = {sms: false, email: false};
-      var alerts = ['timeoff', 'swaps', 'schedule', 'reminders', 'availability', 'new_employee', 'attendance'];
-      var postBody = {};
-      for (var i in alerts) {
-        postBody[alerts[i]] = alert;
-      }
-      secondAPI.post('users/alerts', postBody, function () {});
-      secondAPI.post('users/profile', {email: email}, function (profile) {
-        console.log(profile)
-        CONSOLE_WITH_TIME("User Successfully created", profile.user.email);
-        callback(profile.user);
-      });
-    });
+    return createUser(newUser)
+  })
+  .catch(function(err){
+    CONSOLE_WITH_TIME('Promise chain failed')
   });
   //below is returned for testing purposes
   return newUser;
