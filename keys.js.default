@@ -43,6 +43,8 @@ KEYS.slackAccountURL = 'TODO';
 
 KEYS.platformUserCreationURL = 'TODO';
 
+KEYS.dataRoute = '';
+
 //development test keys
 
 KEYS.test = {};
