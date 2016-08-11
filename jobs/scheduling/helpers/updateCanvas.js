@@ -119,12 +119,17 @@ canvas.updateUserGrade = function(user, course, assignment, grade) {
 const findWiWUserInCanvas = function(email) {
   //collects canvas user ID, courseID, and assignment ID based on the WiW
   //user ID, then calls the update grade function, which needs all three.
-  var userID, courseID;
+  var userID;
+  var courseID;
+  var name;
+  var email;
 
   canvas.scrapeCanvasUsers(email)
   .then(function(users) {
-    if (users.length === 0) throw 'No combination of that name and email was found in Canvas.';
+    if (users.length === 0) throw 'That email was not found in Canvas.';
     userID = users[0].id;
+    name = users[0].name;
+    email = users[0].login_id;
     return users[0].id;
   })
   .then(function(userID) {
@@ -146,7 +151,7 @@ const findWiWUserInCanvas = function(email) {
     return canvas.updateUserGrade(userID, courseID, assignment[0].id, 'pass');
   })
   .catch(function(err) {
-    CONSOLE_WITH_TIME(`Finding the user ${name} with email ${email} in Canvas failed: ${err}`);
+    CONSOLE_WITH_TIME(`Finding the user with the email ${email} in Canvas failed: ${err}`);
   });
 
 };

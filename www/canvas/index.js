@@ -57,11 +57,12 @@ router.put('/firstShift', function (req, res) {
     // responses is [userID, courseID, assignmentID] so we spread it
     return canvas.updateUserGrade(...responses, 'complete');
   })
-  .then(() => res.send(`Successfully updated ${user.email}`))
+  .then(() => res.send({message: `Successfully updated ${user.email}`}))
   .catch((err) => {
     const message = `Updating ${assignment} for ${user.email} in Canvas failed: ${err}`;
     CONSOLE_WITH_TIME(message);
-    res.status(500).send(message);
+    // Using 206 instead of 500 to get through Platform Try Catch
+    res.status(206).send({message});
   });
 
   stathat.increment('Canvas - Attend First Shift', 1);

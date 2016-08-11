@@ -12,7 +12,7 @@ global.CONSOLE_WITH_TIME = function(){
       message+=arguments[key]+ " ";
     }
   }
-  console.log('[' + new Date() + ']', message.slice(0, message.length-1));
+  console.log('[' + moment().format('llll Z') + ']', message.slice(0, message.length-1));
 };
 
 /**
@@ -48,7 +48,7 @@ CONFIG.WhenIWork = process.env.NODE_ENV === 'test' ?
   require('./api_wiw/WiWCCApi');
 
 CONFIG.WhenIWorkDynamic = process.env.NODE_ENV === 'test' ?
-  require('./test/helpers/base') :
+  require('./test/helpers/secondAPI') :
   require('./api_wiw/WiWDynamic');
 
 CONFIG.WhenIWorkSuper = process.env.NODE_ENV === 'test' ?
@@ -79,6 +79,7 @@ CONFIG.canvas = {
     scheduledShifts: 'Schedule Your Shifts',
     platformReady: 'Platform Ready!',
     webinarAttended: 'Attend An Observation',
+    finalExam: 'Final Exam',
   },
 };
 
@@ -86,6 +87,10 @@ CONFIG.canvas = {
 CONFIG.GTW_attendance_minimum = 5400;
 //used in AttendanceSync.js to set the hour range over which we query GTW sessions
 CONFIG.GTW_time_range_query = 72;
+
+CONFIG.WiWUserNotes = {
+  shiftNotification: 'firstShiftNotification'
+};
 
 CONFIG.time_interval = {
   // runs every day at 5am
@@ -100,7 +105,7 @@ CONFIG.time_interval = {
   time_off_requests_cron_job_string: '0 */5 * * * *',
 
   // How often do we create new openshifts and merge duplicate openshifts
-  open_shifts: '0 0 */2 * * *', // every two hours
+  openShifts: '0 0 */2 * * *', // every two hours
 
   // Runs twice a day / every twelve hours
   cron_twice_per_day: '0 0 */12 * * *',

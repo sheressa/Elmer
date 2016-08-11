@@ -1,3 +1,4 @@
+'use strict';
 var assert = require('assert');
 var recurNewlyCreatedShifts = require('../jobs/scheduling/RecurShifts.js');
 var result = recurNewlyCreatedShifts.recurNewlyCreatedShifts();
@@ -30,7 +31,6 @@ var testShift = { id: 284948029,
 
 
 describe('recurShifts', function() {
-
     it('should create a request task array', function (done) {
       assert.equal(result.requestTaskArray.length, 28);
       done();
@@ -42,7 +42,7 @@ describe('recurShifts', function() {
     });
 
     it('should create a publish payload', function (done) {
-      assert.equal(result.publishPayload[0], 284948099);
+      assert.equal(result.publishPayload[0], 284947666);
       done();
     });
 
@@ -51,6 +51,4 @@ describe('recurShifts', function() {
       assert.equal(decrementResult[0].url, '/2/shifts/284948029');
       done();
     });
-
 });
-

@@ -12,6 +12,7 @@ var scheduleShiftsURL = '/scheduling/login?';
 function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
   if (!helpers.validate(req.query.email, req.query.token)) {
     res.status(403).send('Access denied.');
+    return;
   }
 
   var parentShiftIDsOfRegularShiftsToBeDeleted = [];

@@ -1,7 +1,7 @@
+'use strict';
 var api = require('./helpers/base.js');
 
-var assert = require('assert')
-  , sampleData = require(CONFIG.root_dir + '/sample_data/sampleData')
+var assert = require('assert');
   var retrieveAndRenderShiftsToDelete = require(CONFIG.root_dir + '/www/scheduling/shifts/controllers/retrieveAndRenderShiftsToDelete');
 
 describe('retrieveAndRenderShiftsToDelete should retrieve shifts and render them when user navigates to shift deletion page', function() {
@@ -96,7 +96,7 @@ describe('retrieveAndRenderShiftsToDelete should retrieve shifts and render them
           return this;
         },
         render: function(routeToRender, templateData) {
-          assert.equal(templateData.makeupShifts[0].id, 281883880);
+          assert.equal(templateData.makeupShifts[1].id, 281883880);
           done();
         }
       };
