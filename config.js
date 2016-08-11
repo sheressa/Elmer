@@ -61,7 +61,6 @@ CONFIG.locationID = {
   new_graduate: 959290,
   makeup_and_extra_shifts: 1003762,
   regular_shifts: 1003765,
-  inactive_users: 1513111,
   test: 990385,
   test2: 1007104,
   supervisors: 884473,

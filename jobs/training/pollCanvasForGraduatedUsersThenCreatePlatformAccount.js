@@ -7,7 +7,6 @@ var throttler = require('throttled-request')(internalRequest);
 var CronJob = require('cron').CronJob;
 var SLACK_CHANNEL = '#graduates';
 var emailsDone = [];
-var promiseArray = [];
 
 // throttles requests so no more than 5 are made a second
 throttler.configure({
@@ -43,8 +42,7 @@ function pollCanvasForGraduatedUsersThenCreatePlatformAccount() {
           }
           if(i===assignments.length-1 && finalExamId && platformReadyId){
             var ids = {courseId: assignments[i].course_id, finalExamId: finalExamId, platformReadyId: platformReadyId}
-
-            promiseArray.push(platformReadyChecker(gradebook, ids));
+            platformReadyChecker(gradebook, ids);
             return;
           }
         }

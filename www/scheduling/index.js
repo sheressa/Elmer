@@ -1,8 +1,5 @@
 'use strict';
 
-global.KEYS = require('../../keys.js');
-global.CONFIG = require('../../config.js');
-
 const express   = require('express');
 const api = CONFIG.WhenIWork;
 const createSecondAPI = CONFIG.WhenIWorkDynamic;
@@ -88,67 +85,62 @@ function getTimezones(req, res) {
   res.render('scheduling/timezone', {url: url, params: req.query, timezones: timezones});
 }
 
+// reactivating a deleted user
 function reactivate(user){
-  console.log('reactivate')
   return new Promise(function(resolve, reject){
     api.update('users/'+user.id, {reactivate:true}, function(res){
-      console.log('RES ', res)
       if (res) resolve(res);
       else reject('User reactivation failed');
     });
   });
 }
 
+// retrieves all WiW users and checks for a particular user
 function allUsers(email, altEmail, callback){
   return new Promise (function(resolve, reject){
 
     var options = {
         method: 'get',
         url: 'https://api.wheniwork.com/2/users?include_objects=false&show_deleted=true',
-        headers: {'W-Token': '62f81047e8c5e26cb0351f6fd883cbc436cb5a6f'},
+        headers: global.KEYS.wheniwork.token
     };
 
     request(options, function (error, response, body) {
         if (error) {
-            console.log(error);
-            callback(error);
+            reject(error);
         } else {
           var users = JSON.parse(body).users;
           for (var i in users) {
-            if (users[i].email == email && !users[i].is_deleted || users[i].email == altEmail && !users[i].is_deleted) {
-
-                if(users[i].locations.indexOf(CONFIG.locationID.inactive_users)>=0){
-                  api.update('users/'+users[i].id, {location: [CONFIG.locationID.makeup_and_extra_shifts, CONFIG.locationID.regular_shifts]})
-                  .catch(function(error){
-                    CONSOLE_WITH_TIME('Update call to WiW reactivation failed ', error);
-                  })
-                }
+            // existing users
+            if (users[i].email === email && !users[i].is_deleted || users[i].email === altEmail && !users[i].is_deleted) {
                 callback(users[i]);
                 resolve(users[i]);
-
-            } else if(users[i].is_deleted && users[i].email === email || users[i].is_deleted && users[i].email === altEmail){
+            // existing deleted users; reactivation sequence
+            } else if (users[i].is_deleted && users[i].email === email){
                 reactivate(users[i])
                 .then(function(){
-                  callback(user[i]);
-                  resolve(user[i]);
+                  callback(users[i]);
+                  resolve(users[i]);
                 })
                 .catch(function(error){
-                  CONSOLE_WITH_TIME('User', user[i].login_id,'reactivation failed', error)
-                })
-            }
+                  CONSOLE_WITH_TIME('User', users[i].login_id,'reactivation failed', error)
+                });
+            } 
           }
+          // we didn't find the user in WiW records, we need to create a newUser
+          resolve();
         }
     });
   });
 }
 
-function createUser(newUser){
-
+// creates a new user
+function createUser(newUser, callback){
   return new Promise(function(resolve, reject){
     stathat.increment('Scheduling - Accounts Created', 1);
 
     api.post('users', newUser, function (data) {
-      var secondAPI = createSecondAPI(KEYS.wheniwork.api_key, altEmail, KEYS.wheniwork.default_password, function (error) { CONSOLE_WITH_TIME('Error creating secondAPI within createUser: ', error)});
+      var secondAPI = createSecondAPI(KEYS.wheniwork.api_key, newUser.email, KEYS.wheniwork.default_password, function (error) { CONSOLE_WITH_TIME('Error creating secondAPI within createUser: ', error)});
 
       var alert = {sms: false, email: false};
       var alerts = ['timeoff', 'swaps', 'schedule', 'reminders', 'availability', 'new_employee', 'attendance'];
@@ -159,10 +151,9 @@ function createUser(newUser){
       }
 
       secondAPI.post('users/alerts', postBody, function () {});
-      secondAPI.post('users/profile', {email: email}, function (profile) {
+      secondAPI.post('users/profile', {email: newUser.email}, function (profile) {
         CONSOLE_WITH_TIME('User Successfully created', profile.user.email);
         callback(profile.user);
-        resolve(profile.user);
       });
 
     })
@@ -171,31 +162,30 @@ function createUser(newUser){
     });
   });
 }
-
+// checks the status of the user: active, deleted,or newUser
 function checkUser(email, first, last, callback) {
   var altEmail = helpers.generateAltEmail(email);
   var newUser;
 
   allUsers(email, altEmail, callback)
   .then(function(data){
-    if(data){return;}
-    newUser = {
-      role: 3,
-      //i think we can create accounts with regular emails now
-      email: altEmail,
-      first_name: first,
-      last_name: last,
-      activated: true,
-      locations: [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts],
-      password: KEYS.wheniwork.default_password,
-      notes: JSON.stringify({ canonicalEmail: email })
-    };
-    return createUser(newUser)
+    if(!data){
+      newUser = {
+        role: 3,
+        email: email,
+        first_name: first,
+        last_name: last,
+        activated: true,
+        locations: [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts],
+        password: KEYS.wheniwork.default_password
+      };
+      createUser(newUser, callback);
+      //below is returned for testing purposes
+      return newUser;
+    }
   })
   .catch(function(err){
-    CONSOLE_WITH_TIME('Promise chain failed')
+    CONSOLE_WITH_TIME('Promise chain failed ', err)
   });
-  //below is returned for testing purposes
-  return newUser;
 }
 module.exports = {router: router, checkUser: checkUser, getTimezones: getTimezones};
