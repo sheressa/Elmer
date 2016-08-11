@@ -97,18 +97,11 @@ function reactivate(user){
 // retrieves all WiW users and checks for a particular user
 function allUsers(email, altEmail, callback){
   return new Promise (function(resolve, reject){
-
-    var options = {
-        method: 'get',
-        url: 'https://api.wheniwork.com/2/users?include_objects=false&show_deleted=true',
-        headers: global.KEYS.wheniwork.token
-    };
-
-    request(options, function (error, response, body) {
-        if (error) {
-            reject(error);
+    api.get('users', {include_objects: false, show_deleted: true}, function(data){
+        if (!data) {
+            reject('No data returned from WiW');
         } else {
-          var users = JSON.parse(body).users;
+          var users = data.users;
           for (var i in users) {
             // existing users
             if (users[i].email === email && !users[i].is_deleted || users[i].email === altEmail && !users[i].is_deleted) {
@@ -187,4 +180,5 @@ function checkUser(email, first, last, callback) {
     CONSOLE_WITH_TIME('Promise chain failed ', err)
   });
 }
+
 module.exports = {router: router, checkUser: checkUser, getTimezones: getTimezones};

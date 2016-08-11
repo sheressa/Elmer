@@ -36,7 +36,7 @@ function getUsersToClean() {
           uidsToClean.push(each.id);
         }
       });
-      // deletes all users and their shifts
+      // deleted all shifts for a user
       uidsToClean.forEach(function(id){
         api.delete('users/'+id+'?delete_shifts=true');
       });
