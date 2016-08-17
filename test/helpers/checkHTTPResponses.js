@@ -8,7 +8,7 @@
 const moment = require('moment-timezone');
 const fs = require('fs');
 
-global.KEYS = require('../../keys.js.config');
+global.KEYS = require('../../keys.js.default');
 global.CONFIG = require('../../config.js');
 const WhenIWork = CONFIG.WhenIWork;
 const dateFormat = 'YYYY-MM-DD HH:mm:ss';
