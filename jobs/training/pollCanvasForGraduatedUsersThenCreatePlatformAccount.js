@@ -21,6 +21,7 @@ new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
 pollCanvasForGraduatedUsersThenCreatePlatformAccount();
 // Polls Canvas for people who’ve passed the "Graduation" course
 function pollCanvasForGraduatedUsersThenCreatePlatformAccount() {
+  notifySlack({message: 'If anyone graduated within the last 6 hours, their names will appear below!'});
   request('accounts/' + KEYS.canvas.accountID + '/courses', 'GET')
   .then(function (courses) {
     courses.forEach(function (course) {
@@ -173,8 +174,9 @@ function request(url, method, params) {
 function notifySlack(name) {
   var payload = {
     channel: SLACK_CHANNEL,
-    text: 'I just graduated ' + name + '.'
   };
+  if (name.message) payload.text = name.message;
+  else payload.text = 'I just graduated ' + name +'.';
 
   fetch(KEYS.slackAccountURL, {
     method: 'POST',

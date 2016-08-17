@@ -15,9 +15,9 @@ handleTimeOffRequests();
 
 function handleTimeOffRequests() {
   var timeOffSearchParams = createTimeOffSearchParams();
-
+  timeOffSearchParams.include_objects=false;
   //Get all time off requests within timeOffSearchParams
-  WhenIWork.get('requests?include_objects=false', timeOffSearchParams, function(response){
+  WhenIWork.get('requests', timeOffSearchParams, function(response){
     filterRequestsAndHandleShifts(response.requests);
   });
 }
@@ -49,8 +49,8 @@ function filterRequestsAndHandleShifts (allRequests) {
 
 function retrieveOverlappingShifts (request) {
   var shiftSearchParams = createShiftSearchParams(request);
-
-  WhenIWork.get('shifts?include_objects=false', shiftSearchParams, function(response) {
+  shiftSearchParams.include_objects=false;
+  WhenIWork.get('shifts', shiftSearchParams, function(response) {
     var batchPayload = createBatchPayload (response, request.id);
     //Send the time off request approval and all shift deletions/open shift creations to batch
     WhenIWork.post('batch', batchPayload, function(response) {
