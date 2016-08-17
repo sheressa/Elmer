@@ -13,7 +13,6 @@ throttler.configure({
   requests: 5,
   milliseconds: 1000
 });
-
 new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
     pollCanvasForGraduatedUsersThenCreatePlatformAccount();
   }, null, true);
@@ -26,8 +25,9 @@ function pollCanvasForGraduatedUsersThenCreatePlatformAccount() {
   .then(function (courses) {
     courses.forEach(function (course) {
     /**
-      Excluding courses that we don’t need to parse for graduations, because they’re either test courses or not related to CTL training.
+      Excluding courses that we don’t need to parse for graduations, because they’re either test courses, not related to CTL training, or are unavailable.
     **/
+      if (course.workflow_state != 'available') return;
       if (KEYS.canvas.coursesWeDoNotParseForGraduatedUsers.indexOf(course.id) >= 0) return;
       request('/audit/grade_change/courses/'+course.id, 'GET')
       .then(function(gradebook){
