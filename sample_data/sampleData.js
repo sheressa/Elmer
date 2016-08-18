@@ -828,6 +828,63 @@ var wiwRequestsObject = {
   ]
 };
 
+var wiwReactivated = {
+  id: 5674794,
+  account_id: 549781,
+  login_id: 2761909,
+  timezone_id: 0,
+  country_id: 233,
+  migration_id: 0,
+  role: 3,
+  is_payroll: false,
+  is_trusted: 0,
+  type: 1,
+  email: 'deleted@test.com',
+  first_name: 'Del',
+  last_name: 'Eted',
+  phone_number: '',
+  employee_code: '',
+  avatar:
+   { url: 'https://avatars.wheniwork.com/dc02824b2af4ac232129a41fc376c77cc2ea3d5f/%s',
+     size: '%s' },
+  password: true,
+  activated: true,
+  is_hidden: false,
+  uuid: '88ffabdddf9bb82r144f4476eacd3064f664dc0f',
+  notes: '{"original_owner":5674723, "parent_shift":277119256}',
+  affiliate: 0,
+  is_private: true,
+  infotips: '',
+  hours_preferred: 0,
+  hours_max: 40,
+  hourly_rate: 0,
+  alert_settings:
+   { timeoff: { sms: false, email: false },
+     swaps: { sms: false, email: false },
+     schedule: { sms: false, email: false },
+     reminders: { sms: true, email: true },
+     availability: { sms: false, email: false },
+     new_employee: { sms: false, email: false },
+     attendance: { sms: false, email: false } },
+  reminder_time: 1,
+  sleep_start: '23:00:00',
+  sleep_end: '05:00:00',
+  my_positions: [],
+  last_login: 'Mon, 25 Jan 2016 21:30:38 -0500',
+  dismissed_at: '',
+  notified_at: 'Tue, 29 Nov -001 19:00:00 -0500',
+  created_at: 'Tue, 19 Jan 2016 14:48:09 -0500',
+  updated_at: 'Mon, 25 Jan 2016 21:32:47 -0500',
+  is_deleted: false,
+  login_email: 'deleted@test.com',
+  timezone_name: 'America/New_York',
+  positions: [],
+  locations: [ 1003762, 1003765 ],
+  position_rates: [],
+  position_quality: [],
+  sort: { '1003762': 0, '1003765': 0 } 
+}
+
 var wiwUsersObject = {
   users: [
   { id: 5674733,
@@ -1068,9 +1125,9 @@ var wiwUsersObject = {
     is_payroll: false,
     is_trusted: 0,
     type: 1,
-    email: 'amudantest@test.com',
-    first_name: 'Amudan',
-    last_name: 'Test',
+    email: 'deleted@test.com',
+    first_name: 'Del',
+    last_name: 'Eted',
     phone_number: '',
     employee_code: '',
     avatar:
@@ -1104,7 +1161,7 @@ var wiwUsersObject = {
     notified_at: 'Tue, 29 Nov -001 19:00:00 -0500',
     created_at: 'Tue, 19 Jan 2016 14:48:09 -0500',
     updated_at: 'Mon, 25 Jan 2016 21:32:47 -0500',
-    is_deleted: false,
+    is_deleted: true,
     login_email: 'amudantest@test.com',
     timezone_name: 'America/New_York',
     positions: [],
@@ -1355,5 +1412,6 @@ module.exports = {
   user: wiwUserObject,
   requestsResponse: wiwRequestsObject,
   separateShifts: separateShifts,
-  usersResponse: wiwUsersObject
+  usersResponse: wiwUsersObject,
+  reactivated: wiwReactivated
 };

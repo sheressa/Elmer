@@ -50,9 +50,18 @@ WhenIWork.prototype.post = function(term, params, cbFunction) {
 }
 WhenIWork.prototype.update = function(term, params, cbFunction) {
   //may need to account for different arguments passed in in future.
-  if (cbFunction && typeof cbFunction === 'function') cbFunction();
-  else if (cbFunction && typeof cbFunction !== 'function') {
+  var params = JSON.stringify(params);
+  const sampleData = JSON.parse(JSON.stringify(originalSampleData));
+  const reactivated = sampleData.reactivated;
+
+  if (cbFunction && typeof cbFunction !== 'function') {
     CONSOLE.WITH_TIME("Error! This callback function is not a function: ", cbFunction);
+  } 
+  else { 
+    if(params=='{"reactivate":true}') {
+      cbFunction(reactivated)
+    }
+    else cbFunction();
   }
 }
 WhenIWork.prototype.delete = function(term, params, cbFunction) {
