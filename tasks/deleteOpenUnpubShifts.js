@@ -9,10 +9,11 @@ module.exports.go = function() {
 			"location_id": CONFIG.locationID.regular_shifts,
 			"start": '+' + i + ' days',
 			"end": '+' + (i+7) + ' days',
-			"unpublished": true
+			"unpublished": true,
+			"include_objects": false
 		};
 		var batchRequest = [];
-		api.get('shifts?include_objects=false', postData, function(response) {
+		api.get('shifts', postData, function(response) {
 			response.shifts.forEach(function(shift) {
 				if (shift.is_open && !shift.published) {
 					var shiftDeleteRequest = {

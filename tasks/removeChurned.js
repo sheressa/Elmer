@@ -17,7 +17,10 @@ function getUsersToClean() {
   return new Promise(function (resolve, reject) {
     var users, email;
     var uidsToClean = [];
-    api.get('users?include_objects=false', function (res) {
+    var params = {
+      include_objects: false
+    };
+    api.get('users', params, function (res) {
       if (!res) reject('Call to get WiW users failed');
       users = res.users;
       users.forEach(function (each) {

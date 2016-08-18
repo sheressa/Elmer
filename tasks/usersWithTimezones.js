@@ -18,7 +18,10 @@ module.exports.usersTimezones = function () {
 
   function getTimezones () {
     return new Promise(function(resolve, reject){
-      api.get('timezones?include_objects=false', function(response) {
+      let params = {
+        include_objects: false
+      };
+      api.get('timezones', params, function(response) {
         if (!response) reject(response);
         else resolve(response);
       });
@@ -27,7 +30,10 @@ module.exports.usersTimezones = function () {
 
   function getUsersPromise () {
     return new Promise(function(resolve, reject){
-      api.get('users?include_objects=false', {}, function(response) {
+      let params = {
+        include_objects: false
+      };
+      api.get('users', params, function(response) {
         if (!response.users) reject(response);
         else resolve(response);
       });
