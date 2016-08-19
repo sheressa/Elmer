@@ -48,7 +48,7 @@ function mandrillEachUser (shifts, userIdToInfo, shiftsToSup){
     var message = {
       subject: "You're signed up for a new CTL shift!",
       html: contents,
-      from_email: 'supervisors@crisistextline.org',
+      from_email: 'support@crisistextline.org',
       from_name: 'Crisis Text Line',
       to: [{
           email: email,
