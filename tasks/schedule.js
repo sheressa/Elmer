@@ -9,12 +9,13 @@ const out_format = 'ddd h:mm A';
 
 module.exports.dumpSchedules = function () {
   // We want to see shifts 8 days out from now.
-  var params = {
+  let params = {
     location_id: CONFIG.locationID.regular_shifts,
-    end: '+8 days'
+    end: '+8 days',
+    include_objects: false
   };
 
-  api.get('shifts?include_objects=false', params, function (data) {
+  api.get('shifts', params, function (data) {
     var user_shifts = {};
     var shift;
 
@@ -33,7 +34,10 @@ module.exports.dumpSchedules = function () {
     }
 
     // Now we need to get the email addresses
-    api.get('users?include_objects=false', function (data) {
+    let params = {
+      include_objects: false
+    };
+    api.get('users', params, function (data) {
       var user;
       for (var i in data.users) {
         user = data.users[i];
@@ -76,10 +80,11 @@ module.exports.clearProd = function() {
       end: end_time,
       location_id: CONFIG.locationID.test,
       unpublished: true,
-      include_allopen: true
+      include_allopen: true,
+      include_objects: false
     };
 
-    api.get('shifts?include_objects=false', query, function (data) {
+    api.get('shifts', query, function (data) {
       var shifts_to_delete = [];
       for (var i in data.shifts) {
         shifts_to_delete.push(data.shifts[i].id);

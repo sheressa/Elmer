@@ -8,10 +8,11 @@ module.exports.go = function () {
     start: '-1 day',
     end:   '+2 weeks',
     include_allopen: true,
-    locationId: [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts]
+    locationId: [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts],
+    include_objects: false
   };
 
-  api.get('shifts?include_objects=false', filter, function (results) {
+  api.get('shifts', filter, function (results) {
     var openShifts = results.shifts.filter(function (e) {
 	    return e.is_open;
     });

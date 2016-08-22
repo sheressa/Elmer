@@ -13,17 +13,11 @@ WhenIWork.prototype.get =  function(term, params, cbFunction){
   //is the second argument. May need to change this
   //in the future depending on what gets passed to 'get'.
   cbFunction = [].slice.call(arguments).pop();  
-  if (term === 'users?include_objects=false') {
-    cbFunction(sampleData.usersResponse);
-  }
-  else if (term === 'users') {
+  if (term === 'users') {
     cbFunction(sampleData.usersResponse);
   }
   else if (term === 'users/7889841') {
     params({user: sampleData.usersResponse.users[2]});
-  }
-  else if (term === 'shifts?include_objects=false') {
-    cbFunction(sampleData.shiftsResponse);
   }
   else if (term === 'shifts') {
     cbFunction(sampleData.shiftsResponse);

@@ -34,10 +34,11 @@ function retrieveShiftsAndOwnersWithinTimeInterval(req, res, whenIWorkAPI) {
   var query = {
     start: moment.unix(startTime).format(wiwDateFormat),
     end: moment.unix(endTime).format(wiwDateFormat),
-    location_id: [ CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts ]
+    location_id: [ CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts ],
+    include_objects: false
   };
 
-  whenIWorkAPI.get('shifts?include_objects=false', query, function(response) {
+  whenIWorkAPI.get('shifts', query, function(response) {
     var shifts = response.shifts
       , shift
       , userShiftData = {}
