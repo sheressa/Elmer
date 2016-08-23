@@ -17,8 +17,11 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
   }
 
   var altEmail = helpers.generateAltEmail(email);
+  var params = {
+    include_objects: false
+  };
 
-  whenIWorkAPI.get('users?include_objects=false', function (dataResponse) {
+  whenIWorkAPI.get('users', params, function (dataResponse) {
     var users = dataResponse.users
       , user
       , templateData
@@ -35,10 +38,10 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
           user_id: userID,
           start: '-1 day',
           end: '+180 days',
-          location_id: [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts]
+          location_id: [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts],
+          include_objects: false
         };
 
-        // Need to not add `include_objects=false`, otherwise query returns all shifts. No idea why.
         whenIWorkAPI.get('shifts', query, function(response) {
           var url = scheduleShiftsURL + 'email=' + encodeURIComponent(email) + '&token=' + req.query.token;
           if (!response.shifts || !response.shifts.length) {
