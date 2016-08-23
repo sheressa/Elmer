@@ -20,5 +20,4 @@ var mergeOpenShifts = require('./mergeOpenShifts.js');
 var notifyMoreShifts = require('./notifyMoreShifts.js');
 var timeOffRequests = require('./timeOffRequests');
 var recurShifts = require('./recurShifts.js');
-var updateCanvas = require('./updateCanvas');
 var dropMeltedUsers = require('./dropMeltedUsers');
