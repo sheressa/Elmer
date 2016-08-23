@@ -65,6 +65,7 @@ describe('Time Off Requests', function() {
       var expectedParams = { 
         start: 'Mon, 06 Jun 2016 00:00:00 -0400',
         end: 'Fri, 10 Jun 2016 23:59:59 -0400',
+        "include_objects": false,
         user_id: 5660404,
         location_id: [ 1003765, 1003762 ],
         unpublished: true 

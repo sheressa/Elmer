@@ -13,7 +13,6 @@ throttler.configure({
   requests: 5,
   milliseconds: 1000
 });
-
 new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
     pollCanvasForGraduatedUsersThenCreatePlatformAccount();
   }, null, true);
@@ -21,12 +20,14 @@ new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
 pollCanvasForGraduatedUsersThenCreatePlatformAccount();
 // Polls Canvas for people who’ve passed the "Graduation" course
 function pollCanvasForGraduatedUsersThenCreatePlatformAccount() {
+  notifySlack({message: 'If anyone graduated within the last 6 hours, their names will appear below!'});
   request('accounts/' + KEYS.canvas.accountID + '/courses', 'GET')
   .then(function (courses) {
     courses.forEach(function (course) {
     /**
-      Excluding courses that we don’t need to parse for graduations, because they’re either test courses or not related to CTL training.
+      Excluding courses that we don’t need to parse for graduations, because they’re either test courses, not related to CTL training, or are unavailable.
     **/
+      if (course.workflow_state != 'available') return;
       if (KEYS.canvas.coursesWeDoNotParseForGraduatedUsers.indexOf(course.id) >= 0) return;
       request('/audit/grade_change/courses/'+course.id, 'GET')
       .then(function(gradebook){
@@ -173,8 +174,9 @@ function request(url, method, params) {
 function notifySlack(name) {
   var payload = {
     channel: SLACK_CHANNEL,
-    text: 'I just graduated ' + name + '.'
   };
+  if (name.message) payload.text = name.message;
+  else payload.text = 'I just graduated ' + name +'.';
 
   fetch(KEYS.slackAccountURL, {
     method: 'POST',

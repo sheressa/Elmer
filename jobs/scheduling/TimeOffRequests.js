@@ -15,8 +15,6 @@ handleTimeOffRequests();
 
 function handleTimeOffRequests() {
   var timeOffSearchParams = createTimeOffSearchParams();
-  timeOffSearchParams.include_objects = false;
-
   //Get all time off requests within timeOffSearchParams
   WhenIWork.get('requests', timeOffSearchParams, function(response){
     filterRequestsAndHandleShifts(response.requests);
@@ -30,8 +28,9 @@ function createTimeOffSearchParams () {
     .add(CONFIG.time_interval.months_to_search_for_time_off_requests, 'months')
     .format(date_format);
   var timeOffSearchParams = {
-    "start": startDateToRetrieveRequests,
-    "end": endDateToRetrieveRequests,
+    'start': startDateToRetrieveRequests,
+    'end': endDateToRetrieveRequests,
+    'include_objects': false
   };
   return timeOffSearchParams;
 }
@@ -50,26 +49,25 @@ function filterRequestsAndHandleShifts (allRequests) {
 
 function retrieveOverlappingShifts (request) {
   var shiftSearchParams = createShiftSearchParams(request);
-  shiftSearchParams.include_objects = false;
-
   WhenIWork.get('shifts', shiftSearchParams, function(response) {
     var batchPayload = createBatchPayload (response, request.id);
     //Send the time off request approval and all shift deletions/open shift creations to batch
     WhenIWork.post('batch', batchPayload, function(response) {
       //The response at this point doesn't include error status codes so we're looking for a message that indicates an error
-      if (response && response.message && /error/.test(response.message)) CONSOLE_WITH_TIME("Error in TimeOffRequests Batch Response: ", response);
-      else (CONSOLE_WITH_TIME("Job TimeOffRequests Batch Post Success"));
+      if (response && response.message && /error/.test(response.message)) CONSOLE_WITH_TIME('Error in TimeOffRequests Batch Response: ', response);
+      else (CONSOLE_WITH_TIME('Job TimeOffRequests Batch Post Success'));
     });
   });
 }
 
 function createShiftSearchParams (request) {
   var shiftSearchParams = {
-    "start": request.start_time,
-    "end": request.end_time,
-    "user_id": request.user_id,
-    "location_id": [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts],
-    "unpublished": true
+    'start': request.start_time,
+    'end': request.end_time,
+    'user_id': request.user_id,
+    'location_id': [CONFIG.locationID.regular_shifts, CONFIG.locationID.makeup_and_extra_shifts],
+    'unpublished': true,
+    'include_objects': false
   };
 
   return shiftSearchParams;
@@ -87,28 +85,28 @@ function createBatchPayload (response, requestId) {
     //For each shift, create a delete request and an open shift to replace it
     response.shifts.forEach(function(shift) {
       var shiftDeleteRequest = {
-        "method": "delete",
-        "url": "/2/shifts/" + shift.id,
-        "params": {},
+        'method': 'delete',
+        'url': '/2/shifts/' + shift.id,
+        'params': {},
       };
 
       batchPayload.push(shiftDeleteRequest);
 
       var params = {
-        "start_time": shift.start_time,
-        "end_time": shift.end_time,
-        "notes": "SHIFT COVERAGE",
-        "published": true,
-        "location_id": CONFIG.locationID
+        'start_time': shift.start_time,
+        'end_time': shift.end_time,
+        'notes': 'SHIFT COVERAGE',
+        'published': true,
+        'location_id': CONFIG.locationID
                              .makeup_and_extra_shifts,
       };
 
       params = returnColorizedShift(params, shift.start_time, true);
 
       var newOpenShiftRequest = {
-        "method": "post",
-        "url": "/2/shifts",
-        "params": params
+        'method': 'post',
+        'url': '/2/shifts',
+        'params': params
       };
       batchPayload.push(newOpenShiftRequest);
     });
@@ -120,10 +118,10 @@ function createBatchPayload (response, requestId) {
 function createTimeOffApproval (requestId) {
     // Status code `2` represents approved requests.
   var timeOffApprovalRequest = {
-    "method": "put",
-    "url": "/2/requests/" + requestId,
-    "params": {
-      "status": 2
+    'method': 'put',
+    'url': '/2/requests/' + requestId,
+    'params': {
+      'status': 2
     }
   };
 
