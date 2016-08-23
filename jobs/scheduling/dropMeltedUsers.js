@@ -1,3 +1,4 @@
+'use strict';
 var Request = require('request-promise');
 var CronJob = require('cron').CronJob;
 var WhenIWork = CONFIG.WhenIWork;
