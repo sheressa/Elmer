@@ -33,18 +33,43 @@ canvas.scrapeCanvasUsers = function(email) {
   return request(options)
   .then(function(response){
     response = JSON.parse(response);
-    if (Array.isArray(response) && response.length === 0) throw 'No user with that email found.';
+    if (email && Array.isArray(response) && response.length === 0) throw 'No user with the email  ' + email + ' found.';
     return response;
   })
   .catch(function(err){
-    CONSOLE_WITH_TIME('Canvas call to get the user with email ' + email + ' failed:', err);
+    CONSOLE_WITH_TIME('Canvas call to get the user with email ' + email + ' failed: ', err);
+  });
+
+};
+
+//finds all canvas users
+canvas.scrapeAllCanvasUsers = function(i = 1, fullResponse = [], stop = false) {
+
+  if (stop === true) return fullResponse;
+
+  let currentResponse = fullResponse;
+
+  options.url = 'https://crisistextline.instructure.com/api/v1/accounts/1/users?page=' + i + '&per_page=100';
+
+  return request(options)
+  .then(function(response){
+    response = JSON.parse(response);
+    if (response.length === 0) {
+      stop = true;
+    } else {
+      currentResponse = currentResponse.concat(response);
+    }
+    return canvas.scrapeCanvasUsers(i + 1, currentResponse, stop);
+  })
+  .catch(function(err){
+    CONSOLE_WITH_TIME('Canvas call to get all users failed: ', err);
   });
 
 };
 
 canvas.retrieveCourses = function() {
 
-  options.url = 'https://crisistextline.instructure.com/api/v1/accounts/1/courses?per_page=1000';
+  options.url = 'https://crisistextline.instructure.com/api/v1/accounts/1/courses?state[]=available&per_page=1000';
 
   return request(options)
   .then(function(response){
@@ -59,13 +84,23 @@ canvas.retrieveCourses = function() {
 };
 
 //finds all enrollments in a given course
-canvas.retrieveEnrollment = function(courseID, enrollmentState) {
+canvas.retrieveEnrollment = function(courseID, enrollmentState, enrollmentState2) {
 
   options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments?state[]=' + enrollmentState;
+  var response = [];
 
   return request(options)
-  .then(function(response){
-    response = JSON.parse(response);
+  .then(function(result){
+    if (result.length) response = response.concat(JSON.parse(result));
+  })
+  .then(function() {
+    if (enrollmentState2) {
+      options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments?state[]=' + enrollmentState2;
+    }
+    return request(options);
+  })
+  .then(function(result){
+    if (result.length) response = response.concat(JSON.parse(result));
     return response;
   })
   .catch(function(err){
@@ -74,20 +109,67 @@ canvas.retrieveEnrollment = function(courseID, enrollmentState) {
 
 };
 
-//finds all courses a specific user is enrolled in
-canvas.scrapeCanvasEnrollment = function(userID) {
+canvas.activateOrDeactivateEnrollment = function(courseID, enrollmentID, enrollmentType, userID) {
 
-  options.url = 'https://crisistextline.instructure.com/api/v1/users/' + userID + '/enrollments';
+  if (enrollmentType === 'reactivate') {
+    options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments?enrollment[user_id]=' + userID + '&enrollment[type]=StudentEnrollment';
+    options.method = 'POST';
+  }
+
+  else if (enrollmentType === 'completed') {
+    options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments/' + enrollmentID + '?task=conclude';
+    options.method = 'DELETE';
+  }
+
+  else if (enrollmentType === 'inactive') {
+    options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments/' + enrollmentID + '?task=deactivate';
+    options.method = 'DELETE';
+  }
 
   return request(options)
-  .then(function(response){
-    response = JSON.parse(response);
+  .catch(function(err){
+    CONSOLE_WITH_TIME("Finding enrollments for the course with ID " + courseID + " in Canvas failed: ", err);
+  });
+
+};
+
+//finds all courses a specific user is enrolled in, with optional enrollment states
+canvas.scrapeCanvasEnrollment = function(userID, enrollmentState, enrollmentState2) {
+
+  options.url = 'https://crisistextline.instructure.com/api/v1/users/' + userID + '/enrollments?state[]=' + enrollmentState;
+  var response = [];
+
+  return request(options)
+  .then(function(result){
+    if (result.length) response = response.concat(JSON.parse(result));
+    return response;
+  })
+  .then(function() {
+    if (enrollmentState2) {
+      options.url = 'https://crisistextline.instructure.com/api/v1/users/' + userID + '/enrollments?state[]=' + enrollmentState2;
+    }
+    return request(options);  
+  })
+  .then(function(result) {
+    if (result.length) response = response.concat(JSON.parse(result));
     return response;
   })
   .catch(function(err){
     CONSOLE_WITH_TIME("Finding courses for the user with ID " + userID + " in Canvas failed: ", err);
   });
 
+};
+
+canvas.deleteCanvasUser = function(userID) {
+  options.url = 'https://crisistextline.instructure.com//api/v1/accounts/1/users/' + userID;
+  return request.delete(options, CONSOLE_WITH_TIME)
+  .then(function(response) {
+    response = JSON.parse(response);
+    return response;
+  })
+  .catch(function(err){
+    CONSOLE_WITH_TIME("Deletion of Canvas user with ID " + userID + " failed: ", err);
+  });
 };
 
 canvas.updateUserGrade = function(user, course, assignment, grade) {
@@ -114,6 +196,22 @@ canvas.updateUserGrade = function(user, course, assignment, grade) {
   }
 
   return request.put(updateOptions, callback);
+
+};
+
+canvas.getUserGrade = function(user, course, assignment) {
+  var grade;
+  options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + course + '/assignments/' + assignment + '/submissions/' + user;
+  
+  return request(options)
+  .then(function(response) {
+    response = JSON.parse(response);
+    grade = response.grade;
+    return grade;
+  })
+  .catch(function(err){
+    CONSOLE_WITH_TIME("Finding a grade for the user with ID " + userID + " for assignment " + assignment + " in course " + course + " in Canvas failed: ", err);
+  });
 
 };
 
@@ -202,7 +300,7 @@ const findWiWUserInCanvas = function(email) {
   var courseID;
   var name;
 
-  canvas.scrapeCanvasUsers(email)
+  return canvas.scrapeCanvasUsers(email)
   .then(function(users) {
     if (users.length === 0) throw 'That email was not found in Canvas.';
     userID = users[0].id;
