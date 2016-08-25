@@ -36,9 +36,8 @@ function getUsersToClean() {
       });
       // delete the user and all user's shifts 
       uidsToClean.forEach(function(id){
-        api.delete(`users/${id}?delete_shifts=true`)
-        .catch(function(error){
-          CONSOLE_WITH_TIME('Churned Users Deletion Failed, Error: ', error)
+        api.delete(`users/${id}?delete_shifts=true`, function(res){
+          if(res.error) CONSOLE_WITH_TIME(`CHURNED DELETION OF USER ${id} FAILED:`, res.error)
         });
       });
     });
