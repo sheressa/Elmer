@@ -81,7 +81,7 @@ describe('Time Off Requests', function() {
     var BatchPayload = timeOffRequests.createBatchPayload (shiftsResponse, requestId);
     var timeOffApprovalRequest = {
       "method": "put",
-      "url": "/2/requests/123456",
+      "url": "/requests/123456",
       "params": {
         "status": 2
       }
@@ -107,14 +107,14 @@ describe('Time Off Requests', function() {
     it('should create a shiftDeleteRequest for each shift that will be missed', function () {
       deleteRequests.forEach(function(req, idx) {
         assert.equal(req.method, "delete");
-        assert.equal(req.url, "/2/shifts/" + shiftsResponse.shifts[idx].id);
+        assert.equal(req.url, "/shifts/" + shiftsResponse.shifts[idx].id);
       });
     });
 
     it('should create new open shifts for all shifts deleted', function () {
       openShiftRequests.forEach(function(req, idx) {
         assert.equal(req.method, "post");
-        assert.equal(req.url, "/2/shifts");
+        assert.equal(req.url, "/shifts");
         assert.equal(req.params.start_time, shiftsResponse.shifts[idx].start_time);
         assert.equal(req.params.end_time, shiftsResponse.shifts[idx].end_time);
         assert.equal(req.params.notes, "SHIFT COVERAGE");

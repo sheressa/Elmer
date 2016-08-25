@@ -86,7 +86,7 @@ function createBatchPayload (response, requestId) {
     response.shifts.forEach(function(shift) {
       var shiftDeleteRequest = {
         'method': 'delete',
-        'url': '/2/shifts/' + shift.id,
+        'url': '/shifts/' + shift.id,
         'params': {},
       };
 
@@ -105,7 +105,7 @@ function createBatchPayload (response, requestId) {
 
       var newOpenShiftRequest = {
         'method': 'post',
-        'url': '/2/shifts',
+        'url': '/shifts',
         'params': params
       };
       batchPayload.push(newOpenShiftRequest);
@@ -119,7 +119,7 @@ function createTimeOffApproval (requestId) {
     // Status code `2` represents approved requests.
   var timeOffApprovalRequest = {
     'method': 'put',
-    'url': '/2/requests/' + requestId,
+    'url': '/requests/' + requestId,
     'params': {
       'status': 2
     }

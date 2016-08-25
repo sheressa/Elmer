@@ -112,7 +112,7 @@ function shiftNotification(users, usersToNotify) {
         user_data[CONFIG.WiWUserNotes.shiftNotification] = true;
         updateUserNotes.push({
           method: 'PUT',
-          url: '/2/users/' + user.id,
+          url: '/users/' + user.id,
           params: {notes: JSON.stringify(user_data)}
         });
 

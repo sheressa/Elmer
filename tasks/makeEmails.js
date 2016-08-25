@@ -79,7 +79,7 @@ function updateNotes(user, batchRequestArray) {
     CONSOLE_WITH_TIME('updating user with: ', note);
     updateRequest = {
       method: 'PUT',
-      url: '/2/users/' + user.id,
+      url: '/users/' + user.id,
       params: {
         notes: JSON.stringify(note)
       }

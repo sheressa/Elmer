@@ -25,7 +25,7 @@ module.exports.go = function () {
       update = colorize({}, e.start_time, (e.location_id === CONFIG.locationID.makeup_and_extra_shifts));
       var shiftDeleteRequest = {
         "method": "PUT",
-        "url": "/2/shifts/" + e.id,
+        "url": "/shifts/" + e.id,
         "params": update,
       };
       batchRequest.push(shiftDeleteRequest);

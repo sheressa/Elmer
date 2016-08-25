@@ -91,7 +91,7 @@ function makeBatchPayloadRequestsToMergeOpenShifts(arrayOfShiftsForSameTimeInt, 
 
         var shiftUpdateRequest = {
           'method': 'PUT',
-          'url': '/2/shifts/' + arrayOfShiftsForSameTimeInt[j].id,
+          'url': '/shifts/' + arrayOfShiftsForSameTimeInt[j].id,
           'params': update
         };
 
@@ -100,7 +100,7 @@ function makeBatchPayloadRequestsToMergeOpenShifts(arrayOfShiftsForSameTimeInt, 
       } else {
         var shiftDeleteRequest = {
           'method': 'delete',
-          'url': '/2/shifts/' + arrayOfShiftsForSameTimeInt[j].id,
+          'url': '/shifts/' + arrayOfShiftsForSameTimeInt[j].id,
           'params': {}
         };
         batchPayload.push(shiftDeleteRequest);

@@ -18,7 +18,7 @@ module.exports.go = function() {
 				if (shift.is_open && !shift.published) {
 					var shiftDeleteRequest = {
 						"method": "delete",
-						"url": "/2/shifts/" + shift.id,
+						"url": "/shifts/" + shift.id,
 						"params": {},
 					};
 					batchRequest.push(shiftDeleteRequest);

@@ -169,7 +169,7 @@ function createOpenShift (correctNumberOfShiftsToSet, targetTime, weeksFromNowTo
 
   const newOpenShiftRequest = {
     method: `post`,
-    url: `/2/shifts`,
+    url: `/shifts`,
     params: newOpenShiftParams
   };
 
@@ -180,7 +180,7 @@ function removeOpenShifts(shifts) {
   return shifts.map(function(shiftID) {
     const shiftDeleteRequest = {
       method: `delete`,
-      url: `/2/shifts/` + shiftID,
+      url: `/shifts/` + shiftID,
       params: {}
     };
     return shiftDeleteRequest;
