@@ -52,7 +52,7 @@ router.get('/platform/MIA2WeeksLastLogin', function (req, res) {
 });
 
 router.get('/MIA2WeeksWithoutTimeoff', function (req, res) {
-  helpers.getUsersFilterRequestedTimeOff()
+  helpers.filteredUsersToEmail()
   .then(helpers.convertJsonToCSV)
   .then(CSVString => {
     res.send(CSVString);
@@ -75,6 +75,9 @@ router.post('/email/MIA2WeeksWithoutTimeoff', function (req, res) {
     res.status(500).send('No users array included');
     // TODO enable this when email copy and filter criteria are complete
     // helpers.filteredUsersToEmail()
+    // .then(users => {
+    //   return helpers.filterUsersByLastLogin(user, 30)
+    // })
     // .then(send2WeeksMissedEmail)
     // // This might be an oversized response
     // .then(emailsSent => {

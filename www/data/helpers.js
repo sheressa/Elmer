@@ -113,16 +113,22 @@ function filteredUsersToEmail () {
       const doNotContactObj = res[1];
       return usersWithNoExcuses.filter(user => {
         // TODO determine how far back we want to go with these emails (30 is for draft)
-        return moment().diff(moment(user.last_login, 'MM/DD/YYYY'), 'days') < 30 &&
-          !doNotContactObj[user.email];
+          return !doNotContactObj[user.email];
       });
     });
 }
 
+function filterUsersByLastLogin (users, days) {
+  return users.filter(user => {
+    // TODO determine how far back we want to go with these emails (30 is for draft)
+    return moment().diff(moment(user.last_login, 'MM/DD/YYYY'), 'days') < days;
+  });
+}
+
 module.exports = {
   convertJsonToCSV, 
-  getUsersFilterRequestedTimeOff, 
   doNotContact, 
   compose2WeekEmailAndSend,
-  filteredUsersToEmail
+  filteredUsersToEmail,
+  filterUsersByLastLogin
 };
