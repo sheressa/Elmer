@@ -65,7 +65,7 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
               updatedShiftParams = returnColorizedShift(updatedShiftParams, shift.start_time);
               var reassignShiftToOpenAndRemoveNotesRequest = {
                 "method": 'PUT',
-                "url": "/2/shifts/" + shift.id,
+                "url": "/shifts/" + shift.id,
                 "params": updatedShiftParams
               };
               batchPayload.push(reassignShiftToOpenAndRemoveNotesRequest);
@@ -74,7 +74,7 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
             else {
               var shiftDeleteRequest = {
                   "method": "delete",
-                  "url": "/2/shifts/" + shift.id,
+                  "url": "/shifts/" + shift.id,
                   "params": {},
               };
               batchPayload.push(shiftDeleteRequest);
@@ -94,7 +94,7 @@ function deleteShiftsAndRedirect(req, res, whenIWorkAPI) {
           param = returnColorizedShift(params, shift.start_time, true);
           var openShiftRequest = {
             method : 'PUT',
-            url : '/2/shifts/' + shift.id,
+            url : '/shifts/' + shift.id,
             params : params
           };
           batchPayload.push(openShiftRequest);

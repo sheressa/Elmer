@@ -57,7 +57,7 @@ function retrieveShiftsAndOwnersWithinTimeInterval(req, res, whenIWorkAPI) {
           userShiftData[shift.user_id] = [shift];
           getUserEmailRequest = {
             "method": "GET",
-            "url": "/2/users/" + shift.user_id
+            "url": "/users/" + shift.user_id
           };
           batchPayload.push(getUserEmailRequest);
         }

@@ -19,10 +19,10 @@ describe('Notify More Shifts', function() {
     it('creates correct post object for users not yet notified', function (done) {
     
       var expectedBatchPosts = [ { method: 'PUT',
-        url: '/2/users/5674723',
+        url: '/users/5674723',
         params: { notes: '{"firstShiftNotification":true}' } },
       { method: 'PUT',
-        url: '/2/users/5674724',
+        url: '/users/5674724',
         params: { notes: '{"two_shift_notification":true,"original_owner":5674723,"parent_shift":277119256,"firstShiftNotification":true}' } } ];
       assert.deepEqual(batchPosts, expectedBatchPosts);
       done();

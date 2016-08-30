@@ -48,7 +48,7 @@ describe('recurShifts', function() {
 
     it('decrements previous and next week\'s open shifts by one', function (done) {
       var decrementResult = recurNewlyCreatedShifts.decrementPrevWeeksAndNextWeeksOpenShiftsByOne(testShift);
-      assert.equal(decrementResult[0].url, '/2/shifts/284948029');
+      assert.equal(decrementResult[0].url, '/shifts/284948029');
       done();
     });
 });

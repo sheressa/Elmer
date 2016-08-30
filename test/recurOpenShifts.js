@@ -42,7 +42,7 @@ describe('recurOpenShifts', function() {
     
     it('should increment future open shifts up or down', function () {
       assert.equal(result[0].params.instances, 6);
-      assert.deepEqual(result[4], { method: 'delete', url: '/2/shifts/284948029', params: {} });
+      assert.deepEqual(result[4], { method: 'delete', url: '/shifts/284948029', params: {} });
     });
 
   });

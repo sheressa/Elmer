@@ -84,7 +84,7 @@ function recurNewlyCreatedShifts() {
 
       shift.chain = {'week':'1','until':endDate};
       shift.acknowledged = 1;
-      var urlIDRoute = '/2/shifts/' + shift.id;
+      var urlIDRoute = '/shifts/' + shift.id;
       shift = {'method': 'put', 'url': urlIDRoute, 'params': shift};
 
       batchPostRequestBody.push(shift);
@@ -101,7 +101,7 @@ function recurNewlyCreatedShifts() {
       for (var i = 0; i < CONFIG.time_interval.years_to_recur_shift - 1; i++) {
         var newShift = {
           'method': 'post',
-          'url': '/2/shifts',
+          'url': '/shifts',
           'params': {
             'start_time': moment(workingShift.start_time, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
             'end_time': moment(workingShift.end_time, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
@@ -260,7 +260,7 @@ function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
         if (instances === 1) {
           var shiftDeleteRequest = {
             'method': 'delete',
-            'url': '/2/shifts/' + shift.id,
+            'url': '/shifts/' + shift.id,
             'params': {}
           };
           batchPayload.push(shiftDeleteRequest);
@@ -269,7 +269,7 @@ function decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift) {
           instances = instances - 1;
           var shiftUpdateRequest = {
             'method': 'PUT',
-            'url': '/2/shifts/' + shift.id,
+            'url': '/shifts/' + shift.id,
             'params': {instances: instances}
           };
           batchPayload.push(shiftUpdateRequest);
