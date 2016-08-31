@@ -45,6 +45,12 @@ KEYS.platformUserCreationURL = 'TODO';
 
 KEYS.dataRoute = '';
 
+KEYS.gSheets = {
+  installed: {},
+  token: {},
+  sheetIds: {}
+};
+
 //development test keys
 
 KEYS.test = {};
