@@ -28,14 +28,13 @@ function notifyMoreShifts() {
 
     if (objectHasOwnKeys(usersTally)) {
       var filteredUsers = removeOlderUsers(response.users);
+
       var shiftNotificationResult = shiftNotification(filteredUsers, usersTally);
       // Assigning this result for testing
       result = shiftNotificationResult;
 
       if (objectHasOwnKeys(shiftNotificationResult.usersBeingNotified)) {
-
         batchPost(shiftNotificationResult.updateUserNotes);
-
         retrieveAndSortSupervisorsByShift(wIWSupervisorsAPI, CONFIG.locationID.supervisor_on_platform, CONFIG.wiwAccountID.supervisors)
         .then(function(shiftsToSup){
           mandrillEachUser(shiftNotificationResult.usersBeingNotified, shiftsToSup);
@@ -81,15 +80,14 @@ function removeOlderUsers (users) {
 
 function parseUserNotes(notes) {
   var user_data = notes;
-  if (typeof user_data !== 'string') {
-    user_data = '{}';
-  }
-  else {
+  if (typeof user_data !== 'string' || user_data === '') {
+    user_data = {};
+  } else {
     try {
       user_data = JSON.parse(user_data);
     }
     catch(e) {
-      CONSOLE_WITH_TIME("Error parsing JSON in notifyMoreShifts: ", e, "\nNotes: ", notes);
+      CONSOLE_WITH_TIME(`Error parsing JSON in notifyMoreShifts: `, e, `\nNotes: `, notes);
       user_data = {};
     }
   }
@@ -101,6 +99,7 @@ function shiftNotification(users, usersToNotify) {
   var usersBeingNotified = {};
   var updateUserNotes = [];
   var user_data;
+  var retryUser;
 
   users.forEach(function(user){
 
@@ -125,13 +124,20 @@ function shiftNotification(users, usersToNotify) {
           shifts: usersToNotify[user.id]
         };
 
-        updateCanvas.findWiWUserInCanvas(email);
+        updateCanvas.findWiWUserInCanvas(email)
+        .then(function(response) {
+          retryUser = response;
+          if (retryUser) {
+            wIWUserAPI.update('users/' + user.id, {'notes':`{"${CONFIG.WiWUserNotes.shiftNotification}":undefined}`}, function(){});
+          }
+        });
+
       }
     }
-
   });
 
   return {updateUserNotes: updateUserNotes, usersBeingNotified: usersBeingNotified};
+
 }
 
 function batchPost(updateUserNotes) {
@@ -167,8 +173,9 @@ function mandrillEachUser(userWithAllInfo, shiftToSup) {
     mandrill_client.messages.send({message: message}, CONSOLE_WITH_TIME);
   }
 
-  // returned for testing;
+  // returned for testing
   return results;
+
 }
 
 module.exports = {
