@@ -18,7 +18,7 @@ function extractEmailAndFormatSubmission (formResponse) {
   let qWithBolding = '';
 
   const pairedQtoA = formResponse.definition.fields
-                      .sort((a,b) => a.id-b.id)
+                      .sort((a,b) => a.title.localeCompare(b.title))
                       .map(formatHTML);
 
   function formatHTML (question, idx) {
