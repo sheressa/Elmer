@@ -8,8 +8,13 @@ function extractEmailAndFormatSubmission (formResponse) {
     if (answer.type === 'email') emailWithSubmission.email = answer.email;
 
     if (answer.type === 'boolean') {
-      if(answer[answer.type]) answers[answer.field.id] = 'Yes';
-      else answers[answer.field.id] = 'No';
+      answers[answer.field.id] = answer[answer.type] ? 'Yes' : 'No';
+    } else if (answer.type === 'choice') {
+      answers[answer.field.id] = answer[answer.type].label;
+    } else if (answer.type === 'choices') {
+      answers[answer.field.id] = answer[answer.type].labels.join(', ');
+    } else if (typeof answer[answer.type] === 'object') {
+      answers[answer.field.id] = JSON.stringify(answer[answer.type]);
     } else {
       answers[answer.field.id] = answer[answer.type];
     }
