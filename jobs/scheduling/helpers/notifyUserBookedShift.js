@@ -5,9 +5,10 @@ const moment = require('moment');
 const retrieveAndSortSupervisorsByShift = require('./sortUsersByShift');
 const composeEmail = require(CONFIG.root_dir + '/email_templates/composeNotifyBookedShift');
 const mandrill = require('mandrill-api/mandrill');
-const mandrill_client = new mandrill.Mandrill(KEYS.mandrill.api_key);
+const mandrillClient = new mandrill.Mandrill(KEYS.mandrill.api_key);
 
 function notifyUserBookedShift (shifts, users) {
+  if (!shifts.length) return;
   var userIdToInfo = filterUsersToObject(users);
   retrieveAndSortSupervisorsByShift(wIWSupervisorsAPI, CONFIG.locationID.supervisor_on_platform, CONFIG.wiwAccountID.supervisors)
   .then(function(shiftsToSup){
@@ -60,7 +61,7 @@ function mandrillEachUser (shifts, userIdToInfo, shiftsToSup){
       }
     };
 
-    mandrill_client.messages.send({message: message}, CONSOLE_WITH_TIME);
+    mandrillClient.messages.send({message: message}, CONSOLE_WITH_TIME);
   });
 
   // results are returned for testing.
