@@ -62,10 +62,10 @@ function getUsersFilterRequestedTimeOff () {
       const email = /canonicalEmail/.test(user.notes) ? 
         JSON.parse(user.notes).canonicalEmail : 
         user.email;
-      usersWhoRequestTimeOff[email] = 1;
+      usersWhoRequestTimeOff[email.toLowerCase()] = 1;
     }
     return responses[1].filter(user => {
-      return !usersWhoRequestTimeOff[user.email];
+      return !usersWhoRequestTimeOff[user.email.toLowerCase()];
     });
   });
 }
@@ -75,7 +75,7 @@ function doNotContact () {
   .then(res => {
     const doNotContactObject = {};
     res.values.forEach(row => {
-      doNotContactObject[row[0]] = 'NoContact';
+      doNotContactObject[row[0].toLowerCase()] = 'NoContact';
     });
     return doNotContactObject;
   })
@@ -112,8 +112,7 @@ function filteredUsersToEmail () {
       const usersWithNoExcuses = res[0];
       const doNotContactObj = res[1];
       return usersWithNoExcuses.filter(user => {
-        // TODO determine how far back we want to go with these emails (30 is for draft)
-          return !doNotContactObj[user.email];
+          return !doNotContactObj[user.email.toLowerCase()];
       });
     });
 }
