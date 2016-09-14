@@ -1,11 +1,13 @@
 'use strict';
 /**
-	Some churned users try to log bak into WiW directly rather than CTL's single sign on. That bypasses all of our proper reactivation scripts and creates a new pending user object. We, however, prefer to reactivate deleted users rather than create redundant new profiles.
+	Some churned users try to log back into WiW directly rather than CTL's single sign on. That bypasses all of our proper reactivation scripts and creates a new pending user object. We, however, prefer to reactivate deleted users rather than create redundant new profiles.
+
+	This job gets a list of pending users and checks WiW's all deleted and active users for matches. If a pending user matches a deleted user, we reactivate the deleted user and reject the pending user. If a pending user matches an active user, we delete the pending user.
 **/
 const api = CONFIG.WhenIWork;
 const CronJob = require('cron').CronJob;
 
-// new CronJob(CONFIG.time_interval.pending_users, go, null, true);
+new CronJob(CONFIG.time_interval.pending_users, go, null, true);
 go();
 // get this party started
 function go(){
@@ -53,13 +55,13 @@ function getDeletedUsers(pending){
 	});
 }
 
-// reactivating a deleted user rather than approving a reduntant pending user
+// reactivating a deleted user rather than approving a redundant pending user
 function reactivate(list){
   return new Promise(function(resolve, reject){
   	list.forEach(function(user){
   		CONSOLE_WITH_TIME('Reactivating user', Object.keys(user)[0]);
 	    api.update(`users/${user.id}`, {reactivate:true}, function(res){
-	      if (res.message) reject(`User reactivation failed: ${res.message}`);
+	      if (res.message) reject(`Reactivation for user ${user.id} failed: ${res.message}`);
 	      else resolve(res);
 	    });
   	});
