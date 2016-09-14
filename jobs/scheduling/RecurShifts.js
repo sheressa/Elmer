@@ -85,7 +85,7 @@ function recurNewlyCreatedShifts() {
 
       var workingShift = shift.params;
       /**
-          Because the WhyIWork API doesn't allow us to create a recurring chain
+          Because the WhenIWork API doesn't allow us to create a recurring chain
           shift with a duration longer than a year, we need to create X number of chains
           with X being the number of years we want the shift to recur.
           In order to associate all the shifts in all the chains together (i.e., if we wanted to delete
@@ -101,7 +101,7 @@ function recurNewlyCreatedShifts() {
             'end_time': moment(workingShift.end_time, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
             'notes': workingShift.notes,
             'acknowledged': workingShift.acknowledged,
-            'chain': {'week': '1', 'until': moment(workingShift.chain.until, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format('L')},
+            'chain': {'week': '1', 'until': moment(new Date(workingShift.chain.until)).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format('L')},
             'location_id': workingShift.location_id,
             'user_id': workingShift.user_id
           }
