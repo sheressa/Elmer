@@ -2,6 +2,7 @@
 const CronJob = require('cron').CronJob;
 const internalRequest = require('request');
 const fetch = require('node-fetch');
+const KEYS = require('./keys.js');
 // var SLACK_CHANNEL = '#melted';
 // new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
 //     pollCanvasForGraduatedUsersThenCreatePlatformAccount();
@@ -19,53 +20,64 @@ function go(){
 function getStudentsFromCohort(){
 	return new Promise(function(resolve, reject){
 		request(`accounts/${KEYS.canvas.accountID}/courses`, 'GET')
-  .then(function (courses) {
-    var previous;
-    var cohorts = {};
-    courses.forEach(function (course) {
-    	if (course.workflow_state!='available') return; 
-			var courseNameStringNumber = parseInt(course.name.split(' ')[1]);
-			if(!cohorts[courseNameStringNumber]){
-				cohorts[courseNameStringNumber] = [];
-			}
-			if(previous && previous === courseNameStringNumber){
-				cohorts[courseNameStringNumber].push(course.id);
-			}
-			previous = courseNameStringNumber;
-		});
-		resolve(cohorts);
+		  	.then(function (courses) {
+	    		var previous;
+		    	var cohorts = {};
+		    	courses.forEach(function (course) {
+					if (course.workflow_state!='available') return; 
+					var cohortNumber = course.name.trim().split(' ')[1];
+					if(isNaN(cohortNumber)) return;
+					if(!cohorts[cohortNumber]){
+						cohorts[cohortNumber] = [];
+					}
+					if(previous && previous === cohortNumber){
+						cohorts[cohortNumber].push(course.id);
+					}
+					previous = cohortNumber;
+				});
+				resolve(cohorts);
+			});
 	});
-});
 }
 
 function getEnrollmentsFromCohort(cohorts){
 	return new Promise(function(resolve, reject){
+		//iterate through cohorts object and create object for enrollment in each class
+		var cohortEnrollments = Object.keys(cohorts).reduce(function(prev,curr){
+			prev[curr] = {};
+			prev[curr]['enrollment'] = null;
+			return prev;
+		}, {});
+//Not working right because of Promise chain stuff. Rewrite 'enrollmentLengthAPICall' 
+// and for loop using: http://stackoverflow.com/questions/24660096/correct-way-to-write-loops-for-promise
 
-		var keys = Object.keys(cohorts);
-		var students = 0;
-		var cohortData = {};
-		keys.forEach(function(key){
-			cohortData.key = {ids: };
-			cohorts[key].forEach(function(course){
-				// make enrollement call
-				// call length on response 
-				// add it to students
-				request(`accounts/${KEYS.canvas.accountID}/
-					enrollments/${course}`)
+		//API call to get enrollment for each course (info for users)
+		function enrollmentLengthAPICall(courseNum){
+			return request(`courses/${courseNum}/enrollments`)
 					.then(function(enrollment){
-						var len = enrollment.length;
+						console.log('Enrollment length: ', enrollment.length);
+						return enrollment.length;
+					});
+		}
 
-						students += len;
-					})
-			})
-			// array acc
-			// students=0;
-		})
-		
+		//for each cohort, call API for enrollment and tally in 'courses' object
+		for (var key in cohorts){
+			if(!cohorts.hasOwnProperty(key)){
+				continue;
+			}
+			var students = 0;
+			for(var courseNumIter = 0; courseNumIter < cohorts[key].length; courseNumIter++){
+				students += enrollmentLengthAPICall(cohorts[key][courseNumIter]);
+
+			}
+			cohortEnrollments[key].enrollment = students;
+		}
+		console.log(cohortEnrollments);
+		resolve(cohortEnrollments);
 	});
 }
 
-
+go();
 
 
 
