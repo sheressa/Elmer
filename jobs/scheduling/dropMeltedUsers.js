@@ -146,8 +146,8 @@ function meltUsers() {
       */
       .then(function(response) {
         grade = response;
-        if (numberOfMelts >= 1 && grade !== '0') {
-          let mostRecentEnrollment = findMostRecent(userEnrollments);
+        let mostRecentEnrollment = findMostRecent(userEnrollments);
+        if (numberOfMelts >= 1 && grade !== '0' && mostRecentEnrollment.course_id >= 100) {
           //have to reactivate user to grade them, then deactivate; need to save enrollment type
           let enrollmentStatus = userEnrollments[userEnrollments.length-1].enrollment_state;
           updateCanvas.canvas.activateOrDeactivateEnrollment(userEnrollments[userEnrollments.length-1].course_id, userEnrollments[userEnrollments.length-1].id, 'reactivate', user.id)
