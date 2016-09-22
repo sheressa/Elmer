@@ -159,25 +159,26 @@ function meltUsers() {
             updateCanvas.canvas.activateOrDeactivateEnrollment(userEnrollments[userEnrollments.length-1].course_id, userEnrollments[userEnrollments.length-1].id, enrollmentStatus);
           })
           .catch(function(error) {
-            CONSOLE_WITH_TIME('Error in the melt process: ', error);
+            CONSOLE_WITH_TIME('Error in the melt process for user ' + user.id + 'at line 162 in the update grade code: ', error);
           });
           deleteWiWUserAndShifts(mostRecentEnrollment.user);
           emailMeltedUser(mostRecentEnrollment.user, numberOfMelts, mostRecentEnrollment.enrollment_state, mostRecentEnrollment.sis_course_id);
           deferOrBlockInCTLOnline(mostRecentEnrollment.user.login_id);
         }
-
+      })
+      .then(function() {
         if (numberOfMelts >= 2) {
           //deletes the user from Canvas. This must be done LAST because otherwise we lose the Canvas info we need to run the other functions.
           updateCanvas.canvas.deleteCanvasUser(user.id);
         }
       })
       .catch(function(error) {
-        CONSOLE_WITH_TIME('Error in the melt process: ', error);
+        CONSOLE_WITH_TIME('Error in the melt process for user ' + user.id + 'at line 175 in the users.forEach code: ', error);
       });
     });
   })
   .catch(function(error) {
-    CONSOLE_WITH_TIME('Error in the melt process: ', error);
+    CONSOLE_WITH_TIME('Error in the melt process for user ' + user.id + 'at line 180 in the entire melt code: ', error);
   });
 }
 
