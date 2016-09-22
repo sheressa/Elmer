@@ -14,8 +14,10 @@ function masterConsoleTest(res){
 function go(){
 	getStudentsFromCohort()
 	.then(getEnrollmentsFromCohort)
-	.then(getUserEmailsForEachCohort)
+	.then(getTotalAcceptedIntoTraining)
 	.then(masterConsoleTest)
+	//.then(getUserEmailsForEachCohort)
+	//.then(infoFromEmail)
 	.catch(function(err){
 		console.error('Error: ', err)
 	})
@@ -23,7 +25,7 @@ function go(){
 
 function getStudentsFromCohort(){
 	return new Promise(function(resolve, reject){
-		request(`accounts/${KEYS.canvas.accountID}/courses?per_page=1000&enrollment_type=student`, 'GET')
+		request(`accounts/${KEYS.canvas.accountID}/courses?per_page=1000&enrollment_type[]=student`, 'Canvas', 'GET')
 		  	.then(function (courses) {
 	    		var previous;
 		    	var cohorts = {};
@@ -60,11 +62,11 @@ function getEnrollmentsFromCohort(cohorts){
 		//iterate through cohorts object and create object for enrollment in each class
 		var cohortEnrollments = Object.keys(cohorts).reduce(function(prev,curr){
 			prev[curr] = {};
-			prev[curr]['enrollment'] = null;
+			prev[curr]['enrolled_into_canvas'] = null;
 			return prev;
 		}, {});
 		function enrollmentLengthAPICall(courseNum){
-			return request(`courses/${courseNum}/enrollments?per_page=1000&enrollment_type=student`, 'GET')
+			return request(`courses/${courseNum}/enrollments?per_page=1000&enrollment_type[]=student&state[]=active&state[]=completed&state[]=inactive`, 'Canvas', 'GET')
 					.then(function(enrollment){
 						return enrollment.length;
 					})
@@ -87,12 +89,11 @@ function getEnrollmentsFromCohort(cohorts){
 			sumTallyPromiseArray.push(sumTallyPromise);
 		}
 		//wait for class enrollment API calls and enrollment tallies, then put into output object
-		var promiseToWaitForEnrollmentLengthToTally = Promise.all(sumTallyPromiseArray);
-		promiseToWaitForEnrollmentLengthToTally
+		Promise.all(sumTallyPromiseArray)
 			.then(function(res){
 				Object.keys(cohortEnrollments).forEach(function(key){
 					cohortEnrollments[key].then(function(val){
-						cohorts[key]['enrollment'] = val;
+						cohorts[key]['enrolled_into_canvas'] = val;
 					});
 				});
 				resolve(cohorts);
@@ -101,54 +102,113 @@ function getEnrollmentsFromCohort(cohorts){
 	});
 }
 
-function getUserEmailsForEachCohort(cohorts){
+function getTotalAcceptedIntoTraining(cohorts){
 	return new Promise(function(resolve, reject){
-		var cohortKeys = Object.keys(cohorts);
-		var cohortEmails = {};
-		var cohortPromises = {};
-		var allPromises =[];
-		cohortKeys.forEach(function(key){
-			var classes = cohorts[key].class_ids;
-			cohorts[key].emails = [];
-			cohortPromises[key] = classes.map(function(class_id){
-					return request(`courses/${class_id}/users?per_page=1000&enrollment_type=student`, 'GET')
-						.then(function(users){
-							return users.map(function(user){
-								return user.login_id;
-							});
-						});
-			});
-			allPromises.push(cohortPromises[key]);
-		});
-		allPromises = allPromises.reduce(function(prev,curr){
-			return prev.concat(curr);
-		});
-		var finalPromiseCheck = Promise.all(allPromises);
-		finalPromiseCheck
+		var cohortAcceptance = Object.keys(cohorts).reduce(function(prev,curr){
+			prev[curr] = {};
+			prev[curr]['accepted_into_training'] = null;
+			return prev;
+		}, {});
+	
+		function acceptanceAPICall(cohortNum){
+			//CTL online only returns 20 users per request, need parameter to return more
+			return request(`parameters[field_cohort]=${cohortNum}`, 'CTL', 'GET')
+					.then(function(acceptance){
+						// if(cohortNum == 19){
+						// 	console.log(acceptance);
+						// }
+						return acceptance.length;
+					})
+					.catch(errorHandler);
+		}
+		var tallyPromiseArray = [];	
+		for (var key in cohorts){
+			if(!cohorts.hasOwnProperty(key)){
+				continue;
+			}
+			cohortAcceptance[key] = acceptanceAPICall(key)
+			tallyPromiseArray.push(cohortAcceptance[key]);
+		}
+		//wait for class enrollment API calls and enrollment tallies, then put into output object
+		Promise.all(tallyPromiseArray)
 			.then(function(res){
-				var promiseCheck = [];
-				cohortKeys.forEach(function(key){
-					cohortPromises[key].forEach(function(cohortP){
-						var emailResolvePromise = cohortP.then(function(userEmails){
-							cohorts[key].emails.push(userEmails);
-						});
-						promiseCheck.push(emailResolvePromise);
+				Object.keys(cohortAcceptance).forEach(function(key){
+					cohortAcceptance[key].then(function(val){
+						cohorts[key]['accepted_into_training'] = val;
 					});
 				});
-
-				Promise.all(promiseCheck)
-					.then(function(res){
-						cohortKeys.forEach(function(key){
-							cohorts[key].emails = cohorts[key].emails.reduce(function(prev,curr){
-								return prev.concat(curr);
-							});
-						});
-						resolve(cohorts);
-					});
-			});
+				resolve(cohorts);
+			})
+			.catch(errorHandler);
 	});
 }
 
+function getTotalGraduatesForEachCohort(cohorts){
+
+}
+
+function getTotalUsersWhoTookFirstShift(cohorts){
+
+}
+
+// function getUserEmailsForEachCohort(cohorts){
+// 	return new Promise(function(resolve, reject){
+// 		var cohortKeys = Object.keys(cohorts);
+// 		var cohortEmails = {};
+// 		var cohortPromises = {};
+// 		var allPromises =[];
+// 		cohortKeys.forEach(function(key){
+// 			var classes = cohorts[key].class_ids;
+// 			cohorts[key].emails = [];
+// 			cohortPromises[key] = classes.map(function(class_id){
+// 					return request(`courses/${class_id}/users?per_page=1000&enrollment_type[]=student`, 'GET')
+// 						.then(function(users){
+// 							return users.map(function(user){
+// 								return user.login_id;
+// 							});
+// 						});
+// 			});
+// 			allPromises.push(cohortPromises[key]);
+// 		});
+// 		allPromises = allPromises.reduce(function(prev,curr){
+// 			return prev.concat(curr);
+// 		});
+// 		var finalPromiseCheck = Promise.all(allPromises);
+// 		finalPromiseCheck
+// 			.then(function(res){
+// 				var promiseCheck = [];
+// 				cohortKeys.forEach(function(key){
+// 					cohortPromises[key].forEach(function(cohortP){
+// 						var emailResolvePromise = cohortP.then(function(userEmails){
+// 							cohorts[key].emails.push(userEmails);
+// 						});
+// 						promiseCheck.push(emailResolvePromise);
+// 					});
+// 				});
+
+// 				Promise.all(promiseCheck)
+// 					.then(function(res){
+// 						cohortKeys.forEach(function(key){
+// 							cohorts[key].emails = cohorts[key].emails.reduce(function(prev,curr){
+// 								return prev.concat(curr);
+// 							});
+// 						});
+// 						resolve(cohorts);
+// 					});
+// 			});
+// 	});
+// }
+
+// function infoFromEmail(cohorts){
+// 	return new Promise(function(resolve, reject){
+// 		var cohortEmails = {};
+// 		var cohortKeys = Object.keys(cohorts);
+// 		cohortKeys.forEach(function(key){
+// 			cohortEmails[key] = cohorts[key].emails;
+// 		});
+// 		console.log(cohortEmails);
+// 	});
+// }
 // function testFunction(){
 // 	return new Promise(function(resolve, reject){
 // 		request('courses/75/users?per_page=1000', 'GET')
@@ -184,25 +244,33 @@ function convertIds(text) {
   });
 }
 // sets up basic api call functionality
-function request(url, method, params) {
+function request(url, API, method, params) {
   if (!params) {
     params = [];
   }
   //params.push('per_page=1000');
-
-  url = 'https://crisistextline.instructure.com/api/v1/' + url;
-
+  if(API === 'Canvas'){
+  	url = 'https://crisistextline.instructure.com/api/v1/' + url;
+  } else if (API === 'CTL'){
+  	url = `https://online.crisistextline.org/api/v1/entity_user?api-key=${KEYS.CTLOnline.api_key}&` + url;
+  }
+  
   if (method == 'GET' && params && params.length > 0) {
-    url = url + '?' + params.join('&');
+  	if(API === 'Canvas'){
+  		url = url + '?';
+  	}
+    url = url + params.join('&');
+  }
+  var fetchData = {
+  	method: method,
+  	body: params
   }
 
-  return fetch(url, {
-    headers: {
-      'Authorization': KEYS.canvas.api_key,
-    },
-    method: method,
-    body: params
-  })
+  if(API == 'Canvas'){
+  	fetchData['headers'] = {'Authorization': KEYS.canvas.api_key};
+  }
+  // console.log("Request url: ", url);
+  return fetch(url, fetchData)
   .then(function (res) { return res.text(); })
   .then(convertIds);
 }
