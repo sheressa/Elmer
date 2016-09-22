@@ -15,6 +15,7 @@ function go(){
 	getStudentsFromCohort()
 	.then(getEnrollmentsFromCohort)
 	.then(getTotalAcceptedIntoTraining)
+	.then(getTotalGraduatesForEachCohort)
 	.then(masterConsoleTest)
 	//.then(getUserEmailsForEachCohort)
 	//.then(infoFromEmail)
@@ -112,7 +113,7 @@ function getTotalAcceptedIntoTraining(cohorts){
 	
 		function acceptanceAPICall(cohortNum){
 			//CTL online only returns 20 users per request, need parameter to return more
-			return request(`parameters[field_cohort]=${cohortNum}`, 'CTL', 'GET')
+			return request(`parameters[field_cohort]=${cohortNum}&per_page=1000`, 'CTL', 'GET')
 					.then(function(acceptance){
 						// if(cohortNum == 19){
 						// 	console.log(acceptance);
@@ -144,14 +145,56 @@ function getTotalAcceptedIntoTraining(cohorts){
 }
 
 function getTotalGraduatesForEachCohort(cohorts){
+	return new Promise(function(resolve,reject){
+		var cohortKeys = Object.keys(cohorts);
+		var gradClassIDs = cohortKeys.reduce(function(prev,curr){
+			prev[curr] = {};
+			prev[curr]['graduate_checkpoint_ids'] = [];
+			prev[curr]['promises'] = null;
+			prev[curr]['first_shift_checkpoint_ids'] = [];
+		},{});
 
+		function gradCheckPointIDAPICall(classID){
+			return request(`courses/${classID}/assignments?per_page=1000`, 'Canvas', 'GET')
+				.then(function(assignments){
+					var gradAssignment = assignments.filter(function(assignment){
+						return assignment.name.trim() === "Platform Ready!";
+					})[0];
+					var firstShiftAssignment = assignments.filter(function(assignment){
+						return assignment.name.trim() === "Checkpoint #17: Attend First Shift";
+					})[0];
+					return { 
+								gradID: gradAssignment.id,
+								firstShiftID: firstShiftAssignment.id;
+							};
+				})
+				.catch(errorHandler);
+		}
+		idPromiseCollector = [];
+		cohortKeys.forEach(function(key){
+			var classIDs = cohorts[key].class_ids;
+			var apiCallPromises = classIDs.map(gradCheckPointIDAPICall);
+			idPromiseCollector.push(apiCallPromises);
+			gradClassIDs[key].promises = apiCallPromises;
+		});
+		Promise.all(idPromiseCollector.reduce(function(prev,curr){
+			return prev.concat(curr);
+		})
+			.then(function(res){
+				//push assignment ids from 'gradClassIDs[cohortnum].promises' to 'gradClassIDs[cohortnum].graduate_checkpoint_ids' and 'gradClassIDs[cohortnum].first_shift_checkpoint_ids'
+			});
+			//after that, take all these id's and check to see if users graduated and started their first shift
+
+		console.log(cohorts[19].class_ids);
+		return cohorts;
+	});
 }
 
 function getTotalUsersWhoTookFirstShift(cohorts){
 
 }
 
-// function getUserEmailsForEachCohort(cohorts){
+// function getUserIDsForEachCohort(cohorts){
 // 	return new Promise(function(resolve, reject){
 // 		var cohortKeys = Object.keys(cohorts);
 // 		var cohortEmails = {};
@@ -270,6 +313,7 @@ function request(url, API, method, params) {
   	fetchData['headers'] = {'Authorization': KEYS.canvas.api_key};
   }
   // console.log("Request url: ", url);
+
   return fetch(url, fetchData)
   .then(function (res) { return res.text(); })
   .then(convertIds);
