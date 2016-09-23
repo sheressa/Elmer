@@ -147,7 +147,7 @@ function meltUsers() {
       .then(function(response) {
         grade = response;
         let mostRecentEnrollment = findMostRecent(userEnrollments);
-        if (numberOfMelts === 1 && grade !== '0' && mostRecentEnrollment.course_id >= 100) {
+        if (numberOfMelts === 1 && grade !== '0' && mostRecentEnrollment.course_id >= CONFIG.cohort23AndLater) {
           //have to reactivate user to grade them, then deactivate; need to save enrollment type
           let enrollmentStatus = userEnrollments[userEnrollments.length-1].enrollment_state;
           updateCanvas.canvas.activateOrDeactivateEnrollment(userEnrollments[userEnrollments.length-1].course_id, userEnrollments[userEnrollments.length-1].id, 'reactivate', user.id)
@@ -165,7 +165,7 @@ function meltUsers() {
           emailMeltedUser(mostRecentEnrollment.user, numberOfMelts, mostRecentEnrollment.enrollment_state, mostRecentEnrollment.sis_course_id);
           deferOrBlockInCTLOnline(mostRecentEnrollment.user.login_id);
         }
-        else if (numberOfMelts === 2 && grade !== '0' && mostRecentEnrollment.course_id >= 100) {
+        else if (numberOfMelts === 2 && grade !== '0' && mostRecentEnrollment.course_id >= CONFIG.cohort23AndLater) {
           //deletes the user from Canvas. This must be done LAST because otherwise we lose the Canvas info we need to run the other functions.
           emailMeltedUser(mostRecentEnrollment.user, numberOfMelts, mostRecentEnrollment.enrollment_state, mostRecentEnrollment.sis_course_id);
           deferOrBlockInCTLOnline(mostRecentEnrollment.user.login_id);
