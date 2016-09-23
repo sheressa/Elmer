@@ -15,7 +15,7 @@ function go(){
 	getStudentsFromCohort()
 	.then(getEnrollmentsFromCohort)
 	.then(getTotalAcceptedIntoTraining)
-	.then(getTotalGraduatesForEachCohort)
+	.then(getGradAndFirstShiftCheckpointIDsForEachCohort)
 	.then(masterConsoleTest)
 	//.then(getUserEmailsForEachCohort)
 	//.then(infoFromEmail)
@@ -144,7 +144,7 @@ function getTotalAcceptedIntoTraining(cohorts){
 	});
 }
 
-function getTotalGraduatesForEachCohort(cohorts){
+function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 	return new Promise(function(resolve,reject){
 		var cohortKeys = Object.keys(cohorts);
 		var gradClassIDs = cohortKeys.reduce(function(prev,curr){
@@ -152,41 +152,66 @@ function getTotalGraduatesForEachCohort(cohorts){
 			prev[curr]['graduate_checkpoint_ids'] = [];
 			prev[curr]['promises'] = null;
 			prev[curr]['first_shift_checkpoint_ids'] = [];
+			return prev;
 		},{});
-
 		function gradCheckPointIDAPICall(classID){
 			return request(`courses/${classID}/assignments?per_page=1000`, 'Canvas', 'GET')
 				.then(function(assignments){
-					var gradAssignment = assignments.filter(function(assignment){
-						return assignment.name.trim() === "Platform Ready!";
-					})[0];
-					var firstShiftAssignment = assignments.filter(function(assignment){
-						return assignment.name.trim() === "Checkpoint #17: Attend First Shift";
-					})[0];
+					
+					var gradAssignmentID = assignments.filter(function(assignment){
+						let regex = /platform ready/;
+						return assignment.name.toLowerCase().match(regex);
+					})[0].id;
+					var firstShiftAssignmentID = assignments.filter(function(assignment){
+						let regex1 = /attend first shift/;
+						let regex2 = /attend shifts 1\+2/;
+						return assignment.name.toLowerCase().match(regex1) || assignment.name.toLowerCase().match(regex2);
+					})[0].id;
+					
+		
 					return { 
-								gradID: gradAssignment.id,
-								firstShiftID: firstShiftAssignment.id;
+								gradID: gradAssignmentID,
+								firstShiftID: firstShiftAssignmentID
 							};
 				})
 				.catch(errorHandler);
 		}
-		idPromiseCollector = [];
+		var idPromiseCollector = [];
 		cohortKeys.forEach(function(key){
 			var classIDs = cohorts[key].class_ids;
 			var apiCallPromises = classIDs.map(gradCheckPointIDAPICall);
 			idPromiseCollector.push(apiCallPromises);
 			gradClassIDs[key].promises = apiCallPromises;
 		});
+
 		Promise.all(idPromiseCollector.reduce(function(prev,curr){
 			return prev.concat(curr);
-		})
+		}))
 			.then(function(res){
 				//push assignment ids from 'gradClassIDs[cohortnum].promises' to 'gradClassIDs[cohortnum].graduate_checkpoint_ids' and 'gradClassIDs[cohortnum].first_shift_checkpoint_ids'
-			});
-			//after that, take all these id's and check to see if users graduated and started their first shift
+				var collectorForClassIDPromisesInEachCohort = [];
+				cohortKeys.forEach(function(key){
+					gradClassIDs[key].promises.forEach(function(prom){
+						var promiseToResolveCourseCheckpointIDs = prom.then(function(checkpointIDs){
+							gradClassIDs[key].graduate_checkpoint_ids.push(checkpointIDs.gradID);
+							gradClassIDs[key].first_shift_checkpoint_ids.push(checkpointIDs.firstShiftID);
+						
+						});
+						collectorForClassIDPromisesInEachCohort.push(promiseToResolveCourseCheckpointIDs);
+					});
+				});
+				console.log(collectorForClassIDPromisesInEachCohort);
 
-		console.log(cohorts[19].class_ids);
-		return cohorts;
+				Promise.all(collectorForClassIDPromisesInEachCohort)
+					.then(function(res){
+						cohortKeys.forEach(function(key){
+							cohorts[key].graduate_checkpoint_ids = gradClassIDs[key].graduate_checkpoint_ids;
+							cohorts[key].first_shift_checkpoint_ids = gradClassIDs[key].first_shift_checkpoint_ids;
+						});
+						resolve(cohorts);
+					}).catch(errorHandler);
+			}).catch(errorHandler);
+			//after that, take all these id's and check to see if users graduated and started their first shift
 	});
 }
 
