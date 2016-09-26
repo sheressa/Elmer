@@ -16,9 +16,8 @@ function go(){
 	.then(getEnrollmentsFromCohort)
 	.then(getTotalAcceptedIntoTraining)
 	.then(getGradAndFirstShiftCheckpointIDsForEachCohort)
+	.then(getTotalUsersWhoTookFirstShiftAndGraduated)
 	.then(masterConsoleTest)
-	//.then(getUserEmailsForEachCohort)
-	//.then(infoFromEmail)
 	.catch(function(err){
 		console.error('Error: ', err)
 	})
@@ -26,6 +25,8 @@ function go(){
 
 function getStudentsFromCohort(){
 	return new Promise(function(resolve, reject){
+		console.log('Getting cohorts from Canvas');
+		var start = Date.now();
 		request(`accounts/${KEYS.canvas.accountID}/courses?per_page=1000&enrollment_type[]=student`, 'Canvas', 'GET')
 		  	.then(function (courses) {
 	    		var previous;
@@ -41,16 +42,16 @@ function getStudentsFromCohort(){
 					if(!cohorts[cohortNumber]){
 						cohorts[cohortNumber] = {};
 						cohorts[cohortNumber].class_ids = [];
-						cohorts[cohortNumber].trainers = [];
+						// cohorts[cohortNumber].trainers = [];
 					}
 					cohorts[cohortNumber].class_ids.push(course.id);
-					//***pulls trainer name from course name. Should it pull trainer user id? 
-					//temporary, each cohort has multiple trainers for each class. Need to change this
-					var trainer = nameArr[nameArr.length -1]
-					if(cohorts[cohortNumber].trainers.indexOf(trainer) < 0){
-						cohorts[cohortNumber].trainers.push(trainer);
-		    		}
+					// var trainer = nameArr[nameArr.length -1]
+					// if(cohorts[cohortNumber].trainers.indexOf(trainer) < 0){
+					// 	cohorts[cohortNumber].trainers.push(trainer);
+		   //  		}
 				});
+				var timeTook = (Date.now()-start)/1000;
+				console.log(`Done. Took ${timeTook} seconds`);
 				resolve(cohorts);
 			})
 			.catch(errorHandler);
@@ -61,6 +62,8 @@ function getStudentsFromCohort(){
 function getEnrollmentsFromCohort(cohorts){
 	return new Promise(function(resolve, reject){
 		//iterate through cohorts object and create object for enrollment in each class
+		var start = Date.now();
+		console.log('Getting enrolled students...');
 		var cohortEnrollments = Object.keys(cohorts).reduce(function(prev,curr){
 			prev[curr] = {};
 			prev[curr]['enrolled_into_canvas'] = null;
@@ -97,6 +100,8 @@ function getEnrollmentsFromCohort(cohorts){
 						cohorts[key]['enrolled_into_canvas'] = val;
 					});
 				});
+				var timeTook = (Date.now()-start)/1000;
+				console.log(`Done. Took ${timeTook} seconds`);
 				resolve(cohorts);
 			})
 			.catch(errorHandler);
@@ -105,6 +110,8 @@ function getEnrollmentsFromCohort(cohorts){
 
 function getTotalAcceptedIntoTraining(cohorts){
 	return new Promise(function(resolve, reject){
+		var start = Date.now();
+		console.log('Getting total number accepted into training.');
 		var cohortAcceptance = Object.keys(cohorts).reduce(function(prev,curr){
 			prev[curr] = {};
 			prev[curr]['accepted_into_training'] = null;
@@ -115,9 +122,6 @@ function getTotalAcceptedIntoTraining(cohorts){
 			//CTL online only returns 20 users per request, need parameter to return more
 			return request(`parameters[field_cohort]=${cohortNum}&per_page=1000`, 'CTL', 'GET')
 					.then(function(acceptance){
-						// if(cohortNum == 19){
-						// 	console.log(acceptance);
-						// }
 						return acceptance.length;
 					})
 					.catch(errorHandler);
@@ -138,6 +142,8 @@ function getTotalAcceptedIntoTraining(cohorts){
 						cohorts[key]['accepted_into_training'] = val;
 					});
 				});
+				var timeTook = (Date.now()-start)/1000;
+				console.log(`Done. Took ${timeTook} seconds`);
 				resolve(cohorts);
 			})
 			.catch(errorHandler);
@@ -146,6 +152,8 @@ function getTotalAcceptedIntoTraining(cohorts){
 
 function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 	return new Promise(function(resolve,reject){
+		var start = Date.now();
+		console.log('Obtaining info on grads and people who started first shift...');
 		var cohortKeys = Object.keys(cohorts);
 		var gradClassIDs = cohortKeys.reduce(function(prev,curr){
 			prev[curr] = {};
@@ -168,7 +176,6 @@ function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 						return assignment.name.toLowerCase().match(regex1) || assignment.name.toLowerCase().match(regex2);
 					})[0].id;
 					
-		
 					return { 
 								gradID: gradAssignmentID,
 								firstShiftID: firstShiftAssignmentID
@@ -188,7 +195,6 @@ function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 			return prev.concat(curr);
 		}))
 			.then(function(res){
-				//push assignment ids from 'gradClassIDs[cohortnum].promises' to 'gradClassIDs[cohortnum].graduate_checkpoint_ids' and 'gradClassIDs[cohortnum].first_shift_checkpoint_ids'
 				var collectorForClassIDPromisesInEachCohort = [];
 				cohortKeys.forEach(function(key){
 					gradClassIDs[key].promises.forEach(function(prom){
@@ -200,7 +206,6 @@ function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 						collectorForClassIDPromisesInEachCohort.push(promiseToResolveCourseCheckpointIDs);
 					});
 				});
-				console.log(collectorForClassIDPromisesInEachCohort);
 
 				Promise.all(collectorForClassIDPromisesInEachCohort)
 					.then(function(res){
@@ -208,90 +213,109 @@ function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 							cohorts[key].graduate_checkpoint_ids = gradClassIDs[key].graduate_checkpoint_ids;
 							cohorts[key].first_shift_checkpoint_ids = gradClassIDs[key].first_shift_checkpoint_ids;
 						});
+						var timeTook = (Date.now()-start)/1000;
+						console.log(`Done. Took ${timeTook} seconds`);
 						resolve(cohorts);
 					}).catch(errorHandler);
 			}).catch(errorHandler);
-			//after that, take all these id's and check to see if users graduated and started their first shift
 	});
 }
 
-function getTotalUsersWhoTookFirstShift(cohorts){
+function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
+	return new Promise(function(resolve, reject){
+		var start = Date.now();
+		console.log('Calculating graduates and people who started first shift...');
+		var cohortKeys = Object.keys(cohorts);
+		//constuct array of url objects with info on which cohort they belong to and which checkpoint they're hitting
+		var urls = [];
+		cohortKeys.forEach(function(key){
+			cohorts[key].graduates = [];
+			cohorts[key].started_first_shift = [];
+			cohorts[key].graduate_checkpoint_ids.forEach(function(classID){
+				var url = {};
+				url.cohort = key;
+				url.url = `audit/grade_change/assignments/${classID}?per_page=1000`;
+				url.checkpoint = 'graduation'
+				urls.push(url);
+			});
+			cohorts[key].first_shift_checkpoint_ids.forEach(function(classID){
+				var url = {};
+				url.cohort = key;
+				url.url = `audit/grade_change/assignments/${classID}?per_page=1000`;
+				url.checkpoint = 'first shift'
+				urls.push(url);
+			});
+		});
+		//function to throttle number of requests per second
+		function throttledURLCalls(urls, reqPerSecond, callback){
+			var intervalValue = 1000/reqPerSecond;
+			var requestCollector = [];
 
+			function* whatwhat(){
+				for(var i = 0; i < urls.length; i++){
+					yield urls[i];
+				}
+			}
+
+			var gen = whatwhat();
+			var go = setInterval(function(){
+				var thisGen = gen.next();
+				if(thisGen.done){
+					//when done, go to next part of code that processes the info from the requests
+					clearInterval(go);
+					if(callback) callback(requestCollector);
+				}else{
+					//create objects with cohort number, request promise, and which checkpoint the request hits
+					var urlObj = thisGen.value;
+					var requestPromise = request(urlObj.url, 'Canvas', 'GET');
+					var newReqObj = {};
+					newReqObj.cohort = urlObj.cohort;
+					newReqObj.request = requestPromise;
+					newReqObj.checkpoint = urlObj.checkpoint;
+					requestCollector.push(newReqObj);
+				}
+			}, intervalValue);
+		}
+		//callback that processes info from API requests
+		function processAPIRequests(urlReqs){
+			var requestPromises = urlReqs.map(function(obj){
+				return obj.request;
+			});
+			//once all the reuests finish, calculate grads and people who took first shift by counting how many people passed each checkpoint
+			Promise.all(requestPromises)
+				.then(function(res){
+					var requestsProcessed = [];
+					urlReqs.forEach(function(obj){
+						var requestToProcess = obj.request.then(function(assignment){
+							if(obj.checkpoint === 'graduation'){
+								cohorts[obj.cohort].graduates.push(assignment.events.length);
+							} else if(obj.checkpoint === 'first shift'){
+								cohorts[obj.cohort].started_first_shift.push(assignment.events.length);
+							}
+						});
+						requestsProcessed.push(requestToProcess);
+					});
+					Promise.all(requestsProcessed)
+						.then(function(res){
+							cohortKeys.forEach(function(key){
+								cohorts[key].graduates = cohorts[key].graduates.reduce(function(a,b){ return a+b; }, 0);
+								cohorts[key].started_first_shift = cohorts[key].started_first_shift.reduce(function(a,b){ return a+b; }, 0);
+								delete cohorts[key].graduate_checkpoint_ids;
+								delete cohorts[key].first_shift_checkpoint_ids;
+							});
+							var timeTook = (Date.now()-start)/1000;
+							console.log(`Done. Took ${timeTook} seconds`);
+							resolve(cohorts);
+						}).catch(errorHandler);
+				}).catch(errorHandler);
+		}
+		throttledURLCalls(urls, 50, processAPIRequests);
+	});
 }
-
-// function getUserIDsForEachCohort(cohorts){
-// 	return new Promise(function(resolve, reject){
-// 		var cohortKeys = Object.keys(cohorts);
-// 		var cohortEmails = {};
-// 		var cohortPromises = {};
-// 		var allPromises =[];
-// 		cohortKeys.forEach(function(key){
-// 			var classes = cohorts[key].class_ids;
-// 			cohorts[key].emails = [];
-// 			cohortPromises[key] = classes.map(function(class_id){
-// 					return request(`courses/${class_id}/users?per_page=1000&enrollment_type[]=student`, 'GET')
-// 						.then(function(users){
-// 							return users.map(function(user){
-// 								return user.login_id;
-// 							});
-// 						});
-// 			});
-// 			allPromises.push(cohortPromises[key]);
-// 		});
-// 		allPromises = allPromises.reduce(function(prev,curr){
-// 			return prev.concat(curr);
-// 		});
-// 		var finalPromiseCheck = Promise.all(allPromises);
-// 		finalPromiseCheck
-// 			.then(function(res){
-// 				var promiseCheck = [];
-// 				cohortKeys.forEach(function(key){
-// 					cohortPromises[key].forEach(function(cohortP){
-// 						var emailResolvePromise = cohortP.then(function(userEmails){
-// 							cohorts[key].emails.push(userEmails);
-// 						});
-// 						promiseCheck.push(emailResolvePromise);
-// 					});
-// 				});
-
-// 				Promise.all(promiseCheck)
-// 					.then(function(res){
-// 						cohortKeys.forEach(function(key){
-// 							cohorts[key].emails = cohorts[key].emails.reduce(function(prev,curr){
-// 								return prev.concat(curr);
-// 							});
-// 						});
-// 						resolve(cohorts);
-// 					});
-// 			});
-// 	});
-// }
-
-// function infoFromEmail(cohorts){
-// 	return new Promise(function(resolve, reject){
-// 		var cohortEmails = {};
-// 		var cohortKeys = Object.keys(cohorts);
-// 		cohortKeys.forEach(function(key){
-// 			cohortEmails[key] = cohorts[key].emails;
-// 		});
-// 		console.log(cohortEmails);
-// 	});
-// }
-// function testFunction(){
-// 	return new Promise(function(resolve, reject){
-// 		request('courses/75/users?per_page=1000', 'GET')
-// 			.then(function(users){
-// 				console.log('Test Users: ', users.length);
-// 				users.forEach(function(user){
-// 					console.log(user.name);
-// 				});
-// 			});
-// 	});
-// }
 
 //wrap in Cronjob
 go();
-// testFunction();
+
 
 //HELPER FUNCTIONS
 function errorHandler(err){
@@ -309,6 +333,8 @@ function convertIds(text) {
 
   return new Promise(function (resolve, reject) {
     resolve(JSON.parse(text));
+  }).catch(function(err){
+  	console.log(text);
   });
 }
 // sets up basic api call functionality
