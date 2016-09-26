@@ -97,10 +97,11 @@ CONFIG.WiWUserNotes = {
 
 CONFIG.time_interval = {
   // runs every day at 5am
-  gtw_attendance_sync_with_canvas:'0 0 5 * * *',
+  gtw_attendance_sync_with_canvas:'0 15 23 * * *',
   // runs every 1 min.
   recur_and_publish_shifts_cron_job_string: '0 */1 * * * *',
-
+  // runs every day
+  pending_users: '* * * */1 * *',
   // runs every 20 mins.
   notify_first_shift_cron_job_string: '0 */20 * * * *',
 

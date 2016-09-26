@@ -38,6 +38,7 @@ function getUsersToClean() {
       uidsToClean.forEach(function(id){
         api.delete(`users/${id}?delete_shifts=true`, function(res){
           if(res.error) CONSOLE_WITH_TIME(`CHURNED DELETION OF USER ${id} FAILED:`, res.error)
+          CONSOLE_WITH_TIME('Deleted user', id)
         });
       });
     });

@@ -33,6 +33,7 @@ function recurNewlyCreatedShifts() {
                   };
 
   WhenIWork.get('shifts', postData, function(response) {
+    const usersWithNewShifts = response.users;
     var allShifts = response.shifts;
     if (typeof allShifts !== 'object') {
       CONSOLE_WITH_TIME('NO SHIFTS RETURNED.');
@@ -50,7 +51,6 @@ function recurNewlyCreatedShifts() {
     var newShifts = allShifts.filter(function(shift) {
       return !shift.notes;
     });
-    if (newShifts.length) notifyUserBookedShift.notifyUserBookedShift(newShifts, response.users);
 
     stathat.increment('Scheduling - Shifts Recurred', newShifts.length);
 
@@ -61,12 +61,6 @@ function recurNewlyCreatedShifts() {
       also need to be deleted.
     **/
     newShifts.forEach(function(shift) {
-      /**
-        Reduces open shift count by 1 for previous week's and next week's open shifts
-        at same time slot. Note that this is happening asynchronously--nothing else in this
-        job relies on this completing at a specific time.
-      **/
-      decrementPrevWeeksAndNextWeeksOpenShiftsByOne(shift);
 
       shift.notes = '{"original_owner":' + shift.user_id + ', "parent_shift":' + shift.id + '}';
       var endDate = moment(shift.start_time, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain - 1, 'weeks').format('L');
@@ -91,7 +85,7 @@ function recurNewlyCreatedShifts() {
 
       var workingShift = shift.params;
       /**
-          Because the WhyIWork API doesn't allow us to create a recurring chain
+          Because the WhenIWork API doesn't allow us to create a recurring chain
           shift with a duration longer than a year, we need to create X number of chains
           with X being the number of years we want the shift to recur.
           In order to associate all the shifts in all the chains together (i.e., if we wanted to delete
@@ -107,7 +101,7 @@ function recurNewlyCreatedShifts() {
             'end_time': moment(workingShift.end_time, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format(wiw_date_format),
             'notes': workingShift.notes,
             'acknowledged': workingShift.acknowledged,
-            'chain': {'week': '1', 'until': moment(workingShift.chain.until, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format('L')},
+            'chain': {'week': '1', 'until': moment(new Date(workingShift.chain.until)).add(CONFIG.time_interval.max_shifts_in_chain, 'weeks').format('L')},
             'location_id': workingShift.location_id,
             'user_id': workingShift.user_id
           }
@@ -118,14 +112,32 @@ function recurNewlyCreatedShifts() {
     });
 
     WhenIWork.post('batch', batchPostRequestBody, function(response) {
+      const successfullyRecurredShifts = {};
+      if (response) {
+        response.forEach((obj, idx) => {
+          if (obj.error) CONSOLE_WITH_TIME(`Error: ${obj.error} in RecurShift Batch Response ${JSON.stringify(response[idx-1])}`);
+          if (obj.shift 
+              && /parent_shift/.test(obj.shift.notes)
+              && obj.shift.id === JSON.parse(obj.shift.notes).parent_shift) {
+            successfullyRecurredShifts[obj.shift.id] = 'recurred';
+          }
+        })
+
+        const updatedNewShifts = newShifts.filter(shift => successfullyRecurredShifts[shift.id]);
+
+        notifyUserBookedShift.notifyUserBookedShift(updatedNewShifts, usersWithNewShifts);
+        /**
+          Reduces open shift count by 1 for previous week's and next week's open shifts
+          at same time slot. Note that this is happening asynchronously--nothing else in this
+          job relies on this completing at a specific time.
+        **/
+        updatedNewShifts.forEach(decrementPrevWeeksAndNextWeeksOpenShiftsByOne);
+      };
+
       /**
         After batch of shifts is created, we want to publish all shifts. (Note that passing in the `published` param
         in the requests that are batched doesn't actually publish them; we need to make a separate request to another route.)
       **/
-
-      //The response at this point doesn't include error status codes so we're looking for a message that indicates an error
-      if (response && response.message && /error/.test(response.message)) CONSOLE_WITH_TIME("Error in RecurShift Batch Response: ", response);
-
       var startDateToRetrieveUnpublishedShifts = moment().add(-12, 'hours').format('YYYY-MM-DD HH:mm:ss');
       var endDateToRetrieveUnpublishedShifts = moment().add(12, 'hours').format('YYYY-MM-DD HH:mm:ss');
       for (var i = 0; i < CONFIG.time_interval.weeks_to_publish_recurred_shifts * 7; i++) {
