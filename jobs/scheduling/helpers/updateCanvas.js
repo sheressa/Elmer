@@ -92,7 +92,8 @@ canvas.retrieveCourses = function() {
 //finds all enrollments in a given course
 canvas.retrieveEnrollment = function(courseID, enrollmentState) {
 
-  options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments?state[]=' + enrollmentState;
+  options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments';
+  if (enrollmentState) options.url += '?state[]=' + enrollmentState;
   options.method = 'GET';
 
   return request(options)
@@ -132,7 +133,8 @@ canvas.activateOrDeactivateEnrollment = function(courseID, enrollmentID, enrollm
 //finds all courses a specific user is enrolled in, with optional enrollment states
 canvas.scrapeCanvasEnrollment = function(userID, enrollmentState) {
 
-  options.url = 'https://crisistextline.instructure.com/api/v1/users/' + userID + '/enrollments?state[]=' + enrollmentState;
+  options.url = 'https://crisistextline.instructure.com/api/v1/users/' + userID + '/enrollments';
+  if (enrollmentState) options.url += '?state[]=' + enrollmentState;
   options.method = 'GET';
 
   return request(options)
