@@ -3,6 +3,7 @@ const CronJob = require('cron').CronJob;
 const internalRequest = require('request');
 const fetch = require('node-fetch');
 const KEYS = require('./keys.js');
+const fs = require('fs');
 // var SLACK_CHANNEL = '#melted';
 // new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
 //     pollCanvasForGraduatedUsersThenCreatePlatformAccount();
@@ -12,18 +13,19 @@ function masterConsoleTest(res){
 	return res;
 }
 function go(){
-	getStudentsFromCohort()
+	getCohortNumbers()
 	.then(getEnrollmentsFromCohort)
 	.then(getTotalAcceptedIntoTraining)
-	.then(getGradAndFirstShiftCheckpointIDsForEachCohort)
-	.then(getTotalUsersWhoTookFirstShiftAndGraduated)
+	.then(getGradAndFirstShiftCheckpointIDsForEachCohort) 
+	.then(getTotalUsersWhoTookFirstShiftAndGraduated)	
 	.then(masterConsoleTest)
+	.then(writeDataToCSVFile)
 	.catch(function(err){
 		console.error('Error: ', err)
 	})
 }
 
-function getStudentsFromCohort(){
+function getCohortNumbers(){
 	return new Promise(function(resolve, reject){
 		console.log('Getting cohorts from Canvas');
 		var start = Date.now();
@@ -34,7 +36,7 @@ function getStudentsFromCohort(){
 		    	courses.forEach(function (course) {
 					if (course.workflow_state!='available') return; 
 					//**parses cohortNumber from 'course name'. regex may be better
-					//if cohort naming changes format, the entire Cronjob will break
+					//if cohort naming changes format, cohort numbers will be incorrect
 					//maybe look for better methods for retrieving cohort number
 					var nameArr = course.name.trim().split(' ');
 					var cohortNumber = nameArr[1];
@@ -53,10 +55,8 @@ function getStudentsFromCohort(){
 				var timeTook = (Date.now()-start)/1000;
 				console.log(`Done. Took ${timeTook} seconds`);
 				resolve(cohorts);
-			})
-			.catch(errorHandler);
-	})
-		.catch(errorHandler);
+			}).catch(errorHandler);
+	}).catch(errorHandler);
 }
 
 function getEnrollmentsFromCohort(cohorts){
@@ -66,15 +66,25 @@ function getEnrollmentsFromCohort(cohorts){
 		console.log('Getting enrolled students...');
 		var cohortEnrollments = Object.keys(cohorts).reduce(function(prev,curr){
 			prev[curr] = {};
-			prev[curr]['enrolled_into_canvas'] = null;
+			prev[curr]['enrolled_into_canvas'] = [];
 			return prev;
 		}, {});
 		function enrollmentLengthAPICall(courseNum){
-			return request(`courses/${courseNum}/enrollments?per_page=1000&enrollment_type[]=student&state[]=active&state[]=completed&state[]=inactive`, 'Canvas', 'GET')
-					.then(function(enrollment){
-						return enrollment.length;
-					})
-					.catch(errorHandler);
+			var enrolled = 0;
+			var pageNumber = 1;
+			function recursiveRequestCaller(){
+				return request(`courses/${courseNum}/enrollments?per_page=1000&page=${pageNumber}&enrollment_type[]=student&state[]=active&state[]=completed&state[]=inactive`, 'Canvas', 'GET')
+						.then(function(enrollment){
+							if(enrollment.length == 0){
+								return enrolled;
+							}
+							enrolled += enrollment.length;
+							pageNumber += 1;
+							return recursiveRequestCaller();
+						})
+						.catch(errorHandler);
+			}
+			return recursiveRequestCaller();
 		}
 		//for each cohort, call API for enrollment and tally in 'cohortEnrollments' object
 		var sumTallyPromiseArray = [];	
@@ -82,11 +92,12 @@ function getEnrollmentsFromCohort(cohorts){
 			if(!cohorts.hasOwnProperty(key)){
 				continue;
 			}
+
 			var classes = cohorts[key].class_ids;
 			var classAPICalls = Promise.all(classes.map(enrollmentLengthAPICall));
 			var sumTallyPromise = classAPICalls
 				.then(function(data){
-					return data.reduce(function(a,b){ return a+b;}, 0);
+					return data.reduce(function(a,b){ return a+b; }, 0);
 				})
 				.catch(errorHandler);
 			cohortEnrollments[key] = sumTallyPromise;
@@ -97,51 +108,57 @@ function getEnrollmentsFromCohort(cohorts){
 			.then(function(res){
 				Object.keys(cohortEnrollments).forEach(function(key){
 					cohortEnrollments[key].then(function(val){
-						cohorts[key]['enrolled_into_canvas'] = val;
+						cohorts[key].enrolled_in_canvas = val;
 					});
 				});
 				var timeTook = (Date.now()-start)/1000;
 				console.log(`Done. Took ${timeTook} seconds`);
 				resolve(cohorts);
-			})
-			.catch(errorHandler);
-	});
+			}).catch(errorHandler);
+	}).catch(errorHandler);
 }
 
 function getTotalAcceptedIntoTraining(cohorts){
 	return new Promise(function(resolve, reject){
 		var start = Date.now();
-		console.log('Getting total number accepted into training.');
-		var cohortAcceptance = Object.keys(cohorts).reduce(function(prev,curr){
-			prev[curr] = {};
-			prev[curr]['accepted_into_training'] = null;
-			return prev;
-		}, {});
+		console.log('Getting total number accepted into training (takes a few seconds)...');
 	
+		var tallyPromiseArray = [];	
 		function acceptanceAPICall(cohortNum){
-			//CTL online only returns 20 users per request, need parameter to return more
-			return request(`parameters[field_cohort]=${cohortNum}&per_page=1000`, 'CTL', 'GET')
+			//CTL online only returns 20 users per request, recursively gets data from each page
+			var accepted = 0;
+			var pageNumber = 1;
+			function recursiveRequestCaller(){
+				return request(`parameters[field_cohort]=${cohortNum}&page=${pageNumber}`, 'CTL', 'GET')
 					.then(function(acceptance){
-						return acceptance.length;
+						if(acceptance[0] === 'No entities found.'){
+							cohorts[cohortNum].accepted_into_training = accepted;
+							return accepted;
+						}
+						accepted += acceptance.length;
+						pageNumber += 1;
+						return recursiveRequestCaller();
 					})
 					.catch(errorHandler);
+			};
+			return recursiveRequestCaller();
 		}
-		var tallyPromiseArray = [];	
+		
 		for (var key in cohorts){
 			if(!cohorts.hasOwnProperty(key)){
 				continue;
 			}
-			cohortAcceptance[key] = acceptanceAPICall(key)
-			tallyPromiseArray.push(cohortAcceptance[key]);
+			tallyPromiseArray.push(acceptanceAPICall(key));
 		}
 		//wait for class enrollment API calls and enrollment tallies, then put into output object
 		Promise.all(tallyPromiseArray)
 			.then(function(res){
-				Object.keys(cohortAcceptance).forEach(function(key){
-					cohortAcceptance[key].then(function(val){
-						cohorts[key]['accepted_into_training'] = val;
-					});
-				});
+				// Object.keys(cohortAcceptance).forEach(function(key){
+				// 	cohortAcceptance[key].then(function(val){
+				// 		cohorts[key].accepted_into_training = val;
+				// 	});
+				// });
+				console.log(tallyPromiseArray);
 				var timeTook = (Date.now()-start)/1000;
 				console.log(`Done. Took ${timeTook} seconds`);
 				resolve(cohorts);
@@ -149,7 +166,7 @@ function getTotalAcceptedIntoTraining(cohorts){
 			.catch(errorHandler);
 	});
 }
-
+//obtains the ids for the graduation and first shift checkpoints
 function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 	return new Promise(function(resolve,reject){
 		var start = Date.now();
@@ -157,15 +174,14 @@ function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 		var cohortKeys = Object.keys(cohorts);
 		var gradClassIDs = cohortKeys.reduce(function(prev,curr){
 			prev[curr] = {};
-			prev[curr]['graduate_checkpoint_ids'] = [];
-			prev[curr]['promises'] = null;
-			prev[curr]['first_shift_checkpoint_ids'] = [];
+			prev[curr].graduate_checkpoint_ids = [];
+			prev[curr].promises = null;
+			prev[curr].first_shift_checkpoint_ids = [];
 			return prev;
 		},{});
 		function gradCheckPointIDAPICall(classID){
 			return request(`courses/${classID}/assignments?per_page=1000`, 'Canvas', 'GET')
 				.then(function(assignments){
-					
 					var gradAssignmentID = assignments.filter(function(assignment){
 						let regex = /platform ready/;
 						return assignment.name.toLowerCase().match(regex);
@@ -220,7 +236,7 @@ function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 			}).catch(errorHandler);
 	});
 }
-
+//finds total users who graduated and users who took first shift
 function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 	return new Promise(function(resolve, reject){
 		var start = Date.now();
@@ -251,13 +267,13 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 			var intervalValue = 1000/reqPerSecond;
 			var requestCollector = [];
 
-			function* whatwhat(){
+			function* urlGenerator(){
 				for(var i = 0; i < urls.length; i++){
 					yield urls[i];
 				}
 			}
 
-			var gen = whatwhat();
+			var gen = urlGenerator();
 			var go = setInterval(function(){
 				var thisGen = gen.next();
 				if(thisGen.done){
@@ -293,7 +309,7 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 							} else if(obj.checkpoint === 'first shift'){
 								cohorts[obj.cohort].started_first_shift.push(numberPassed);
 							}
-						});
+						}).catch(errorHandler);
 						requestsProcessed.push(requestToProcess);
 					});
 					Promise.all(requestsProcessed)
@@ -303,6 +319,7 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 								cohorts[key].started_first_shift = cohorts[key].started_first_shift.reduce(function(a,b){ return a+b; }, 0);
 								delete cohorts[key].graduate_checkpoint_ids;
 								delete cohorts[key].first_shift_checkpoint_ids;
+								delete cohorts[key].class_ids;
 							});
 							var timeTook = (Date.now()-start)/1000;
 							console.log(`Done. Took ${timeTook} seconds`);
@@ -310,13 +327,32 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 						}).catch(errorHandler);
 				}).catch(errorHandler);
 		}
-		throttledURLCalls(urls, 50, processAPIRequests);
+		throttledURLCalls(urls, 30, processAPIRequests);
 	});
 }
 
+function writeDataToCSVFile(cohorts){
+	var CSVstring = 'cohorts;';
+	var cohortKeys = Object.keys(cohorts);
+	var subObjectKeys = Object.keys(cohorts[cohortKeys[0]]);
+	subObjectKeys.forEach(function(key){
+		CSVstring += key + ';';
+	})
+	CSVstring = CSVstring.substring(0, CSVstring.length-1);
+	cohortKeys.forEach(function(cohortNum){
+		var nextLine = '\n' + cohortNum + ';';
+		subObjectKeys.forEach(function(metric){
+			nextLine += cohorts[cohortNum][metric] + ';';
+		});
+		nextLine = nextLine.substring(0, nextLine.length-1);
+		CSVstring += nextLine;
+	});
+
+	fs.writeFile('meltedData.csv', CSVstring);
+	return cohorts;
+}
 //wrap in Cronjob
 go();
-
 
 //HELPER FUNCTIONS
 function errorHandler(err){
@@ -369,4 +405,19 @@ function request(url, API, method, params) {
   return fetch(url, fetchData)
   .then(function (res) { return res.text(); })
   .then(convertIds);
+}
+
+function notifySlack(name) {
+  var payload = {
+    channel: SLACK_CHANNEL,
+  };
+  if (name.message) payload.text = name.message;
+  else payload.text = 'I just graduated ' + name +'.';
+
+  fetch(KEYS.slackAccountURL, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }).catch(function(error) {
+    CONSOLE_WITH_TIME('Failed to post to the graduate slack channel: ',error);
+  });
 }
