@@ -287,10 +287,11 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 					var requestsProcessed = [];
 					urlReqs.forEach(function(obj){
 						var requestToProcess = obj.request.then(function(assignment){
+							var numberPassed = assignment.events.filter(function(event){ return event.grade_after === 'complete'; }).length;
 							if(obj.checkpoint === 'graduation'){
-								cohorts[obj.cohort].graduates.push(assignment.events.length);
+								cohorts[obj.cohort].graduates.push(numberPassed);
 							} else if(obj.checkpoint === 'first shift'){
-								cohorts[obj.cohort].started_first_shift.push(assignment.events.length);
+								cohorts[obj.cohort].started_first_shift.push(numberPassed);
 							}
 						});
 						requestsProcessed.push(requestToProcess);
