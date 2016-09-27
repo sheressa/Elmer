@@ -1,8 +1,7 @@
-var Request = require('request-promise');
-var bignumJSON = require('json-bignum');
-var canvas = {};
-
-//@TODO: add error handling
+const Request = require('request-promise');
+const bignumJSON = require('json-bignum');
+const canvas = {};
+const fetch = require('fetch-retry');
 
 //finds all active canvas courses
 canvas.scrapeCanvasC = function(){
@@ -29,23 +28,19 @@ canvas.scrapeCanvasC = function(){
 canvas.scrapeCanvasA = function(id, params){
 
 	var url = 'https://crisistextline.instructure.com/api/v1/courses/'+id+'/assignments';
+	if(params) url = url+'?search_term='+params.search_term+'&per_page=100';
 	var options = {
-		url: url,
 		headers: {
 			Authorization: KEYS.canvas.api_key,
-			'User-Agent': 'Request-Promise'
 		}
 	};
 
-	if(params) options.qs = params;
-
-	return Request(options)
+	return fetch(url, options)
 	.then(function(response){
-		var info = bignumJSON.parse(response);
-		return info;
+		return response.json();
 	})
 	.catch(function(err){
-		CONSOLE_WITH_TIME('Canvas call to get assignments failed: ', err)
+		CONSOLE_WITH_TIME('Canvas call to get assignments failed')
 	})
 
 };
@@ -54,44 +49,36 @@ canvas.scrapeCanvasA = function(id, params){
 canvas.scrapeCanvasEnroll = function(url){
 
 	var options = {
-		url: url,
 		headers: {
 			Authorization: KEYS.canvas.api_key,
-			'User-Agent': 'Request-Promise'
 		}
 	};
 
-	return Request(options)
+	return fetch(url, options)
 	.then(function(response){
-		var info = bignumJSON.parse(response);
-		return info;
+		return response.json();
 	})
 	.catch(function(err){
-		CONSOLE_WITH_TIME('Canvas call to get users failed: ', err)
+		CONSOLE_WITH_TIME('Canvas call to get users failed')
 	});
 
 };
 
 //finds all users in a specific canvas course
 canvas.scrapeCanvasU = function(url, params){
-
+		url = url+'?search_term='+params.search_term;
 		var options = {
-			url: url,
 			headers: {
 				Authorization: KEYS.canvas.api_key,
-				'User-Agent': 'Request-Promise'
 			}
 		};
 
-		if (params) options.qs=params;
-
-		return Request(options)
+		return fetch(url, options)
 		.then(function(response){
-			var info = bignumJSON.parse(response);
-			return info;
+			return response.json();
 		})
-		.catch(function(err){
-			CONSOLE_WITH_TIME('Canvas call to get users failed: ', err, options)
+		.catch(function(){
+			CONSOLE_WITH_TIME('Canvas call to get users failed');
 		})
 };
 
@@ -101,21 +88,18 @@ canvas.updateGradeCanvas = function(cID, aID, uID, grade){
 var url = 'https://crisistextline.instructure.com/api/v1/courses/'+cID+'/assignments/'+aID+'/submissions/'+uID;
  var options = {
    method: 'PUT',
-   url: url,
    headers: {
      Authorization: KEYS.canvas.api_key,
-     'User-Agent': 'Request-Promise'
    }, 
-   json: true,
-   body: {submission:{posted_grade: grade}}
+   payload: {submission:{posted_grade: grade}}
  };
 
-  return Request(options)
+  return fetch(url, options)
   .then(function(response){
     return  response;
   })
   .catch(function(err){
-    CONSOLE_WITH_TIME('Could not update grade: ', err)
+    CONSOLE_WITH_TIME('Could not update grade');
   });
 };
 

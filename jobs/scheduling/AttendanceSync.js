@@ -6,6 +6,7 @@ var Request = require('request');
 var mandrill = require('mandrill-api/mandrill');
 var mandrill_client = new mandrill.Mandrill(KEYS.mandrill.api_key);
 var fs = require('fs');
+const fetch = require('fetch-retry');
 
 //runs cron job every day at 5am
 new CronJob(CONFIG.time_interval.gtw_attendance_sync_with_canvas, function () {
@@ -22,17 +23,18 @@ function startJobByQueryingForGTWSessions(){
 
 	var url = 'https://api.citrixonline.com/G2W/rest/organizers/'+KEYS.GTW.org_id+'/sessions?fromTime='+startTime+'&toTime='+endTime;
 	var options = {
-  		url: url,
+      // retries: 4,
+      url:url,
   		headers: {
   		Accept: 'application/json',
-    	Authorization: KEYS.GTW.api_key
+    	Authorization: KEYS.GTW.api_key,
       }
 	};
 
 	function callback(error, response, body) {
-  		if (!error && response.statusCode == 200) {
+      if (!error && response.statusCode == 200) {
         //we need bignumJSON because JS rounds GTW session ids otherwise
-	   		var GTWSessions = bignumJSON.parse(body);
+        var GTWSessions = bignumJSON.parse(body);
         if (GTWSessions.length===0){
           CONSOLE_WITH_TIME('NO SESSIONS DURING', startTime, 'and', endTime, '!');
           return;
@@ -40,13 +42,12 @@ function startJobByQueryingForGTWSessions(){
 	   		GTWSessions.forEach(function(webinar){
 	   			keysArr.push({webinarKey: webinar.webinarKey.toString(), sessionKey: webinar.sessionKey.toString()});
 	   		});
-	   		queryForGTWAttendees(keysArr);
+        	   queryForGTWAttendees(keysArr);
   		} else {
   			CONSOLE_WITH_TIME("GTW get all webinars error message: ", body);
   		}
 	}
-
-	Request.get(options, callback);
+  Request.get(options, callback);
 }
 
 //gets all webinar attendees for each session then calls a user processing function
@@ -126,7 +127,7 @@ function findCanvasUsersByEmail(GTWusers){
       queryForCanvasCoursesAndAssignments(userID);
     })
     .catch(function(err){
-      CONSOLE_WITH_TIME('Call to Canvas for user', emailQuery.search_term, 'has failed.')
+      CONSOLE_WITH_TIME('Call to Canvas for user', emailQuery.search_term, 'has failed.', err)
     })
   });
 }
@@ -154,11 +155,10 @@ function findCanvasUserByName(GTWUser){
     CONSOLE_WITH_TIME('Call to Canvas for', nameQuery.search_term, 'has failed.')
   })
 }
-
+var w = 0;
 //scrapes canvas for user by name, course and assignment id's
 function queryForCanvasCoursesAndAssignments(userID){
-  var assignmentQuery = {search_term: CONFIG.canvas.assignments.webinarAttended},
-  Eurl = 'https://crisistextline.instructure.com/api/v1/users/'+userID+'/enrollments';
+  const Eurl = 'https://crisistextline.instructure.com/api/v1/users/'+userID+'/enrollments';
       //scrape for user's enrollments in order to get course ID
   canvas.scrapeCanvasEnroll(Eurl)
   .then(function(enrollmentObj){
@@ -171,16 +171,21 @@ function queryForCanvasCoursesAndAssignments(userID){
     }
     var courseID = enrollmentObj[0].course_id;
     //scrape for the id of the relevant assignment within a specific course
-    canvas.scrapeCanvasA(courseID, assignmentQuery)
-    .then(function(assignment){
-    //gives canvas user credit for attending a GTW observation
-    markAttendanceInCanvas(courseID, assignment[0].id, userID);
+    canvas.scrapeCanvasA(courseID)
+    .then(function(assignments){
+      assignments.forEach(function(assignment){
+        //gives canvas user credit for attending or scheduling a GTW observation
+        if(assignment.name===CONFIG.canvas.assignments.webinarAttended || 
+          assignment.name===CONFIG.canvas.assignments.scheduleWebinar){
+          markAttendanceInCanvas(assignment.course_id, assignment.id, userID);
+        }
+      });
     })
-    .catch(function(err){
+    .catch(function(){
       CONSOLE_WITH_TIME('Call to Canvas for attendance assignment in course', courseID, 'has failed.');
     });
   })
-  .catch(function(err){
+  .catch(function(){
       CONSOLE_WITH_TIME('Call to Canvas for user enrollment has failed.');
   });
 }
@@ -188,9 +193,9 @@ function queryForCanvasCoursesAndAssignments(userID){
 //gives credit for attending a GTW webinar on Canvas to a user
 function markAttendanceInCanvas(courseID, assignmentID, userID){
  canvas.updateGradeCanvas(courseID, assignmentID, userID, 'pass')
-  .catch(function(err){
-    CONSOLE_WITH_TIME('Call to post user', userID, 'grade in course', courseID, 'assignmentID', assignmentID, 'has failed.')
-  })
+  .catch(function(){
+    CONSOLE_WITH_TIME('Call to post user', userID, 'grade in course', courseID, 'assignmentID', assignmentID, 'has failed.');
+  });
 }
 
 //HELPERS
