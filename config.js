@@ -81,6 +81,9 @@ CONFIG.canvas = {
     webinarAttended: 'Attend An Observation',
     finalExam: 'Final Exam',
   },
+  passingScores: {
+    final: 60
+  }
 };
 
 //used in AttendanceSync.js to check whether trainees attended a GTW webinar for a minimum of 90 minutes = 5400 seconds
