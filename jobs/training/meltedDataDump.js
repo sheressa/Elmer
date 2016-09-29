@@ -4,7 +4,8 @@ const internalRequest = require('request');
 const fetch = require('node-fetch');
 const KEYS = require('./keys.js');
 const fs = require('fs');
-// var SLACK_CHANNEL = '#melted';
+const APICallsPerSecond = 10;
+var SLACK_CHANNEL = '#melted';
 // new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
 //     pollCanvasForGraduatedUsersThenCreatePlatformAccount();
 //   }, null, true);
@@ -13,16 +14,17 @@ function masterConsoleTest(res){
 	return res;
 }
 function go(){
-	getCohortNumbers()
-	.then(getEnrollmentsFromCohort)
-	.then(getTotalAcceptedIntoTraining)
-	.then(getGradAndFirstShiftCheckpointIDsForEachCohort) 
-	.then(getTotalUsersWhoTookFirstShiftAndGraduated)	
-	.then(masterConsoleTest)
-	.then(writeDataToCSVFile)
-	.catch(function(err){
-		console.error('Error: ', err)
-	})
+	return getCohortNumbers()
+		.then(getEnrollmentsFromCohort)
+		.then(getTotalAcceptedIntoTraining)
+		.then(getGradAndFirstShiftCheckpointIDsForEachCohort) 
+		.then(getTotalUsersWhoTookFirstShiftAndGraduated)	
+		.then(masterConsoleTest)
+		//.then(notifySlack)
+		.catch(function(err){
+			console.error('Error: ', err)
+			return err;
+		});
 }
 
 function getCohortNumbers(){
@@ -34,23 +36,30 @@ function getCohortNumbers(){
 	    		var previous;
 		    	var cohorts = {};
 		    	courses.forEach(function (course) {
-					if (course.workflow_state!='available') return; 
+					//if (course.workflow_state!='available') return; 
 					//**parses cohortNumber from 'course name'. regex may be better
 					//if cohort naming changes format, cohort numbers will be incorrect
 					//maybe look for better methods for retrieving cohort number
 					var nameArr = course.name.trim().split(' ');
 					var cohortNumber = nameArr[1];
-					if(isNaN(cohortNumber)) return;
+					if(isNaN(cohortNumber) || nameArr[0].toLowerCase() !== 'cohort') return;
 					if(!cohorts[cohortNumber]){
 						cohorts[cohortNumber] = {};
+						
 						cohorts[cohortNumber].class_ids = [];
+						cohorts[cohortNumber].closed_class_ids = [];
 						// cohorts[cohortNumber].trainers = [];
 					}
-					cohorts[cohortNumber].class_ids.push(course.id);
-					// var trainer = nameArr[nameArr.length -1]
-					// if(cohorts[cohortNumber].trainers.indexOf(trainer) < 0){
-					// 	cohorts[cohortNumber].trainers.push(trainer);
-		   //  		}
+					if(course.workflow_state==='available'){
+						cohorts[cohortNumber].class_ids.push(course.id);
+					} else if(course.workflow_state==='completed'){
+						cohorts[cohortNumber].closed_class_ids.push(course.id);
+					}
+					
+				});
+				var cohortKeys = Object.keys(cohorts);
+				cohortKeys.forEach(function(key){
+					if(cohorts[key].class_ids.length == 0) delete cohorts[key];
 				});
 				var timeTook = (Date.now()-start)/1000;
 				console.log(`Done. Took ${timeTook} seconds`);
@@ -66,7 +75,7 @@ function getEnrollmentsFromCohort(cohorts){
 		console.log('Getting enrolled students...');
 		var cohortEnrollments = Object.keys(cohorts).reduce(function(prev,curr){
 			prev[curr] = {};
-			prev[curr]['enrolled_into_canvas'] = [];
+			prev[curr].enrolled_into_canvas = [];
 			return prev;
 		}, {});
 		function enrollmentLengthAPICall(courseNum){
@@ -81,8 +90,7 @@ function getEnrollmentsFromCohort(cohorts){
 							enrolled += enrollment.length;
 							pageNumber += 1;
 							return recursiveRequestCaller();
-						})
-						.catch(errorHandler);
+						}).catch(errorHandler);
 			}
 			return recursiveRequestCaller();
 		}
@@ -93,7 +101,7 @@ function getEnrollmentsFromCohort(cohorts){
 				continue;
 			}
 
-			var classes = cohorts[key].class_ids;
+			var classes = cohorts[key].class_ids.concat(cohorts[key].closed_class_ids);
 			var classAPICalls = Promise.all(classes.map(enrollmentLengthAPICall));
 			var sumTallyPromise = classAPICalls
 				.then(function(data){
@@ -122,7 +130,6 @@ function getTotalAcceptedIntoTraining(cohorts){
 	return new Promise(function(resolve, reject){
 		var start = Date.now();
 		console.log('Getting total number accepted into training (takes a few seconds)...');
-	
 		var tallyPromiseArray = [];	
 		function acceptanceAPICall(cohortNum){
 			//CTL online only returns 20 users per request, recursively gets data from each page
@@ -138,8 +145,7 @@ function getTotalAcceptedIntoTraining(cohorts){
 						accepted += acceptance.length;
 						pageNumber += 1;
 						return recursiveRequestCaller();
-					})
-					.catch(errorHandler);
+					}).catch(errorHandler);
 			};
 			return recursiveRequestCaller();
 		}
@@ -153,12 +159,6 @@ function getTotalAcceptedIntoTraining(cohorts){
 		//wait for class enrollment API calls and enrollment tallies, then put into output object
 		Promise.all(tallyPromiseArray)
 			.then(function(res){
-				// Object.keys(cohortAcceptance).forEach(function(key){
-				// 	cohortAcceptance[key].then(function(val){
-				// 		cohorts[key].accepted_into_training = val;
-				// 	});
-				// });
-				console.log(tallyPromiseArray);
 				var timeTook = (Date.now()-start)/1000;
 				console.log(`Done. Took ${timeTook} seconds`);
 				resolve(cohorts);
@@ -183,8 +183,9 @@ function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 			return request(`courses/${classID}/assignments?per_page=1000`, 'Canvas', 'GET')
 				.then(function(assignments){
 					var gradAssignmentID = assignments.filter(function(assignment){
-						let regex = /platform ready/;
-						return assignment.name.toLowerCase().match(regex);
+						let regex1 = /platform ready/;
+						let regex2 = /graduation/;
+						return assignment.name.toLowerCase().match(regex1) || assignment.name.toLowerCase().match(regex2);
 					})[0].id;
 					var firstShiftAssignmentID = assignments.filter(function(assignment){
 						let regex1 = /attend first shift/;
@@ -201,7 +202,7 @@ function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 		}
 		var idPromiseCollector = [];
 		cohortKeys.forEach(function(key){
-			var classIDs = cohorts[key].class_ids;
+			var classIDs = cohorts[key].class_ids.concat(cohorts[key].closed_class_ids);
 			var apiCallPromises = classIDs.map(gradCheckPointIDAPICall);
 			idPromiseCollector.push(apiCallPromises);
 			gradClassIDs[key].promises = apiCallPromises;
@@ -217,7 +218,6 @@ function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 						var promiseToResolveCourseCheckpointIDs = prom.then(function(checkpointIDs){
 							gradClassIDs[key].graduate_checkpoint_ids.push(checkpointIDs.gradID);
 							gradClassIDs[key].first_shift_checkpoint_ids.push(checkpointIDs.firstShiftID);
-						
 						});
 						collectorForClassIDPromisesInEachCohort.push(promiseToResolveCourseCheckpointIDs);
 					});
@@ -242,7 +242,7 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 		var start = Date.now();
 		console.log('Calculating graduates and people who started first shift...');
 		var cohortKeys = Object.keys(cohorts);
-		//constuct array of url objects with info on which cohort they belong to and which checkpoint they're hitting
+		//construct array of url objects with info on which cohort they belong to and which checkpoint they're hitting
 		var urls = [];
 		cohortKeys.forEach(function(key){
 			cohorts[key].graduates = [];
@@ -266,29 +266,23 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 		function throttledURLCalls(urls, reqPerSecond, callback){
 			var intervalValue = 1000/reqPerSecond;
 			var requestCollector = [];
-
-			function* urlGenerator(){
-				for(var i = 0; i < urls.length; i++){
-					yield urls[i];
-				}
-			}
-
-			var gen = urlGenerator();
+			var count = 0;
 			var go = setInterval(function(){
-				var thisGen = gen.next();
-				if(thisGen.done){
+				// var thisGen = gen.next();
+				if(urls[count] === undefined){
 					//when done, go to next part of code that processes the info from the requests
 					clearInterval(go);
 					if(callback) callback(requestCollector);
 				}else{
 					//create objects with cohort number, request promise, and which checkpoint the request hits
-					var urlObj = thisGen.value;
+					var urlObj = urls[count];
 					var requestPromise = request(urlObj.url, 'Canvas', 'GET');
 					var newReqObj = {};
 					newReqObj.cohort = urlObj.cohort;
 					newReqObj.request = requestPromise;
 					newReqObj.checkpoint = urlObj.checkpoint;
 					requestCollector.push(newReqObj);
+					count++;
 				}
 			}, intervalValue);
 		}
@@ -320,6 +314,7 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 								delete cohorts[key].graduate_checkpoint_ids;
 								delete cohorts[key].first_shift_checkpoint_ids;
 								delete cohorts[key].class_ids;
+								delete cohorts[key].closed_class_ids;
 							});
 							var timeTook = (Date.now()-start)/1000;
 							console.log(`Done. Took ${timeTook} seconds`);
@@ -327,32 +322,57 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 						}).catch(errorHandler);
 				}).catch(errorHandler);
 		}
-		throttledURLCalls(urls, 30, processAPIRequests);
+		throttledURLCalls(urls, APICallsPerSecond, processAPIRequests);
 	});
 }
 
-function writeDataToCSVFile(cohorts){
-	var CSVstring = 'cohorts;';
-	var cohortKeys = Object.keys(cohorts);
-	var subObjectKeys = Object.keys(cohorts[cohortKeys[0]]);
-	subObjectKeys.forEach(function(key){
-		CSVstring += key + ';';
-	})
-	CSVstring = CSVstring.substring(0, CSVstring.length-1);
-	cohortKeys.forEach(function(cohortNum){
-		var nextLine = '\n' + cohortNum + ';';
-		subObjectKeys.forEach(function(metric){
-			nextLine += cohorts[cohortNum][metric] + ';';
-		});
-		nextLine = nextLine.substring(0, nextLine.length-1);
-		CSVstring += nextLine;
+// posts cohortInfo on slack
+function notifySlack(cohortInfo) {
+	var payload = {
+		channel: SLACK_CHANNEL,
+	};
+	payload.text = 'Melted user data by cohort:\n\n';
+	var cohortKeys = Object.keys(cohortInfo);
+	cohortKeys.forEach(function(key){
+		payload.text += `For cohort ${key}:\n`;
+		payload.text += `${cohortInfo[key].enrolled_in_canvas} users enrolled in Canvas\n`;
+		payload.text += `${cohortInfo[key].accepted_into_training} users accepted into training\n`;
+		payload.text += `${cohortInfo[key].graduates} users graduated\n`;
+		payload.text += `${cohortInfo[key].started_first_shift} users started their first shift\n\n`;
 	});
 
-	fs.writeFile('meltedData.csv', CSVstring);
-	return cohorts;
+	fetch(KEYS.slackAccountURL, {
+	method: 'POST',
+	body: JSON.stringify(payload)
+	}).catch(function(error) {
+		CONSOLE_WITH_TIME('Failed to post to the graduate slack channel: ',error);
+	});
 }
+// function writeDataToCSVFile(cohorts){
+// 	var CSVstring = 'cohorts;';
+// 	var cohortKeys = Object.keys(cohorts);
+// 	var subObjectKeys = Object.keys(cohorts[cohortKeys[0]]);
+// 	subObjectKeys.forEach(function(key){
+// 		CSVstring += key + ';';
+// 	})
+// 	CSVstring = CSVstring.substring(0, CSVstring.length-1);
+// 	cohortKeys.forEach(function(cohortNum){
+// 		var nextLine = '\n' + cohortNum + ';';
+// 		subObjectKeys.forEach(function(metric){
+// 			nextLine += cohorts[cohortNum][metric] + ';';
+// 		});
+// 		nextLine = nextLine.substring(0, nextLine.length-1);
+// 		CSVstring += nextLine;
+// 	});
+// 	var CSVfilePath = 'meltedData.csv'
+// 	fs.writeFile(CSVfilePath, CSVstring, function(err){
+// 		if(err) return console.error(err);
+// 		console.log(`CSV file ${CSVfilePath} written.`);
+// 	});
+// 	return cohorts;
+// }
 //wrap in Cronjob
-go();
+// go();
 
 //HELPER FUNCTIONS
 function errorHandler(err){
@@ -407,17 +427,4 @@ function request(url, API, method, params) {
   .then(convertIds);
 }
 
-function notifySlack(name) {
-  var payload = {
-    channel: SLACK_CHANNEL,
-  };
-  if (name.message) payload.text = name.message;
-  else payload.text = 'I just graduated ' + name +'.';
-
-  fetch(KEYS.slackAccountURL, {
-    method: 'POST',
-    body: JSON.stringify(payload)
-  }).catch(function(error) {
-    CONSOLE_WITH_TIME('Failed to post to the graduate slack channel: ',error);
-  });
-}
+module.exports = { cohortDataPromise: go() }
