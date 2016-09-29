@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const cohortPromise = require('../jobs/training/meltedDataDump.js').cohortDataPromise;
+const cohortPromise = require('../jobs/training/meltedDataDumpToSlack.js').cohortDataPromise;
 
 var cohortData;
 before(function(){
