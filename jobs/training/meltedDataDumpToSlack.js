@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 const KEYS = require('./keys.js');
 const fs = require('fs');
 const APICallsPerSecond = 10;
-var SLACK_CHANNEL = '#melted';
+var SLACK_CHANNEL = '#test';
 // new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
 //     pollCanvasForGraduatedUsersThenCreatePlatformAccount();
 //   }, null, true);
@@ -20,7 +20,7 @@ function go(){
 		.then(getGradAndFirstShiftCheckpointIDsForEachCohort) 
 		.then(getTotalUsersWhoTookFirstShiftAndGraduated)	
 		.then(masterConsoleTest)
-		//.then(notifySlack)
+		.then(notifySlack)
 		.catch(function(err){
 			console.error('Error: ', err)
 			return err;
@@ -268,7 +268,6 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 			var requestCollector = [];
 			var count = 0;
 			var go = setInterval(function(){
-				// var thisGen = gen.next();
 				if(urls[count] === undefined){
 					//when done, go to next part of code that processes the info from the requests
 					clearInterval(go);
@@ -276,7 +275,7 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 				}else{
 					//create objects with cohort number, request promise, and which checkpoint the request hits
 					var urlObj = urls[count];
-					var requestPromise = request(urlObj.url, 'Canvas', 'GET');
+					var requestPromise = request(urlObj.url, 'Canvas', 'GET').catch(errorHandler);
 					var newReqObj = {};
 					newReqObj.cohort = urlObj.cohort;
 					newReqObj.request = requestPromise;
@@ -313,7 +312,7 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 								cohorts[key].started_first_shift = cohorts[key].started_first_shift.reduce(function(a,b){ return a+b; }, 0);
 								delete cohorts[key].graduate_checkpoint_ids;
 								delete cohorts[key].first_shift_checkpoint_ids;
-								delete cohorts[key].class_ids;
+								cohorts[key].class_ids = cohorts[key].class_ids.concat(cohorts[key].closed_class_ids);
 								delete cohorts[key].closed_class_ids;
 							});
 							var timeTook = (Date.now()-start)/1000;
@@ -328,51 +327,35 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 
 // posts cohortInfo on slack
 function notifySlack(cohortInfo) {
-	var payload = {
-		channel: SLACK_CHANNEL,
-	};
-	payload.text = 'Melted user data by cohort:\n\n';
-	var cohortKeys = Object.keys(cohortInfo);
-	cohortKeys.forEach(function(key){
-		payload.text += `For cohort ${key}:\n`;
-		payload.text += `${cohortInfo[key].enrolled_in_canvas} users enrolled in Canvas\n`;
-		payload.text += `${cohortInfo[key].accepted_into_training} users accepted into training\n`;
-		payload.text += `${cohortInfo[key].graduates} users graduated\n`;
-		payload.text += `${cohortInfo[key].started_first_shift} users started their first shift\n\n`;
+	return new Promise(function(reject,resolve){
+		var start = Date.now();
+		console.log('Posting data to Slack channel...');
+		var payload = {
+			channel: SLACK_CHANNEL,
+		};
+		payload.text = '*Melted user data by cohort:*\n\n';
+		var cohortKeys = Object.keys(cohortInfo);
+		cohortKeys.forEach(function(key){
+			payload.text += `_*For Cohort ${key}:*_\n`;
+			payload.text += `    _*${cohortInfo[key].enrolled_in_canvas}* users enrolled in Canvas_\n`;
+			payload.text += `    _*${cohortInfo[key].accepted_into_training}* users accepted into training_\n`;
+			payload.text += `    _*${cohortInfo[key].graduates}* users graduated_\n`;
+			payload.text += `    _*${cohortInfo[key].started_first_shift}* users started their first shift_\n\n`;
+		});
+		fetch(KEYS.slackAccountURL, {
+			method: 'POST',
+			body: JSON.stringify(payload)
+		})
+		.then(function(res){
+			var timeTook = (Date.now()-start)/1000;
+			console.log(`Done. Took ${timeTook} seconds`);
+			resolve(cohortInfo);
+		}).catch(function(error){
+			CONSOLE_WITH_TIME(`Failed to post to channel ${SLACK_CHANNEL}: `,error);
+		});
 	});
-
-	fetch(KEYS.slackAccountURL, {
-	method: 'POST',
-	body: JSON.stringify(payload)
-	}).catch(function(error) {
-		CONSOLE_WITH_TIME('Failed to post to the graduate slack channel: ',error);
-	});
+	
 }
-// function writeDataToCSVFile(cohorts){
-// 	var CSVstring = 'cohorts;';
-// 	var cohortKeys = Object.keys(cohorts);
-// 	var subObjectKeys = Object.keys(cohorts[cohortKeys[0]]);
-// 	subObjectKeys.forEach(function(key){
-// 		CSVstring += key + ';';
-// 	})
-// 	CSVstring = CSVstring.substring(0, CSVstring.length-1);
-// 	cohortKeys.forEach(function(cohortNum){
-// 		var nextLine = '\n' + cohortNum + ';';
-// 		subObjectKeys.forEach(function(metric){
-// 			nextLine += cohorts[cohortNum][metric] + ';';
-// 		});
-// 		nextLine = nextLine.substring(0, nextLine.length-1);
-// 		CSVstring += nextLine;
-// 	});
-// 	var CSVfilePath = 'meltedData.csv'
-// 	fs.writeFile(CSVfilePath, CSVstring, function(err){
-// 		if(err) return console.error(err);
-// 		console.log(`CSV file ${CSVfilePath} written.`);
-// 	});
-// 	return cohorts;
-// }
-//wrap in Cronjob
-// go();
 
 //HELPER FUNCTIONS
 function errorHandler(err){
@@ -420,7 +403,6 @@ function request(url, API, method, params) {
   if(API == 'Canvas'){
   	fetchData['headers'] = {'Authorization': KEYS.canvas.api_key};
   }
-  // console.log("Request url: ", url);
 
   return fetch(url, fetchData)
   .then(function (res) { return res.text(); })

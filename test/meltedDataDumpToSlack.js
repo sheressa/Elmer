@@ -5,16 +5,16 @@ const cohortPromise = require('../jobs/training/meltedDataDumpToSlack.js').cohor
 
 var cohortData;
 before(function(){
-	this.timeout(50000);
+	this.timeout(60000);
 	return cohortPromise.then(function(data){
 		cohortData = data;
 	});
 });
 
 describe('data valid', function(){
-	it('should have 4 data metrics', function(){
+	it('should have 5 data metrics', function(){
 		var cohortNumber = '15';
-		var result = Object.keys(cohortData[cohortNumber]).length === 4;
+		var result = Object.keys(cohortData[cohortNumber]).length === 5;
 		assert(result);
 	});
 
