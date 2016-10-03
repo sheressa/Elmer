@@ -6,11 +6,11 @@ const KEYS = require('./keys.js');
 const fs = require('fs');
 const APICallsPerSecond = 10;
 const SLACK_CHANNEL = '#training';
-const CONFIG = require('../../config.js');
+// const CONFIG = require('../../config.js');
 
-new CronJob(CONFIG.melted_users_on_slack_cron_job_string, function () {
-    postMeltedUserDataToSlack();
-  }, null, true);
+// new CronJob(CONFIG.melted_users_on_slack_cron_job_string, function () {
+//     postMeltedUserDataToSlack();
+//   }, null, true);
 
 function masterConsoleTest(res){
 	console.log(res);
@@ -22,8 +22,8 @@ function postMeltedUserDataToSlack(){
 		.then(getTotalAcceptedIntoTraining)
 		.then(getGradAndFirstShiftCheckpointIDsForEachCohort) 
 		.then(getTotalUsersWhoTookFirstShiftAndGraduated)	
-		.then(masterConsoleTest)
-		.then(notifySlack)
+		// .then(masterConsoleTest)
+		// .then(notifySlack)
 		.catch(function(err){
 			console.error('Error: ', err)
 			return err;
@@ -84,14 +84,25 @@ function getEnrollmentsFromCohort(cohorts){
 		function enrollmentLengthAPICall(courseNum){
 			var enrolled = 0;
 			var pageNumber = 1;
+			var allStudents = [];
 			function recursiveRequestCaller(){
 				return request(`courses/${courseNum}/enrollments?per_page=1000&page=${pageNumber}&enrollment_type[]=student&state[]=active&state[]=completed&state[]=inactive`, 'Canvas', 'GET')
 						.then(function(enrollment){
 							if(enrollment.length == 0){
-								return enrolled;
+								return {
+									enrollment_length: enrolled,
+									students: allStudents
+								}
 							}
 							enrolled += enrollment.length;
 							pageNumber += 1;
+							allStudents = allStudents.concat(enrollment.map(function(user){
+								return {
+									user_id: user.user_id,
+									name: user.user.sortable_name,
+									email: user.user.sis_login_id
+								};
+							}));
 							return recursiveRequestCaller();
 						}).catch(errorHandler);
 			}
@@ -108,7 +119,21 @@ function getEnrollmentsFromCohort(cohorts){
 			var classAPICalls = Promise.all(classes.map(enrollmentLengthAPICall));
 			var sumTallyPromise = classAPICalls
 				.then(function(data){
-					return data.reduce(function(a,b){ return a+b; }, 0);
+					var tally = data.map(function(obj){
+						return obj.enrollment_length;
+					}).reduce(function(a,b){
+						return a+b;
+					}, 0);
+					
+					var users = data.map(function(obj){
+						return obj.students;
+					}).reduce(function(prev, curr){
+						return prev.concat(curr);
+					});
+					return {
+						enrollment: tally,
+						users: users
+					};
 				})
 				.catch(errorHandler);
 			cohortEnrollments[key] = sumTallyPromise;
@@ -118,8 +143,9 @@ function getEnrollmentsFromCohort(cohorts){
 		Promise.all(sumTallyPromiseArray)
 			.then(function(res){
 				Object.keys(cohortEnrollments).forEach(function(key){
-					cohortEnrollments[key].then(function(val){
-						cohorts[key].enrolled_in_canvas = val;
+					cohortEnrollments[key].then(function(tallyData){
+						cohorts[key].enrolled_in_canvas = tallyData.enrollment;
+						cohorts[key].users = tallyData.users;
 					});
 				});
 				var timeTook = (Date.now()-start)/1000;
