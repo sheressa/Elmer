@@ -5,7 +5,8 @@ const fetch = require('node-fetch');
 const KEYS = require('./keys.js');
 const fs = require('fs');
 const APICallsPerSecond = 10;
-var SLACK_CHANNEL = '#training';
+const SLACK_CHANNEL = '#training';
+const CONFIG = require('../../config.js');
 
 new CronJob(CONFIG.melted_users_on_slack_cron_job_string, function () {
     postMeltedUserDataToSlack();
