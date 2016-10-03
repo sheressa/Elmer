@@ -5,15 +5,17 @@ const fetch = require('node-fetch');
 const KEYS = require('./keys.js');
 const fs = require('fs');
 const APICallsPerSecond = 10;
-var SLACK_CHANNEL = '#test';
-// new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
-//     pollCanvasForGraduatedUsersThenCreatePlatformAccount();
-//   }, null, true);
+var SLACK_CHANNEL = '#training';
+
+new CronJob(CONFIG.melted_users_on_slack_cron_job_string, function () {
+    postMeltedUserDataToSlack();
+  }, null, true);
+
 function masterConsoleTest(res){
 	console.log(res);
 	return res;
 }
-function go(){
+function postMeltedUserDataToSlack(){
 	return getCohortNumbers()
 		.then(getEnrollmentsFromCohort)
 		.then(getTotalAcceptedIntoTraining)
@@ -333,7 +335,13 @@ function notifySlack(cohortInfo) {
 		var payload = {
 			channel: SLACK_CHANNEL,
 		};
-		payload.text = '*Melted user data by cohort:*\n\n';
+		var nowArr = new Date().toString().split(' ');
+		var weekday = nowArr[0];
+		var month = nowArr[1];
+		var date = nowArr[2];
+		var year = nowArr[3];
+
+		payload.text = `*Melted user data by Cohort on ${weekday}, ${month} ${date}, ${year}:*\n\n`;
 		var cohortKeys = Object.keys(cohortInfo);
 		cohortKeys.forEach(function(key){
 			payload.text += `_*For Cohort ${key}:*_\n`;
@@ -409,4 +417,6 @@ function request(url, API, method, params) {
   .then(convertIds);
 }
 
-module.exports = { cohortDataPromise: go() }
+module.exports = { 	cohortDataPromise: postMeltedUserDataToSlack(), 
+					request: request			
+				 };

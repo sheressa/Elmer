@@ -116,6 +116,9 @@ CONFIG.time_interval = {
   // How often we check for graduated users in canvas and create platform accounts for them.
   graduate_users_cron_job_string: '0 0 */1 * * *', // Every hour.
 
+  //Outputs data on melted users and posts it to Slack
+  melted_users_on_slack_cron_job_string: '0 0 10 * * *', // Every day at 10:00 AM
+
   // Each recurrence chain is 1 year long.
   max_shifts_in_chain: 52,
 
