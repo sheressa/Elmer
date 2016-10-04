@@ -3,7 +3,7 @@
 //REQUIRING KEYS BEFORE CONFIG BECAUSE CONFIG DEPENDS ON KEYS
 global.KEYS = require('../keys.js');
 global.CONFIG = require('../config');
-
+const cache = require('../cache.js');
 if (process.env.NODE_ENV !== 'production') {
   CONFIG.locationID.regular_shifts = CONFIG.locationID.test;
 }
@@ -31,6 +31,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+(function CacheInit(){
+  if (global.cache) return;
+  cache()
+  .then(function(users){
+    console.log(users[0])
+    global.cache = users;
+  })
+  .catch(function(error){
+    console.error(error);
+    CacheInit();
+  })
+})();
 
 app.use('/scheduling', require('./scheduling').router);
 app.use('/canvas', require('./canvas').router);
