@@ -1,4 +1,5 @@
 'use strict';
+
 var Request = require('request-promise');
 var CronJob = require('cron').CronJob;
 var WhenIWork = CONFIG.WhenIWork;
@@ -32,7 +33,7 @@ function deleteWiWUserAndShifts(canvasUser, WiWUsers) {
 
 function findMeltedCanvasUsersAndDeleteThemInWiW() {
   var users = global.cache.filter(function(user){
-    return user.locationID.indexOf(CONFIG.locationID.regular_shifts) > -1;
+    return user.locations.indexOf(CONFIG.locationID.regular_shifts) > -1;
   });  
     updateCanvas.canvas.retrieveCourses()
     .then(function(response) {
