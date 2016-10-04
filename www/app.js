@@ -37,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
   cache()
   .then(function(users){
     global.USERS_CACHE = users;
+    CONSOLE_WITH_TIME(users[0]);
   })
   .catch(function(error){
     console.error(error);

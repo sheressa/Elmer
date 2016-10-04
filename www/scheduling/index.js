@@ -40,10 +40,12 @@ router.get('/login', function (req, res) {
     // Try to log in as the user using our global password.
     // If we can't, immediately redirect to When I Work and don't try to do anything else.
     var newAPI = createSecondAPI(KEYS.wheniwork.api_key, user.email, KEYS.wheniwork.default_password, function (resp) {
+        CONSOLE_WITH_TIME('New API created');
         res.redirect('https://app.wheniwork.com/login/?redirect=myschedule');
     });
     // Try to generate an autologin token for a user
     newAPI.post('users/autologin', function (response) {
+      CONSOLE_WITH_TIME('response from generating autologin token: ', response);
       // If we can't generate one for some reason, redirect immediately.
       if (typeof response.error !== 'undefined') {
         res.redirect('https://app.wheniwork.com');
@@ -54,6 +56,7 @@ router.get('/login', function (req, res) {
         if (req.query.destination != undefined && req.query.destination != '') {
           destination = req.query.destination;
         }
+        CONSOLE_WITH_TIME('attempting to redirect to wheniwork');
         res.redirect('https://app.wheniwork.com/'+destination+'?al=' + response.hash);
       }
     });
@@ -96,28 +99,29 @@ function reactivate(user){
 function allUsers(email, altEmail, callback){
   var match = false;
   return new Promise (function(resolve, reject){
-        var users = global.USERS_CACHE;
-        for (var i in users) {
-          // existing users
-          if (users[i].email === email && !users[i].is_deleted || users[i].email === altEmail && !users[i].is_deleted) {
-              match=true;
-              callback(users[i]);
-              resolve(users[i]);
-          // existing deleted users; reactivation sequence
-          } else if (users[i].is_deleted && users[i].email === email){
-            match=true;
-              reactivate(users[i])
-              .then(function(user){
-                callback(user);
-                resolve(user);
-              })
-              .catch(function(error){
-                CONSOLE_WITH_TIME('User', users[i].login_id,'reactivation failed', error)
-              });
-        // we didn't find the user in WiW records, we need to create a newUser
-          } else if (i==users.length-1 && !match) resolve();
-        }
-      })
+    var users = global.USERS_CACHE;
+    for (var i in users) {
+      // existing users
+      if (users[i].email === email && !users[i].is_deleted || users[i].email === altEmail && !users[i].is_deleted) {
+          match=true;
+          callback(users[i]);
+          resolve(users[i]);
+      // existing deleted users; reactivation sequence
+      } else if (users[i].is_deleted && users[i].email === email){
+        match=true;
+          reactivate(users[i])
+          .then(function(user){
+            callback(user);
+            CONSOLE_WITH_TIME('User retrieved by cache: ', user);
+            resolve(user);
+          })
+          .catch(function(error){
+            CONSOLE_WITH_TIME('User', users[i].login_id,'reactivation failed', error)
+          });
+    // we didn't find the user in WiW records, we need to create a newUser
+      } else if (i==users.length-1 && !match) resolve();
+    }
+  });
 }
 
 // creates a new user
