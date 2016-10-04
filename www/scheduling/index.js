@@ -96,34 +96,28 @@ function reactivate(user){
 function allUsers(email, altEmail, callback){
   var match = false;
   return new Promise (function(resolve, reject){
-    api.get('users', {include_objects: false, show_deleted: true}, function(response){
-        if (response.message) {
-            reject('No valid response returned from WiW: ', response.message);
-        } else {
-          var users = response.users;
-          for (var i in users) {
-            // existing users
-            if (users[i].email === email && !users[i].is_deleted || users[i].email === altEmail && !users[i].is_deleted) {
-                match=true;
-                callback(users[i]);
-                resolve(users[i]);
-            // existing deleted users; reactivation sequence
-            } else if (users[i].is_deleted && users[i].email === email){
+        var users = global.USERS_CACHE;
+        for (var i in users) {
+          // existing users
+          if (users[i].email === email && !users[i].is_deleted || users[i].email === altEmail && !users[i].is_deleted) {
               match=true;
-                reactivate(users[i])
-                .then(function(user){
-                  callback(user);
-                  resolve(user);
-                })
-                .catch(function(error){
-                  CONSOLE_WITH_TIME('User', users[i].login_id,'reactivation failed', error)
-                });
-          // we didn't find the user in WiW records, we need to create a newUser
-            } else if (i==users.length-1 && !match) resolve();
-          }
+              callback(users[i]);
+              resolve(users[i]);
+          // existing deleted users; reactivation sequence
+          } else if (users[i].is_deleted && users[i].email === email){
+            match=true;
+              reactivate(users[i])
+              .then(function(user){
+                callback(user);
+                resolve(user);
+              })
+              .catch(function(error){
+                CONSOLE_WITH_TIME('User', users[i].login_id,'reactivation failed', error)
+              });
+        // we didn't find the user in WiW records, we need to create a newUser
+          } else if (i==users.length-1 && !match) resolve();
         }
-    });
-  });
+      })
 }
 
 // creates a new user
@@ -131,6 +125,7 @@ function createUser(newUser, callback){
   return new Promise(function(resolve, reject){
     stathat.increment('Scheduling - Accounts Created', 1);
     api.post('users', newUser, function (response) {
+      global.USERS_CACHE.push(response.user);
       var secondAPI = createSecondAPI(KEYS.wheniwork.api_key, newUser.email, KEYS.wheniwork.default_password, function (error) { CONSOLE_WITH_TIME('Error creating secondAPI within createUser: ', error)});
 
       var alert = {sms: false, email: false};
@@ -153,6 +148,7 @@ function createUser(newUser, callback){
     });
   });
 }
+
 // checks the status of the user: active, deleted,or newUser
 function checkUser(email, first, last, callback) {
   var altEmail = helpers.generateAltEmail(email);

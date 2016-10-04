@@ -10,10 +10,10 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 (function CacheInit(){
-	if (global.cache) return;
+	if (global.USERS_CACHE) return;
 	cache()
 	.then(function(users){
-		global.cache = users;
+		global.USERS_CACHE = users;
 		const jobs = require('require-all')(__dirname + '/jobs');
 	})
 	.catch(function(error){
