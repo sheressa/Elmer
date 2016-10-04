@@ -22,7 +22,7 @@ function go(){
 function getPendingUsers(){
 	return new Promise(function(resolve, reject){
 		const pending = {};
-		global.cache.forEach(function(user){
+		global.USERS_CACHE.forEach(function(user){
 			if(!user.is_active) pending[user.email] = user;
 		});
 		resolve(pending);
@@ -33,7 +33,7 @@ function getPendingUsers(){
 function getDeletedUsers(pending){
 	return new Promise(function(resolve, reject){
 		let reactivate = [];
-		global.cache.forEach(function(user){
+		global.USERS_CACHE.forEach(function(user){
 			if (!user.is_deleted && pending[user.email]) {
 				// reject the pending user
 				rejectUser(pending[user.email]);

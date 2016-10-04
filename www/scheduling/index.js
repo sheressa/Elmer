@@ -96,7 +96,7 @@ function reactivate(user){
 function allUsers(email, altEmail, callback){
   var match = false;
   return new Promise (function(resolve, reject){
-        var users = global.cache;
+        var users = global.USERS_CACHE;
         for (var i in users) {
           // existing users
           if (users[i].email === email && !users[i].is_deleted || users[i].email === altEmail && !users[i].is_deleted) {
@@ -125,7 +125,7 @@ function createUser(newUser, callback){
   return new Promise(function(resolve, reject){
     stathat.increment('Scheduling - Accounts Created', 1);
     api.post('users', newUser, function (response) {
-      global.cache.push(response.user);
+      global.USERS_CACHE.push(response.user);
       var secondAPI = createSecondAPI(KEYS.wheniwork.api_key, newUser.email, KEYS.wheniwork.default_password, function (error) { CONSOLE_WITH_TIME('Error creating secondAPI within createUser: ', error)});
 
       var alert = {sms: false, email: false};

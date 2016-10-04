@@ -33,11 +33,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 (function CacheInit(){
-  if (global.cache) return;
+  if (global.USERS_CACHE) return;
   cache()
   .then(function(users){
-    console.log(users[0])
-    global.cache = users;
+    global.USERS_CACHE = users;
   })
   .catch(function(error){
     console.error(error);

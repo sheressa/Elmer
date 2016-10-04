@@ -32,7 +32,7 @@ function deleteWiWUserAndShifts(canvasUser, WiWUsers) {
 }
 
 function findMeltedCanvasUsersAndDeleteThemInWiW() {
-  var users = global.cache.filter(function(user){
+  var users = global.USERS_CACHE.filter(function(user){
     return user.locations.indexOf(CONFIG.locationID.regular_shifts) > -1;
   });  
     updateCanvas.canvas.retrieveCourses()
