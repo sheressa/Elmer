@@ -1,6 +1,6 @@
 global.KEYS = require('./keys.js');
 global.CONFIG = require('./config');
-global.CACHE = require('./cache.js');
+const cache = require('./cache.js');
 require('newrelic');
 
 if (process.env.NODE_ENV !== 'production') {
@@ -9,4 +9,8 @@ if (process.env.NODE_ENV !== 'production') {
   CONFIG.locationID.makeup_and_extra_shifts = CONFIG.locationID.test2;
 }
 
-var jobs = require('require-all')(__dirname + '/jobs');
+cache()
+.then(function(users){
+	global.cache= users;
+	var jobs = require('require-all')(__dirname + '/jobs');
+})

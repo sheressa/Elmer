@@ -1,5 +1,4 @@
 'use strict';
-global.KEYS = require('./keys.js');
 const moment = require('moment-timezone');
 moment.tz.setDefault("America/New_York");
 
@@ -183,6 +182,5 @@ CONFIG.shiftColors = {
 
   'Sat': { '12am': 'red', '2am': 'red', '4am': 'red', '6am': 'red', '8am': 'gray', '10am': 'red', '12pm': 'gray', '2pm': 'gray', '4pm': 'red', '6pm': 'gray', '8pm': 'gray', '10pm': 'red' }
 };
-
 
 module.exports = CONFIG;

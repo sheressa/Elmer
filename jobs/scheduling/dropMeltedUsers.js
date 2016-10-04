@@ -31,7 +31,9 @@ function deleteWiWUserAndShifts(canvasUser, WiWUsers) {
 }
 
 function findMeltedCanvasUsersAndDeleteThemInWiW() {
-  WhenIWork.get('users', CONFIG.locationID.regular_shifts, function(users) {
+  var users = global.cache.filter(function(user){
+    return user.locationID.indexOf(CONFIG.locationID.regular_shifts) > -1;
+  });  
     updateCanvas.canvas.retrieveCourses()
     .then(function(response) {
       var result = response.map(function(course) {
@@ -57,7 +59,6 @@ function findMeltedCanvasUsersAndDeleteThemInWiW() {
     .catch(function(err) {
       console.log('Error finding Canvas users or deleting them in WiW', err);
     });
-  });
 }
 
 module.exports = {deleteWiWUserAndShifts: deleteWiWUserAndShifts, findMeltedCanvasUsersAndDeleteThemInWiW: findMeltedCanvasUsersAndDeleteThemInWiW};
