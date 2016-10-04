@@ -6,9 +6,8 @@
 **/
 const api = CONFIG.WhenIWork;
 const CronJob = require('cron').CronJob;
-
-new CronJob(CONFIG.time_interval.pending_users, go, null, true);
-go();
+// new CronJob(CONFIG.time_interval.pending_users, go, null, true);
+// go();
 // get this party started
 function go(){
 	getPendingUsers()
@@ -22,36 +21,31 @@ function go(){
 // get WiW approval pending users
 function getPendingUsers(){
 	return new Promise(function(resolve, reject){
-		api.get('users', function(res){
-			if (res.message) reject(`Call to get WiW pending users failed: ${res.message}`);
-			const pending = {};
-			res.users.forEach(function(user){
-				if(!user.is_active) pending[user.email] = user;
-			});
-			resolve(pending);
+		const pending = {};
+		global.cache.forEach(function(user){
+			if(!user.is_active) pending[user.email] = user;
 		});
+		resolve(pending);
 	});
+
 }
 
 function getDeletedUsers(pending){
 	return new Promise(function(resolve, reject){
-		api.get('users', {show_deleted: true}, function(res){
-			if (res.message) reject(`Call to get WiW deleted users failed: ${res.message}`);
-			var reactivate = [];
-			res.users.forEach(function(user){
-				if (!user.is_deleted && pending[user.email]) {
-					// reject the pending user
-					rejectUser(pending[user.email]);
-				}
-				if(user.is_deleted && pending[user.email]) {
-					// add user into the reactivation array
-					reactivate.push(user);
-					rejectUser(pending[user.email]);
-				} 
-			});
-			// if a pending user matches a user we have previously deleted, reactivate the deleted user and reject a pending user
-			resolve(reactivate);
+		let reactivate = [];
+		global.cache.forEach(function(user){
+			if (!user.is_deleted && pending[user.email]) {
+				// reject the pending user
+				rejectUser(pending[user.email]);
+			}
+			if(user.is_deleted && pending[user.email]) {
+				// add user into the reactivation array
+				reactivate.push(user);
+				rejectUser(pending[user.email]);
+			} 
 		});
+		// if a pending user matches a user we have previously deleted, reactivate the deleted user and reject a pending user
+		resolve(reactivate);
 	});
 }
 
@@ -59,7 +53,7 @@ function getDeletedUsers(pending){
 function reactivate(list){
   return new Promise(function(resolve, reject){
   	list.forEach(function(user){
-  		CONSOLE_WITH_TIME('Reactivating user', Object.keys(user)[0]);
+  		CONSOLE_WITH_TIME('Reactivating user', user.email);
 	    api.update(`users/${user.id}`, {reactivate:true}, function(res){
 	      if (res.message) reject(`Reactivation for user ${user.id} failed: ${res.message}`);
 	      else resolve(res);
