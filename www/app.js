@@ -40,6 +40,7 @@ app.use(express.static(path.join(__dirname, 'public')));
     CONSOLE_WITH_TIME(users[0]);
   })
   .catch(function(error){
+    CONSOLE_WITH_TIME('error showing up from cache initialization');
     console.error(error);
     CacheInit();
   })
