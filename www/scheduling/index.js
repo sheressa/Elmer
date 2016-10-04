@@ -104,6 +104,8 @@ function allUsers(email, altEmail, callback){
       // existing users
       if (users[i].email === email && !users[i].is_deleted || users[i].email === altEmail && !users[i].is_deleted) {
           match=true;
+          CONSOLE_WITH_TIME('User retrieved by cache: ', user);
+
           callback(users[i]);
           resolve(users[i]);
       // existing deleted users; reactivation sequence
@@ -112,7 +114,7 @@ function allUsers(email, altEmail, callback){
           reactivate(users[i])
           .then(function(user){
             callback(user);
-            CONSOLE_WITH_TIME('User retrieved by cache: ', user);
+            CONSOLE_WITH_TIME('previously deleted user retrieved by cache: ', user);
             resolve(user);
           })
           .catch(function(error){
@@ -154,6 +156,9 @@ function createUser(newUser, callback){
 }
 
 // checks the status of the user: active, deleted,or newUser
+
+// @TODO: we don't call the callback in this function, but instead in allUsers.
+// Consider a better design.
 function checkUser(email, first, last, callback) {
   var altEmail = helpers.generateAltEmail(email);
   var newUser;
