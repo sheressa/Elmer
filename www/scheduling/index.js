@@ -98,32 +98,29 @@ function reactivate(user){
 // retrieves all WiW users and checks for a particular user
 function allUsers(email, altEmail, callback){
   var match = false;
-  return new Promise (function(resolve, reject){
-    var users = global.USERS_CACHE;
-    for (var i in users) {
-      // existing users
-      if (users[i].email === email && !users[i].is_deleted || users[i].email === altEmail && !users[i].is_deleted) {
-          match=true;
-          CONSOLE_WITH_TIME('User retrieved by cache: ', user);
-
-          callback(users[i]);
-          resolve(users[i]);
-      // existing deleted users; reactivation sequence
-      } else if (users[i].is_deleted && users[i].email === email){
+  var users = global.USERS_CACHE;
+  CONSOLE_WITH_TIME('users cache length within allUsers: ', users.length);
+  for (var i in users) {
+    // existing users
+    if (users[i].email === email && !users[i].is_deleted || users[i].email === altEmail && !users[i].is_deleted) {
         match=true;
-          reactivate(users[i])
-          .then(function(user){
-            callback(user);
-            CONSOLE_WITH_TIME('previously deleted user retrieved by cache: ', user);
-            resolve(user);
-          })
-          .catch(function(error){
-            CONSOLE_WITH_TIME('User', users[i].login_id,'reactivation failed', error)
-          });
-    // we didn't find the user in WiW records, we need to create a newUser
-      } else if (i==users.length-1 && !match) resolve();
-    }
-  });
+        CONSOLE_WITH_TIME('User retrieved by cache: ', users[i]);
+        callback(users[i]);
+    // existing deleted users; reactivation sequence
+    } else if (users[i].is_deleted && users[i].email === email){
+      match=true;
+        reactivate(users[i])
+        .then(function(user){
+          callback(user);
+          CONSOLE_WITH_TIME('previously deleted user retrieved by cache: ', user);
+          resolve(user);
+        })
+        .catch(function(error){
+          CONSOLE_WITH_TIME('User', users[i].login_id,'reactivation failed', error)
+        });
+  // we didn't find the user in WiW records, we need to create a newUser
+    } else if (i==users.length-1 && !match) callback(null, 'no user found');
+  }
 }
 
 // creates a new user
@@ -163,9 +160,8 @@ function checkUser(email, first, last, callback) {
   var altEmail = helpers.generateAltEmail(email);
   var newUser;
 
-  allUsers(email, altEmail, callback)
-  .then(function(response){
-    if(!response){
+  allUsers(email, altEmail, function(user, error) {
+    if (error) {
       // At this point, we didn't find the user so let's create it.
       newUser = {
         role: 3,
@@ -178,9 +174,9 @@ function checkUser(email, first, last, callback) {
       };
       createUser(newUser, callback);
     }
-  })
-  .catch(function(err){
-    CONSOLE_WITH_TIME('Promise chain failed ', err)
+    else {
+      callback(user);
+    }
   });
 }
 
