@@ -8,7 +8,7 @@ new CronJob(CONFIG.time_interval.openShifts, function () {
     mergeOpenShifts();
 }, null, true);
 
-mergeOpenShifts();
+// mergeOpenShifts();
 
 function mergeOpenShifts() {
   var query = {

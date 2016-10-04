@@ -14,7 +14,7 @@ var mandrill_client = new mandrill.Mandrill(KEYS.mandrill.api_key);
 
 new CronJob(CONFIG.time_interval.cron_twice_per_day, notifyMoreShifts, null, true);
 
-notifyMoreShifts();
+// notifyMoreShifts();
 
 function notifyMoreShifts() {
   var result;

@@ -6,13 +6,15 @@ var Request = require('request');
 var mandrill = require('mandrill-api/mandrill');
 var mandrill_client = new mandrill.Mandrill(KEYS.mandrill.api_key);
 var fs = require('fs');
+global.CACHE.tester=true;
+console.log('attendance',global.CACHE.tester)
 
 //runs cron job every day at 5am
 new CronJob(CONFIG.time_interval.gtw_attendance_sync_with_canvas, function () {
    startJobByQueryingForGTWSessions();
 }, null, true);
 //invoking the function here runs the job every time the application starts
-startJobByQueryingForGTWSessions();
+// startJobByQueryingForGTWSessions();
 //gets all webinar sessions in a specified time period
 function startJobByQueryingForGTWSessions(){
   var keysArr = [];

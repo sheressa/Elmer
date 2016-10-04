@@ -8,11 +8,13 @@ const wiw_date_format = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 const stathat = require(CONFIG.root_dir + '/lib/stathat');
 const notifyUserBookedShift = require('./helpers/notifyUserBookedShift');
 
+console.log('recur',global.CACHE.tester)
+
 new CronJob(CONFIG.time_interval.recur_and_publish_shifts_cron_job_string, function () {
   recurNewlyCreatedShifts();
 }, null, true);
 
-recurNewlyCreatedShifts();
+// recurNewlyCreatedShifts();
 
 function recurNewlyCreatedShifts() {
   var batchPostRequestBody = [];
