@@ -17,6 +17,7 @@ if (process.env.NODE_ENV !== 'production') {
 		const jobs = require('require-all')(__dirname + '/jobs');
 	})
 	.catch(function(error){
+		console.error(error);
 		CacheInit();
 	})
 })();
