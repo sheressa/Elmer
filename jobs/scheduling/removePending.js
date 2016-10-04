@@ -6,12 +6,11 @@
 **/
 const api = CONFIG.WhenIWork;
 const CronJob = require('cron').CronJob;
-
-new CronJob(CONFIG.time_interval.pending_users, go, null, true);
-go(); 
+// new CronJob(CONFIG.time_interval.pending_users, go, null, true);
+// go();
 // get this party started
 function go(){
-	getPendingUsers();
+	getPendingUsers()
 	.then(getDeletedUsers)
 	.then(reactivate)
 	.catch(function(res){
@@ -54,7 +53,7 @@ function getDeletedUsers(pending){
 function reactivate(list){
   return new Promise(function(resolve, reject){
   	list.forEach(function(user){
-  		CONSOLE_WITH_TIME('Reactivating user', Object.keys(user)[0]);
+  		CONSOLE_WITH_TIME('Reactivating user', user.email);
 	    api.update(`users/${user.id}`, {reactivate:true}, function(res){
 	      if (res.message) reject(`Reactivation for user ${user.id} failed: ${res.message}`);
 	      else resolve(res);
