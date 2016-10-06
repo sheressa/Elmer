@@ -78,7 +78,7 @@ function finalExamChecker(studentObj, finalExamId, courseId, users){
   request('courses/' +courseId+ '/quizzes/' + finalExamId+'/submissions', 'GET')
   .then(function (quizzes) {
     quizzes.quiz_submissions.forEach(function(quiz){
-      if(studentObj[quiz.user_id] && quiz.score<85) {
+      if(studentObj[quiz.user_id] && quiz.score < CONFIG.canvas.passingScores.final) {
           delete studentObj[quiz.user_id];
         }
     });

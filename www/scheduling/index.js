@@ -40,10 +40,12 @@ router.get('/login', function (req, res) {
     // Try to log in as the user using our global password.
     // If we can't, immediately redirect to When I Work and don't try to do anything else.
     var newAPI = createSecondAPI(KEYS.wheniwork.api_key, user.email, KEYS.wheniwork.default_password, function (resp) {
+        CONSOLE_WITH_TIME('New API created');
         res.redirect('https://app.wheniwork.com/login/?redirect=myschedule');
     });
     // Try to generate an autologin token for a user
     newAPI.post('users/autologin', function (response) {
+      CONSOLE_WITH_TIME('response from generating autologin token: ', response);
       // If we can't generate one for some reason, redirect immediately.
       if (typeof response.error !== 'undefined') {
         res.redirect('https://app.wheniwork.com');
@@ -54,6 +56,7 @@ router.get('/login', function (req, res) {
         if (req.query.destination != undefined && req.query.destination != '') {
           destination = req.query.destination;
         }
+        CONSOLE_WITH_TIME('attempting to redirect to wheniwork');
         res.redirect('https://app.wheniwork.com/'+destination+'?al=' + response.hash);
       }
     });
@@ -95,35 +98,29 @@ function reactivate(user){
 // retrieves all WiW users and checks for a particular user
 function allUsers(email, altEmail, callback){
   var match = false;
-  return new Promise (function(resolve, reject){
-    api.get('users', {include_objects: false, show_deleted: true}, function(response){
-        if (response.message) {
-            reject('No valid response returned from WiW: ', response.message);
-        } else {
-          var users = response.users;
-          for (var i in users) {
-            // existing users
-            if (users[i].email === email && !users[i].is_deleted || users[i].email === altEmail && !users[i].is_deleted) {
-                match=true;
-                callback(users[i]);
-                resolve(users[i]);
-            // existing deleted users; reactivation sequence
-            } else if (users[i].is_deleted && users[i].email === email){
-              match=true;
-                reactivate(users[i])
-                .then(function(user){
-                  callback(user);
-                  resolve(user);
-                })
-                .catch(function(error){
-                  CONSOLE_WITH_TIME('User', users[i].login_id,'reactivation failed', error)
-                });
-          // we didn't find the user in WiW records, we need to create a newUser
-            } else if (i==users.length-1 && !match) resolve();
-          }
-        }
-    });
-  });
+  var users = global.USERS_CACHE;
+  CONSOLE_WITH_TIME('users cache length within allUsers: ', users.length);
+  for (var i in users) {
+    // existing users
+    if (users[i].email === email && !users[i].is_deleted || users[i].email === altEmail && !users[i].is_deleted) {
+        match=true;
+        CONSOLE_WITH_TIME('User retrieved by cache: ', users[i]);
+        callback(users[i]);
+    // existing deleted users; reactivation sequence
+    } else if (users[i].is_deleted && users[i].email === email){
+      match=true;
+        reactivate(users[i])
+        .then(function(user){
+          callback(user);
+          CONSOLE_WITH_TIME('previously deleted user retrieved by cache: ', user);
+          resolve(user);
+        })
+        .catch(function(error){
+          CONSOLE_WITH_TIME('User', users[i].login_id,'reactivation failed', error)
+        });
+  // we didn't find the user in WiW records, we need to create a newUser
+    } else if (i==users.length-1 && !match) callback(null, 'no user found');
+  }
 }
 
 // creates a new user
@@ -131,6 +128,7 @@ function createUser(newUser, callback){
   return new Promise(function(resolve, reject){
     stathat.increment('Scheduling - Accounts Created', 1);
     api.post('users', newUser, function (response) {
+      global.USERS_CACHE.push(response.user);
       var secondAPI = createSecondAPI(KEYS.wheniwork.api_key, newUser.email, KEYS.wheniwork.default_password, function (error) { CONSOLE_WITH_TIME('Error creating secondAPI within createUser: ', error)});
 
       var alert = {sms: false, email: false};
@@ -153,14 +151,17 @@ function createUser(newUser, callback){
     });
   });
 }
+
 // checks the status of the user: active, deleted,or newUser
+
+// @TODO: we don't call the callback in this function, but instead in allUsers.
+// Consider a better design.
 function checkUser(email, first, last, callback) {
   var altEmail = helpers.generateAltEmail(email);
   var newUser;
 
-  allUsers(email, altEmail, callback)
-  .then(function(response){
-    if(!response){
+  allUsers(email, altEmail, function(user, error) {
+    if (error) {
       // At this point, we didn't find the user so let's create it.
       newUser = {
         role: 3,
@@ -173,9 +174,9 @@ function checkUser(email, first, last, callback) {
       };
       createUser(newUser, callback);
     }
-  })
-  .catch(function(err){
-    CONSOLE_WITH_TIME('Promise chain failed ', err)
+    else {
+      callback(user);
+    }
   });
 }
 
