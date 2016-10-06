@@ -12,9 +12,9 @@ before(function(){
 });
 
 describe('data valid', function(){
-	it('should have 5 data metrics', function(){
+	it('should have 6 data metrics', function(){
 		var cohortNumber = '15';
-		var result = Object.keys(cohortData[cohortNumber]).length === 5;
+		var result = Object.keys(cohortData[cohortNumber]).length === 6;
 		assert(result);
 	});
 
