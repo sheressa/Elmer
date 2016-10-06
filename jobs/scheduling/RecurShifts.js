@@ -199,7 +199,7 @@ function createBatchRequestsForRecurringShift(shift) {
   const batchPostRequestBody = [];
 
   shift.notes = '{"original_owner":' + shift.user_id + ', "parent_shift":' + shift.id + '}';
-  const endDate = moment(shift.start_time, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain - 1, 'weeks').format('L');
+  let endDate = moment(shift.start_time, wiw_date_format).add(CONFIG.time_interval.max_shifts_in_chain - 1, 'weeks').format('L');
 
   /**
     WhenIWork uses the end of the shift to determine which day it falls on, therefore shifts ending at midnight
