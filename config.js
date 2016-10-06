@@ -86,6 +86,9 @@ CONFIG.canvas = {
   }
 };
 
+//These are the cohorts, starting at 23, that we want to look at for melts.
+CONFIG.cohort23AndLater = 100;
+
 //used in AttendanceSync.js to check whether trainees attended a GTW webinar for a minimum of 90 minutes = 5400 seconds
 CONFIG.GTW_attendance_minimum = 5400;
 //used in AttendanceSync.js to set the hour range over which we query GTW sessions
