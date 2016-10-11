@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 const KEYS = require('./keys.js');
 const fs = require('fs');
 const APICallsPerSecond = 10;
-const SLACK_CHANNEL = '#test';
+const SLACK_CHANNEL = '#training';
 const moment = require('moment-timezone');
 moment.tz.setDefault("America/New_York");
 const CONFIG = require('../../config.js');
