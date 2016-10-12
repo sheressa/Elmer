@@ -1,23 +1,31 @@
-const Request = require('request-promise');
-const bignumJSON = require('json-bignum');
+'use strict';
 const canvas = {};
-const fetch = require('fetch-retry');
+const fetch = require('requestretry');
+/**
+- requestretry library retries a maximum of 5 times (maxAttempts property on the options object)
+- if we go over 5 tries per request we error out like we usually would
+**/
 
+// tells the requestretry library to retry the canvas call only when we hit the API call rate limit
+function myRetryStrategy(err, response, body){
+	return response.statusCode===403;
+}
 //finds all active canvas courses
 canvas.scrapeCanvasC = function(){
 
-	var url = 'https://crisistextline.instructure.com/api/v1/accounts/1/courses?per_page=1000';
+	var url = 'https://crisistextline.instructure.com/api/v1/accounts/1/courses?per_page=100';
 		var options = {
 		url: url,
+		json: true,
+		retryStrategy: myRetryStrategy,
 		headers: {
 			Authorization: KEYS.canvas.api_key,
-			'User-Agent': 'Request-Promise'
 		}
 	};
-	return Request(options)
+	return fetch(options)
 	.then(function(response){
-		var info = bignumJSON.parse(response);
-		return info;
+		if(response.statusCode!==200) throw response.message;
+		return response.body;
 	})
 	.catch(function(err){
 		CONSOLE_WITH_TIME('Canvas call to get courses failed: ', err)
@@ -27,20 +35,24 @@ canvas.scrapeCanvasC = function(){
 //finds all assignments in a specific canvas course
 canvas.scrapeCanvasA = function(id, params){
 
-	var url = 'https://crisistextline.instructure.com/api/v1/courses/'+id+'/assignments';
-	if(params) url = url+'?search_term='+params.search_term+'&per_page=100';
+	var url = 'https://crisistextline.instructure.com/api/v1/courses/'+id+'/assignments?per_page=100';
+	if(params) url = url+'&search_term='+params.search_term;
 	var options = {
+		url: url,
+		json: true,
+		retryStrategy: myRetryStrategy,
 		headers: {
 			Authorization: KEYS.canvas.api_key,
 		}
 	};
 
-	return fetch(url, options)
+	return fetch(options)
 	.then(function(response){
-		return response.json();
+		if(response.statusCode!==200) throw response.message;
+		return response.body;
 	})
 	.catch(function(err){
-		CONSOLE_WITH_TIME('Canvas call to get assignments failed')
+		CONSOLE_WITH_TIME('Canvas call to get assignments failed', err)
 	})
 
 };
@@ -49,57 +61,68 @@ canvas.scrapeCanvasA = function(id, params){
 canvas.scrapeCanvasEnroll = function(url){
 
 	var options = {
+		url: url,
+		json: true,
+		retryStrategy: myRetryStrategy,
 		headers: {
 			Authorization: KEYS.canvas.api_key,
 		}
 	};
 
-	return fetch(url, options)
+	return fetch(options)
 	.then(function(response){
-		return response.json();
+		if(response.statusCode!==200) throw response.message;
+		return response.body;
 	})
 	.catch(function(err){
-		CONSOLE_WITH_TIME('Canvas call to get users failed')
+		CONSOLE_WITH_TIME('Canvas call to get user enrollments failed', err)
 	});
 
 };
 
 //finds all users in a specific canvas course
 canvas.scrapeCanvasU = function(url, params){
-		url = url+'?search_term='+params.search_term;
 		var options = {
+			url: url,
+			qs: {search_term:params.search_term},
+			json: true,
+			retryStrategy: myRetryStrategy,
 			headers: {
 				Authorization: KEYS.canvas.api_key,
 			}
 		};
 
-		return fetch(url, options)
+		return fetch(options)
 		.then(function(response){
-			return response.json();
+			if(response.statusCode!==200) throw response.message;
+			return response.body;
 		})
-		.catch(function(){
-			CONSOLE_WITH_TIME('Canvas call to get users failed');
+		.catch(function(err){
+			CONSOLE_WITH_TIME('Canvas call to get users failed', err);
 		})
 };
 
 //updates a grade on canvas
 canvas.updateGradeCanvas = function(cID, aID, uID, grade){
-
 var url = 'https://crisistextline.instructure.com/api/v1/courses/'+cID+'/assignments/'+aID+'/submissions/'+uID;
  var options = {
    method: 'PUT',
+   url: url,
+   json: true,
+   retryStrategy: myRetryStrategy,
    headers: {
      Authorization: KEYS.canvas.api_key,
    }, 
-   payload: {submission:{posted_grade: grade}}
+   body: {submission:{posted_grade: grade}}
  };
 
-  return fetch(url, options)
+  return fetch(options)
   .then(function(response){
-    return  response;
+		if(response.statusCode!==200) throw response.message;
+		return response.body;
   })
   .catch(function(err){
-    CONSOLE_WITH_TIME('Could not update grade');
+    CONSOLE_WITH_TIME('Could not update grade', err);
   });
 };
 

@@ -23,7 +23,6 @@ function startJobByQueryingForGTWSessions(){
 
 	var url = 'https://api.citrixonline.com/G2W/rest/organizers/'+KEYS.GTW.org_id+'/sessions?fromTime='+startTime+'&toTime='+endTime;
 	var options = {
-      // retries: 4,
       url:url,
   		headers: {
   		Accept: 'application/json',
@@ -126,8 +125,8 @@ function findCanvasUsersByEmail(GTWusers){
       var userID = canvasUsers[0].id;
       queryForCanvasCoursesAndAssignments(userID);
     })
-    .catch(function(err){
-      CONSOLE_WITH_TIME('Call to Canvas for user', emailQuery.search_term, 'has failed.', err)
+    .catch(function(){
+      CONSOLE_WITH_TIME('Call to Canvas for user', emailQuery.search_term, 'has failed.')
     })
   });
 }
@@ -140,30 +139,30 @@ function findCanvasUserByName(GTWUser){
   canvas.scrapeCanvasU(Uurl, nameQuery)
   .then(function(canvasUsers){
     if (!canvasUsers.length) { 
-      emailTrainer(GTWUser, 2);
+      // emailTrainer(GTWUser, 2);
       CONSOLE_WITH_TIME("COULD NOT FIND USER BY NAME: ", GTWUser);
       return;}
 
     if (canvasUsers.length>1){
-      emailTrainer(GTWUser, 3);
+      // emailTrainer(GTWUser, 3);
       CONSOLE_WITH_TIME("TWO USERS WITH THE SAME NAME FOUND ", canvasUsers);
       return;}
     var userID = canvasUsers[0].id;
     queryForCanvasCoursesAndAssignments(userID);
   })
-  .catch(function(err){
+  .catch(function(){
     CONSOLE_WITH_TIME('Call to Canvas for', nameQuery.search_term, 'has failed.')
   })
 }
-var w = 0;
 //scrapes canvas for user by name, course and assignment id's
 function queryForCanvasCoursesAndAssignments(userID){
+  const ID = userID;
   const Eurl = 'https://crisistextline.instructure.com/api/v1/users/'+userID+'/enrollments';
       //scrape for user's enrollments in order to get course ID
   canvas.scrapeCanvasEnroll(Eurl)
   .then(function(enrollmentObj){
     if (!enrollmentObj.length) { 
-      CONSOLE_WITH_TIME('This user has no enrollments');
+      CONSOLE_WITH_TIME(`This user id ${ID} has no enrollments`);
       return;}
     if (enrollmentObj[0].type=='TeacherEnrollment' || enrollmentObj[0].type=='DesignerEnrollment'){
       CONSOLE_WITH_TIME('THE USER ' + enrollmentObj[0].user.name + ' APPEARS TO BE A TEACHER, ABORTING GRADING');
@@ -175,8 +174,12 @@ function queryForCanvasCoursesAndAssignments(userID){
     .then(function(assignments){
       assignments.forEach(function(assignment){
         //gives canvas user credit for attending or scheduling a GTW observation
-        if(assignment.name===CONFIG.canvas.assignments.webinarAttended || 
-          assignment.name===CONFIG.canvas.assignments.scheduleWebinar){
+        if(assignment.name===CONFIG.canvas.assignments.webinarAttended){
+          CONSOLE_WITH_TIME(`Marking GTW attendance of ${enrollmentObj[0].user.name} canvas id ${enrollmentObj[0].user.id}`);
+          markAttendanceInCanvas(assignment.course_id, assignment.id, userID);
+        }
+        if(assignment.name===CONFIG.canvas.assignments.scheduleWebinar){
+          CONSOLE_WITH_TIME(`Marking GTW observation scheduled of ${enrollmentObj[0].user.name} canvas id ${enrollmentObj[0].user.id}`);
           markAttendanceInCanvas(assignment.course_id, assignment.id, userID);
         }
       });

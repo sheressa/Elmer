@@ -34,6 +34,7 @@
     "node-fetch": "^1.5.3",
     "request": "^2.72.0",
     "request-promise": "^3.0.0",
+    "requestretry": "^1.12.0",
     "require-all": "^2.0.0",
     "sha1": "^1.1.1",
     "stathat": "0.0.8",
