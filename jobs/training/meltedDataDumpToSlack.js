@@ -1,29 +1,10 @@
 'use strict';
-const CronJob = require('cron').CronJob;
-const internalRequest = require('request');
-const fetch = require('node-fetch');
-const KEYS = require('./keys.js');
-const fs = require('fs');
+
 const APICallsPerSecond = 10;
 const SLACK_CHANNEL = '#training';
-const moment = require('moment-timezone');
-moment.tz.setDefault("America/New_York");
-const CONFIG = require('../../config.js');
-const CONSOLE_WITH_TIME = function(){
-  var message = '';
-	
-  for(var key in arguments){
-    if(typeof arguments[key]==='object'){
-      message+=JSON.stringify(arguments[key])+ " ";
-    } else{
-      message+=arguments[key]+ " ";
-    }
-  }
-  console.log('[' + moment().format('llll Z') + ']', message.slice(0, message.length-1));
-};
 
-//Posts melted user data to #training channel on Slack every day at 10AM
-new CronJob(CONFIG.melted_users_on_slack_cron_job_string, function () {
+//Posts melted user data to #training channel on Slack every Wednesday at 10AM
+new CronJob(CONFIG.time_interval.melted_users_on_slack_cron_job_string, function () {
     postMeltedUserDataToSlack();
   }, null, true);
 
@@ -33,7 +14,13 @@ function masterConsoleTest(res){
 }
 
 function errorHandler(err){
-	console.error(`Error: ${err}`);
+	try{
+		JSON.parse(err);
+		console.error(`Error: ${JSON.stringify(err)}`);
+	} catch(e){
+		console.error(`Error: ${err}`);
+	}
+	
 }
 //promise chain that gathers information from Canvas and CTLOnline and posts it to Slack
 function postMeltedUserDataToSlack(){
