@@ -8,11 +8,6 @@ new CronJob(CONFIG.time_interval.melted_users_on_slack_cron_job_string, function
     postMeltedUserDataToSlack();
   }, null, true);
 
-function masterConsoleTest(res){		
-	CONSOLE_WITH_TIME(res);
-	return res;
-}
-
 function errorHandler(err){
 	try{
 		JSON.parse(err);
@@ -29,7 +24,6 @@ function postMeltedUserDataToSlack(){
 		.then(getTotalAcceptedIntoTraining)
 		.then(getGradAndFirstShiftCheckpointIDsForEachCohort) 
 		.then(getTotalUsersWhoTookFirstShiftAndGraduated)	
-		.then(masterConsoleTest)
 		.then(notifySlack)
 		.catch(errorHandler);
 }
