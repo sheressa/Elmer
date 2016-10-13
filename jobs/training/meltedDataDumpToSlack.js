@@ -4,7 +4,7 @@ const CronJob = require('cron').CronJob;
 const internalRequest = require('request');
 const fetch = require('node-fetch');
 const APICallsPerSecond = 10;
-const SLACK_CHANNEL = '#test';
+const SLACK_CHANNEL = '#training';
 const moment = require('moment-timezone');
 moment.tz.setDefault("America/New_York");
 
