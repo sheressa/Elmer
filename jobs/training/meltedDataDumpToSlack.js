@@ -1,7 +1,12 @@
 'use strict';
 
+const CronJob = require('cron').CronJob;
+const internalRequest = require('request');
+const fetch = require('node-fetch');
 const APICallsPerSecond = 10;
-const SLACK_CHANNEL = '#training';
+const SLACK_CHANNEL = '#test';
+const moment = require('moment-timezone');
+moment.tz.setDefault("America/New_York");
 
 //Posts melted user data to #training channel on Slack every Wednesday at 10AM
 new CronJob(CONFIG.time_interval.melted_users_on_slack_cron_job_string, function () {
