@@ -8,10 +8,14 @@ const fetch = require('requestretry');
 
 // tells the requestretry library to retry the canvas call only when we hit the API call rate limit
 function myRetryStrategy(err, response, body){
+	if(!response) {
+		CONSOLE_WITH_TIME('Error from retry stratery! Empty response', err)
+		return false;
+	}
 	return response.statusCode===403;
 }
 //finds all active canvas courses
-canvas.scrapeCanvasC = function(){
+canvas.getAllCourses = function(){
 
 	var url = 'https://crisistextline.instructure.com/api/v1/accounts/1/courses?per_page=100';
 		var options = {
@@ -33,10 +37,10 @@ canvas.scrapeCanvasC = function(){
 }
 
 //finds all assignments in a specific canvas course
-canvas.scrapeCanvasA = function(id, params){
+canvas.scrapeCanvasAssignments = function(id, params){
 
 	var url = 'https://crisistextline.instructure.com/api/v1/courses/'+id+'/assignments?per_page=100';
-	if(params) url = url+'&search_term='+params.search_term;
+	if(params) url = url+'&search_term='+params;
 	var options = {
 		url: url,
 		json: true,
@@ -58,8 +62,8 @@ canvas.scrapeCanvasA = function(id, params){
 };
 
 // returns an enrollment object for a user containing all active course id the user is enrolled in
-canvas.scrapeCanvasEnroll = function(url){
-
+canvas.scrapeCanvasEnrollment = function(userID){
+ var url = `https://crisistextline.instructure.com/api/v1/users/${userID}/enrollments`;
 	var options = {
 		url: url,
 		json: true,
@@ -80,30 +84,56 @@ canvas.scrapeCanvasEnroll = function(url){
 
 };
 
-//finds all users in a specific canvas course
-canvas.scrapeCanvasU = function(url, params){
-		var options = {
-			url: url,
-			qs: {search_term:params.search_term},
-			json: true,
-			retryStrategy: myRetryStrategy,
-			headers: {
-				Authorization: KEYS.canvas.api_key,
-			}
-		};
+//finds all enrollments in a given course
+canvas.retrieveCourseEnrollment = function(courseID, enrollmentState) {
 
-		return fetch(options)
-		.then(function(response){
-			if(response.statusCode!==200) throw response.message;
-			return response.body;
-		})
-		.catch(function(err){
-			CONSOLE_WITH_TIME('Canvas call to get users failed', err);
-		})
+  var url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments?state[]=' + enrollmentState;
+
+  var options = {
+		url: url,
+		json: true,
+		retryStrategy: myRetryStrategy,
+		headers: {
+			Authorization: KEYS.canvas.api_key,
+		}
+	};
+
+  return fetch(options)
+  .then(function(response){
+		if(response.statusCode!==200) throw response.message;
+		return response.body;
+  })
+  .catch(function(err){
+    CONSOLE_WITH_TIME("Finding enrollments for the course with ID " + courseID + " in Canvas failed: ", err);
+  });
+
+};
+
+//finds all users in canvas if no params, if params finds users by name or email
+canvas.scrapeCanvasUsers = function(params){
+	var url = 'https://crisistextline.instructure.com/api/v1/accounts/1/users?per_page=100';
+	if(params) url = url+'&search_term='+params;
+	var options = {
+		url: url,
+		json: true,
+		retryStrategy: myRetryStrategy,
+		headers: {
+			Authorization: KEYS.canvas.api_key,
+		}
+	};
+
+	return fetch(options)
+	.then(function(response){
+		if(response.statusCode!==200) throw response.message;
+		return response.body;
+	})
+	.catch(function(err){
+		CONSOLE_WITH_TIME('Canvas call to get users failed', err);
+	})
 };
 
 //updates a grade on canvas
-canvas.updateGradeCanvas = function(cID, aID, uID, grade){
+canvas.updateUserGrade = function(uID, cID, aID, grade){
 var url = 'https://crisistextline.instructure.com/api/v1/courses/'+cID+'/assignments/'+aID+'/submissions/'+uID;
  var options = {
    method: 'PUT',
@@ -124,6 +154,37 @@ var url = 'https://crisistextline.instructure.com/api/v1/courses/'+cID+'/assignm
   .catch(function(err){
     CONSOLE_WITH_TIME('Could not update grade', err);
   });
+};
+
+canvas.submitAssignment = function(user, course, assignment, submissionHTML) {
+  //Submits assignment on users behalf
+ var url = `https://crisistextline.instructure.com/api/v1/courses/${course}/assignments/${assignment}/submissions?as_user_id=${user}`;
+ var options = {
+   method: 'PUT',
+   url: url,
+   json: true,
+   retryStrategy: myRetryStrategy,
+   headers: {
+     Authorization: KEYS.canvas.api_key,
+   }, 
+   body: {
+      submission: {
+        submission_type: 'online_text_entry',
+        body: submissionHTML 
+      }
+    }
+ };
+
+  return fetch(options)
+   .then(function(response){
+		if(response.statusCode!==200) throw response.message;
+		return response.body;
+  })
+  .catch(function(err){
+     CONSOLE_WITH_TIME(`Canvas submission failed for user ID ${user}`);
+     CONSOLE_WITH_TIME(`Canvas error message: ${err}`);
+  });
+
 };
 
 module.exports = canvas;

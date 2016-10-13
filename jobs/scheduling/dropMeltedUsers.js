@@ -1,15 +1,7 @@
 'use strict';
-var Request = require('request-promise');
 var CronJob = require('cron').CronJob;
 var WhenIWork = CONFIG.WhenIWork;
-var updateCanvas = require('./helpers/updateCanvas.js');
-var fs = require('fs');
-var options = {
-  headers: {
-    Authorization: KEYS.canvas.api_key,
-    'User-Agent': 'Request-Promise'
-  }
-};
+var canvas = require('../../canvas.js');
 
 new CronJob(CONFIG.time_interval.cron_twice_per_day, findMeltedCanvasUsersAndDeleteThemInWiW, null, true);
 
@@ -32,7 +24,7 @@ function deleteWiWUserAndShifts(canvasUser, WiWUsers) {
 
 function findMeltedCanvasUsersAndDeleteThemInWiW() {
   WhenIWork.get('users', CONFIG.locationID.regular_shifts, function(users) {
-    updateCanvas.canvas.retrieveCourses()
+    canvas.getAllCourses()
     .then(function(response) {
       var result = response.map(function(course) {
         return course.id;
@@ -41,7 +33,7 @@ function findMeltedCanvasUsersAndDeleteThemInWiW() {
     })
     .then(function(courseIDs) {
       courseIDs.forEach(function(courseID) {
-        return updateCanvas.canvas.retrieveEnrollment(courseID, 'inactive')
+        return canvas.retrieveCourseEnrollment(courseID, 'inactive')
         .then(function(enrollments) {
           if (!enrollments) throw 'No inactive enrollments found.';
           enrollments.forEach(function(enrollment) {

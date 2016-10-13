@@ -2,7 +2,6 @@
 
 var assert = require('assert');
 var dropMeltedUsers = require('../jobs/scheduling/dropMeltedUsers.js');
-var updateCanvas = require('../jobs/scheduling/helpers/updateCanvas.js');
 var WiWUsers = require('../sample_data/sampleData').usersResponse;
 
 describe('drop melted users', function() {

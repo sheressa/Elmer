@@ -104,13 +104,10 @@ function checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins(arr){
 }
 
 //scrapes canvas for user by email, course and assignment id's
-function findCanvasUsersByEmail(GTWusers){
-  var Uurl = 'https://crisistextline.instructure.com/api/v1/accounts/1/users';
-  
+function findCanvasUsersByEmail(GTWusers){  
   GTWusers.forEach(function(GTWUser){
-    var emailQuery = {search_term: GTWUser.email};
     //query canvas for a user using user email
-    canvas.scrapeCanvasU(Uurl, emailQuery)
+    canvas.scrapeCanvasUsers(GTWUser.email)
     .then(function(canvasUsers){
       if (!canvasUsers.length) { 
         emailTrainer(GTWUser, 0);
@@ -133,10 +130,9 @@ function findCanvasUsersByEmail(GTWusers){
 
 //scrapes canvas for user by name, course and assignment id's
 function findCanvasUserByName(GTWUser){
-  var Uurl = 'https://crisistextline.instructure.com/api/v1/accounts/1/users',
-  nameQuery = {search_term: GTWUser.firstName+' '+GTWUser.lastName};
+  nameQuery = GTWUser.firstName+' '+GTWUser.lastName;
     //query canvas for a user using user email
-  canvas.scrapeCanvasU(Uurl, nameQuery)
+  canvas.scrapeCanvasUsers(nameQuery)
   .then(function(canvasUsers){
     if (!canvasUsers.length) { 
       // emailTrainer(GTWUser, 2);
@@ -157,9 +153,8 @@ function findCanvasUserByName(GTWUser){
 //scrapes canvas for user by name, course and assignment id's
 function queryForCanvasCoursesAndAssignments(userID){
   const ID = userID;
-  const Eurl = 'https://crisistextline.instructure.com/api/v1/users/'+userID+'/enrollments';
       //scrape for user's enrollments in order to get course ID
-  canvas.scrapeCanvasEnroll(Eurl)
+  canvas.scrapeCanvasEnrollment(userID)
   .then(function(enrollmentObj){
     if (!enrollmentObj.length) { 
       CONSOLE_WITH_TIME(`This user id ${ID} has no enrollments`);
@@ -170,7 +165,7 @@ function queryForCanvasCoursesAndAssignments(userID){
     }
     var courseID = enrollmentObj[0].course_id;
     //scrape for the id of the relevant assignment within a specific course
-    canvas.scrapeCanvasA(courseID)
+    canvas.scrapeCanvasAssignments(courseID)
     .then(function(assignments){
       assignments.forEach(function(assignment){
         //gives canvas user credit for attending or scheduling a GTW observation
@@ -195,7 +190,7 @@ function queryForCanvasCoursesAndAssignments(userID){
 
 //gives credit for attending a GTW webinar on Canvas to a user
 function markAttendanceInCanvas(courseID, assignmentID, userID){
- canvas.updateGradeCanvas(courseID, assignmentID, userID, 'pass')
+ canvas.updateUserGrade(userID, courseID, assignmentID, 'pass')
   .catch(function(){
     CONSOLE_WITH_TIME('Call to post user', userID, 'grade in course', courseID, 'assignmentID', assignmentID, 'has failed.');
   });
