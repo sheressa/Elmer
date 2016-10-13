@@ -4,6 +4,7 @@ var request = require('request-promise');
 var CronJob = require('cron').CronJob;
 var WhenIWork = CONFIG.WhenIWork;
 var updateCanvas = require('./helpers/updateCanvas.js');
+var ctlOnline = require('../../ctlOnline.js');
 var firstMeltInvoluntary = require('../../email_templates/firstMeltInvoluntary.js');
 var firstMeltVoluntary = require('../../email_templates/firstMeltVoluntary.js');
 var secondMeltInvoluntary = require('../../email_templates/secondMeltInvoluntary.js');
@@ -33,17 +34,8 @@ function deleteWiWUserAndShifts(canvasUser) {
 }
 
 function deferOrBlockInCTLOnline(userEmail) {
-  var uid;
-  var options = {
-    'User-Agent': 'Request-Promise',
-    url: 'https://online.crisistextline.org/api/v1/user?parameters[mail]=' + userEmail + '&api-key=g3otwVINxVbyeAbeYNaEBy8r4ozNuyHM'
-  };
-
-  //finds user ID in CTL Online
-  return request(options)
-  .then(function(response) {
-    response = JSON.parse(response);
-    uid = response[0].uid;
+  return ctlOnline.uidFromEmail(userEmail)
+  .then(function(uid) {
     //Adds 'Deferred' role to user's account in CTL Online if they are a first-time melt,
     //or marks them as dropout and blocks their CTL Online account if they are a second-time melt.
     request.post('https://online.crisistextline.org/api/v1/rules/rules_user_drop_out?api-key=' + KEYS.CTLOnline.api_key, {form:{uid: uid}});

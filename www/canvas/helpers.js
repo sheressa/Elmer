@@ -1,5 +1,7 @@
 'use strict';
 
+const ctlOnline = require('../../ctlOnline.js');
+
 function extractEmailAndFormatSubmission (formResponse) {
   const emailWithSubmission = {};
   const answers = {};
@@ -37,5 +39,17 @@ function extractEmailAndFormatSubmission (formResponse) {
   return emailWithSubmission;
 }
 
+// Using this object because I believe we will have more triggers 
+// based on assignment names provided by the typeform webhook
+const triggersBasedOnAssignment = {
+  'Full Roleplay': function(email) {
+    return ctlOnline.uidFromEmail(email)
+      .then(uid => {
+        return ctlOnline.addCC1Role(uid);
+      }).catch(err => {
+        CONSOLE_WITH_TIME(`[ERROR] in triggersBasedOnAssignment 'Full Roleplay': ${err}`);
+      });
+  }
+};
 
-module.exports = {extractEmailAndFormatSubmission};
+module.exports = {extractEmailAndFormatSubmission, triggersBasedOnAssignment};
