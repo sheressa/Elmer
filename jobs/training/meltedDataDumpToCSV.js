@@ -1,72 +1,72 @@
-// 'use strict';
-// const cohortPromise = require('./meltedDataDumpToSlack.js').cohortDataPromise;
-// const CronJob = require('cron').CronJob;
-// const internalRequest = require('request');
-// const fetch = require('node-fetch');
-// const KEYS = require('./keys.js');
-// const fs = require('fs');
-// const APICallsPerSecond = 10;
-// const request = require('./meltedDataDumpToSlack.js').request;
+'use strict';
+const cohortPromise = require('./meltedDataDumpToSlack.js').cohortDataPromise;
+const CronJob = require('cron').CronJob;
+const internalRequest = require('request');
+const fetch = require('node-fetch');
+const KEYS = require('./keys.js');
+const fs = require('fs');
+const APICallsPerSecond = 10;
+const request = require('./meltedDataDumpToSlack.js').request;
 
-// function go(){
-// 	return cohortPromise
-// 		.then(getCheckpointIDsFromClasses)
-// 		.then(getLastCompletedCheckpointForEachUser)
-// 		.catch(function(err){
-// 			console.error('Error: ', err)
-// 			return err;
-// 		});
-// }
+function go(){
+	return cohortPromise
+		.then(getCheckpointIDsFromClasses)
+		// .then(getLastCompletedCheckpointForEachUser)
+		.catch(function(err){
+			console.error('Error: ', err)
+			return err;
+		});
+}
+//obtains checkpoints from every class
+function getCheckpointIDsFromClasses(cohorts){
+	return new Promise(function(resolve, reject){
+		var cohortKeys = Object.keys(cohorts);
 
-// function getCheckpointIDsFromClasses(cohorts){
-// 	return new Promise(function(resolve, reject){
-// 		var cohortKeys = Object.keys(cohorts);
-
-// 		function checkpointInfoAPICall(courseNum, cohortNum){
-// 			return request(	`courses/${courseNum}/assignments?per_page=1000`, 'Canvas', 'GET')
-// 				.then(function(assignments){
-// 					return assignments.map(function(assignment){
-// 						return {
-// 							name: assignment.name,
-// 							assignment_id: assignment.id,
-// 							cohort: cohortNum
-// 						};
-// 					});
-// 				}).catch(function(err){
-// 					CONSOLE_WITH_TIME(`Something went wrong with the assignment call to course number ${courseNum}: ${err}`);
-// 				});
-// 		}
-// 		var assignmentPromises = [];
-// 		cohortKeys.forEach(function(cohortNum){
-// 			//collect the ID's for each checkpoint
-// 			cohorts[cohortNum].assignmentNamesAndIDs = {};
-// 			cohorts[cohortNum].class_ids.forEach(function(classNum){
-// 				assignmentPromises.push(checkpointInfoAPICall(classNum, cohortNum));
-// 			});
-// 		});
-// 		var assignmentPromiseResponses = [];
-// 		Promise.all(assignmentPromises)
-// 			.then(function(res){
-// 				assignmentPromises.forEach(function(assignPromise){
-// 					// console.log(assignPromise);
-// 					var addAssignmentInfoToCohortInfo = assignPromise.then(function(assignmentInfo){
-// 						// console.log(assignmentInfo.cohort);
-// 						assignmentInfo.forEach(function(assignObj){
-// 							// console.log(cohorts[assignObj.cohort]);
-// 							cohorts[assignObj.cohort].assignmentNamesAndIDs[assignObj.assignment_id] = assignObj.name;
-// 						});
+		function checkpointInfoAPICall(courseNum, cohortNum){
+			return request(	`courses/${courseNum}/assignments?per_page=1000`, 'Canvas', 'GET')
+				.then(function(assignments){
+					return assignments.map(function(assignment){
+						return {
+							name: assignment.name,
+							assignment_id: assignment.id,
+							cohort: cohortNum
+						};
+					});
+				}).catch(function(err){
+					CONSOLE_WITH_TIME(`Something went wrong with the assignment call to course number ${courseNum}: ${err}`);
+				});
+		}
+		var assignmentPromises = [];
+		cohortKeys.forEach(function(cohortNum){
+			//collect the ID's for each checkpoint
+			cohorts[cohortNum].assignmentNamesAndIDs = {};
+			cohorts[cohortNum].class_ids.forEach(function(classNum){
+				assignmentPromises.push(checkpointInfoAPICall(classNum, cohortNum));
+			});
+		});
+		var assignmentPromiseResponses = [];
+		Promise.all(assignmentPromises)
+			.then(function(res){
+				assignmentPromises.forEach(function(assignPromise){
+					// console.log(assignPromise);
+					var addAssignmentInfoToCohortInfo = assignPromise.then(function(assignmentInfo){
+						// console.log(assignmentInfo.cohort);
+						assignmentInfo.forEach(function(assignObj){
+							// console.log(cohorts[assignObj.cohort]);
+							cohorts[assignObj.cohort].assignmentNamesAndIDs[assignObj.assignment_id].name = assignObj.name;
+						});
 						
-// 					});
-// 					assignmentPromiseResponses.push(addAssignmentInfoToCohortInfo);
-// 				});
-// 				// console.log(assignmentPromiseResponses);
-// 				Promise.all(assignmentPromiseResponses)
-// 					.then(function(res){
-// 						resolve(cohorts);
-// 					}).catch(errorHandler);
-// 			});
-// 	});
-// }
+					});
+					assignmentPromiseResponses.push(addAssignmentInfoToCohortInfo);
+				});
+				// console.log(assignmentPromiseResponses);
+				Promise.all(assignmentPromiseResponses)
+					.then(function(res){
+						resolve(cohorts);
+					}).catch(errorHandler);
+			});
+	});
+}
 
 
 
@@ -138,9 +138,9 @@
 		
 // 	});
 // }
-// go();
+go();
 
-// //helper methods
-// function errorHandler(err){
-// 	console.error('Error: ', err);
-// }
+//helper methods
+function errorHandler(err){
+	console.error('Error: ', err);
+}
