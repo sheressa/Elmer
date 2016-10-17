@@ -43,6 +43,10 @@ global.MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE = function(timestring) {
 
 const CONFIG = {};
 
+CONFIG.emails = {
+  mariya: 'mariya@crisistextline.org'
+}
+
 CONFIG.WhenIWork = process.env.NODE_ENV === 'test' ?
   require('./test/helpers/base') :
   require('./api_wiw/WiWCCApi');

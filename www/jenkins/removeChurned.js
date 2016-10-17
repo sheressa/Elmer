@@ -9,15 +9,17 @@ const message = {
     from_email: 'support@crisistextline.org',
     from_name: 'Crisis Text Line',
     to: [{
-        email: 'mariya@crisistextline.org',
+        email: CONFIG.emails.mariya,
         type: 'to'
     }]
 };
 router.post('/', function(req, res){
+  if(!req.body.length) res.status(200).end(); 
   var emails = req.body.split(' ').filter((item, index)=>{if (index%2!==0) return item});
-  message.content = emails;
+  message.text = 'All churned users: '+emails;
   getUsersToClean(emails)
-  .then(()=>{
+  .then((emails)=>{
+    message.text += ' All not found emails: '+emails;
     mandrill_client.messages.send({message: message, key: 'Churned CC Job Completed'}, function (response) {
       CONSOLE_WITH_TIME(response);
     res.status(200).end(); 
@@ -40,11 +42,13 @@ function getUsersToClean(churnedUserEmailList) {
       } catch (error) {
         email = each.email;
       }
-
-      if (churnedUserEmailList.indexOf(email) >= 0) {
+      var index = churnedUserEmailList.indexOf(email);
+      if (index >= 0) {
+        churnedUserEmailList.splice(index, 1);
         uidsToClean.push(each.id);
       }
     });
+    if(!uidsToClean.length) resolve(churnedUserEmailList);
     // delete the user and all user's shifts 
     uidsToClean.forEach(function(id, index){
       CONSOLE_WITH_TIME(`Deleting user ${id}`);
@@ -52,7 +56,7 @@ function getUsersToClean(churnedUserEmailList) {
         if(res.error) CONSOLE_WITH_TIME(`CHURNED DELETION OF USER ${id} FAILED:`, res.error)
         else CONSOLE_WITH_TIME('Deleted user', id)
       });
-      if(index===uidsToClean.length-1) resolve();
+      if(index===uidsToClean.length-1) resolve(churnedUserEmailList);
     });
   });
 }
