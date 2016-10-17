@@ -44,11 +44,16 @@ router.post('/typeformAssignment/:assignment', function (req, res) {
   retrieveUserCourseAssignmentIds(emailWithSubmission.email, assignment, logErrEmailHeather)
   .then(responses => {
     // responses is [userID, courseID, assignmentID] so we spread it
-    const promises = [canvas.submitAssignment(...responses, emailWithSubmission.submissionHTML)];
+    const pSubmitAssign = canvas.submitAssignment(...responses, emailWithSubmission.submissionHTML);
+
+    // If updateUserGrade after submitAssignment then Canvas marks the assignment as graded
+    // we need updateUserGrade to run first so that Canvas alerts trainers to grade the submission
     if (formResponse.calculated && formResponse.calculated.score) {
-      promises.push(canvas.updateUserGrade(...responses, formResponse.calculated.score));
+      return canvas.updateUserGrade(...responses, formResponse.calculated.score)
+        .then(() => pSubmitAssign);
+    } else {
+      return pSubmitAssign;
     }
-    return Promise.all(promises);
   }).then(() => res.send({message: `Successfully submitted ${assignment} with ${JSON.stringify(emailWithSubmission)}`}))
   .catch((err) => {
     const message = `Submitting ${assignment} for ${emailWithSubmission.email} in Canvas failed: ${err}`;

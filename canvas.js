@@ -62,8 +62,9 @@ canvas.scrapeCanvasAssignments = function(id, params){
 };
 
 // returns an enrollment object for a user containing all active course id the user is enrolled in
-canvas.scrapeCanvasEnrollment = function(userID){
- var url = `https://crisistextline.instructure.com/api/v1/users/${userID}/enrollments`;
+canvas.scrapeCanvasEnrollment = function(userID, enrollmentState){
+ var url = `https://crisistextline.instructure.com/api/v1/users/${userID}/enrollments?per_page=100`;
+ if(enrollmentState) url = url+'&state[]='+params;
 	var options = {
 		url: url,
 		json: true,
@@ -183,6 +184,83 @@ canvas.submitAssignment = function(user, course, assignment, submissionHTML) {
   .catch(function(err){
      CONSOLE_WITH_TIME(`Canvas submission failed for user ID ${user}`);
      CONSOLE_WITH_TIME(`Canvas error message: ${err}`);
+  });
+
+};
+
+canvas.deleteCanvasUser = function(userID) {
+  var url = 'https://crisistextline.instructure.com//api/v1/accounts/1/users/' + userID;
+
+  var options = {
+  	method: 'DELETE',
+		url: url,
+		json: true,
+		retryStrategy: myRetryStrategy,
+		headers: {
+			Authorization: KEYS.canvas.api_key,
+		}
+	};
+  
+  return fetch(options)
+  .then(function(response) {
+    return response.body;
+  })
+  .catch(function(err){
+    CONSOLE_WITH_TIME("Deletion of Canvas user with ID " + userID + " failed: ", err);
+  });
+};
+
+canvas.getUserGrade = function(user, course, assignment) {
+  var grade;
+  var url = 'https://crisistextline.instructure.com/api/v1/courses/' + course + '/assignments/' + assignment + '/submissions/' + user;
+    var options = {
+		url: url,
+		json: true,
+		retryStrategy: myRetryStrategy,
+		headers: {
+			Authorization: KEYS.canvas.api_key,
+		}
+	};
+
+  return fetch(options)
+  .then(function(response) {
+    grade = response.body.grade;
+    return grade;
+  })
+  .catch(function(err){
+    CONSOLE_WITH_TIME("Finding a grade for the user with ID " + user + " for assignment " + assignment + " in course " + course + " in Canvas failed: ", err);
+  });
+
+};
+
+canvas.activateOrDeactivateEnrollment = function(courseID, enrollmentID, enrollmentType, userID) {
+
+	 var options = {
+		json: true,
+		retryStrategy: myRetryStrategy,
+		headers: {
+			Authorization: KEYS.canvas.api_key,
+		}
+	};
+
+  if (enrollmentType === 'reactivate') {
+    options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments?enrollment[user_id]=' + userID + '&enrollment[type]=StudentEnrollment';
+    options.method = 'POST';
+  }
+
+  else if (enrollmentType === 'completed') {
+    options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments/' + enrollmentID + '?task=conclude';
+    options.method = 'DELETE';
+  }
+
+  else if (enrollmentType === 'inactive') {
+    options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments/' + enrollmentID + '?task=deactivate';
+    options.method = 'DELETE';
+  }
+
+  return fetch(options)
+  .catch(function(err){
+    CONSOLE_WITH_TIME("Finding enrollments for the course with ID " + courseID + " in Canvas failed: ", err);
   });
 
 };
