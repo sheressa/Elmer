@@ -8,6 +8,7 @@ const SLACK_CHANNEL = '#training';
 const moment = require('moment-timezone');
 moment.tz.setDefault("America/New_York");
 
+
 //Posts melted user data to #training channel on Slack every Wednesday at 10AM
 new CronJob(CONFIG.time_interval.melted_users_on_slack_cron_job_string, function () {
     postMeltedUserDataToSlack();
@@ -192,17 +193,17 @@ function getTotalUsersWhoTookFirstShiftAndGraduated(cohorts){
 		cohortKeys.forEach(function(key){
 			cohorts[key].graduates = [];
 			cohorts[key].started_first_shift = [];
-			cohorts[key].graduate_checkpoint_ids.forEach(function(classID){
+			cohorts[key].graduate_checkpoint_ids.forEach(function(checkID){
 				var url = {};
 				url.cohort = key;
-				url.url = `audit/grade_change/assignments/${classID}?per_page=100`;
+				url.url = `audit/grade_change/assignments/${checkID}?per_page=100`;
 				url.checkpoint = 'graduation'
 				urls.push(url);
 			});
-			cohorts[key].first_shift_checkpoint_ids.forEach(function(classID){
+			cohorts[key].first_shift_checkpoint_ids.forEach(function(checkID){
 				var url = {};
 				url.cohort = key;
-				url.url = `audit/grade_change/assignments/${classID}?per_page=100`;
+				url.url = `audit/grade_change/assignments/${checkID}?per_page=100`;
 				url.checkpoint = 'first shift'
 				urls.push(url);
 			});
@@ -328,10 +329,15 @@ function recursiveRequestCallerForEnrollmentLength(enrolled, pageNumber, allStud
 			enrolled += enrollment.length;
 			pageNumber += 1;
 			allStudents = allStudents.concat(enrollment.map(function(user){
+				//change to output more data for CSV dump
 				return {
 					user_id: user.user_id,
 					name: user.user.sortable_name,
-					email: user.user.sis_login_id
+					email: user.user.sis_login_id,
+					course_id: courseNum,
+					last_assignment_completed_timestamp: null,
+					last_assignment_completed_id: null,
+					grader_id: null
 				};
 			}));
 			return recursiveRequestCallerForEnrollmentLength(enrolled, pageNumber, allStudents,courseNum);
@@ -361,7 +367,7 @@ function recursiveRequestCallerForAcceptance(accepted, pageNumber,cohortNum){
 		}).catch(function(err){
 			console.error(`Something went wrong obtaining data from users in cohort ${cohortNum} from CTLOnline: ${err}`);
 		});
-};
+}
 
 //api call to Canvas to see how many students funished the grad and first shift checkpoint
 function gradCheckPointIDAPICall(classID){
