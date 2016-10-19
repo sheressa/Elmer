@@ -189,6 +189,9 @@ function throttledURLCallsForGradeChanges(urls, reqPerSecond){
 	});
 }
 
+//extends the String and Number types with a method called 'isBeforeTime', which takes a time string or integer
+//and checks to see if it occurs before another time (also string or integer). For example: For time1.isBeforeTime(time2), if time1 takes
+//place before time2, this method returns true. Otherwise, false. 
 var timeCompare = function(time){
 	var firstTime = this;
 	if(typeof time != 'number' && typeof time != 'string'){
