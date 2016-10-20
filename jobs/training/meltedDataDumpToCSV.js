@@ -144,11 +144,10 @@ function putUserCohortInfoInCSVFile(cohorts){
 			}
 			csvOutput += '\n';
 		});
-		fs.writeFile(`./CSVdump/cohort${cohortNum}_last_completed_checkpoint_info.csv`, csvOutput, 'utf-8');
+		fs.writeFile(`./CSVdump/cohort_${cohortNum}_last_completed_checkpoint_info.csv`, csvOutput, 'utf-8');
 	});
 	
 }
-go();
 
 //helper methods
 //API call to obtain assignment info
