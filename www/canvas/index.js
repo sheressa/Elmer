@@ -52,7 +52,12 @@ router.post('/typeformAssignment/:assignment', function (req, res) {
     } else {
       return pSubmitAssign;
     }
-  }).then(() => res.send({message: `Successfully submitted ${assignment} with ${JSON.stringify(emailWithSubmission)}`}))
+  }).then(() => {
+    if (helpers.triggersBasedOnAssignment[assignment]) {
+      return helpers.triggersBasedOnAssignment[assignment](emailWithSubmission.email);
+    }
+  })
+  .then(() => res.send({message: `Successfully submitted ${assignment} with ${JSON.stringify(emailWithSubmission)}`}))
   .catch((err) => {
     const message = `Submitting ${assignment} for ${emailWithSubmission.email} in Canvas failed: ${err}`;
     CONSOLE_WITH_TIME(message);
