@@ -1,4 +1,6 @@
 'use strict';
+
+const CronJob = require('cron').CronJob;
 const cohortPromise = require('./meltedDataDumpToSlack.js').cohortDataPromise;
 const APICallsPerSecond = 10;
 const fs = require('fs');
@@ -11,18 +13,19 @@ function errorHandler(err){
 	} catch(e){
 		console.error(`Error: ${err}`);
 	}
-	
 }
 
-function go(){
+//Posts melted user data to #training channel on Slack every Wednesday at 10AM
+new CronJob(CONFIG.time_interval.melted_users_on_slack_and_csv_cron_job_string, function(){
+    postMeltedUserDataToSlackAndCSV();
+  }, null, true);
+
+//main function
+function postMeltedUserDataToSlackAndCSV(){
 	return cohortPromise
 		.then(getCheckpointIDsFromClasses)
 		.then(getLastCompletedCheckpointForEachUser)
-		// .then(putUserCohortInfoInCSVFile)
-		// .then(function(res){
-		// 	CONSOLE_WITH_TIME(res);
-		// 	return res;
-		// })
+		.then(putUserCohortInfoInCSVFile)
 		.catch(function(err){
 			console.error('Error: ', err)
 		});
@@ -65,6 +68,7 @@ function getCheckpointIDsFromClasses(cohorts){
 	});
 }
 
+//runs through grade changes and finds last completed checkpoint for each user
 function getLastCompletedCheckpointForEachUser(cohorts){
 	return new Promise(function(resolve, reject){
 		var start = Date.now();
@@ -115,21 +119,39 @@ function getLastCompletedCheckpointForEachUser(cohorts){
 	});
 }
 
+//posts last checkpoint info into CSV files
 function putUserCohortInfoInCSVFile(cohorts){
 	var cohortKeys = Object.keys(cohorts);
 	cohortKeys.forEach(function(cohortNum){
 		var csvOutput = '';
-		cohorts[cohortNum].users.forEach(function(user){
-
+		var userKeys = Object.keys(cohorts[cohortNum].users[0]);
+		userKeys.forEach(function(key){
+			csvOutput += `${key},`;
 		});
-
+		csvOutput += 'last_assignment_completed_name';
+		csvOutput += '\n';
+		cohorts[cohortNum].users.forEach(function(user){
+			userKeys.forEach(function(key){
+				csvOutput += `${user[key]},`;
+			});
+			var lastAssignName = cohorts[cohortNum].assignmentNamesAndIDs.filter(function(assignIDpair){
+				return assignIDpair.id === user.last_assignment_completed_id;
+			});
+			if(lastAssignName.length === 0){
+				csvOutput += 'null';
+			} else{
+				csvOutput += lastAssignName[0].name;
+			}
+			csvOutput += '\n';
+		});
+		fs.writeFile(`./CSVdump/cohort${cohortNum}_last_completed_checkpoint_info.csv`, csvOutput, 'utf-8');
 	});
-
-	fs.writeFile('./data.json', JSON.stringify(obj) , 'utf-8');
+	
 }
 go();
 
 //helper methods
+//API call to obtain assignment info
 function checkpointIDAPICall(courseNum, cohortNum){
 	return request(	`courses/${courseNum}/assignments?per_page=1000`, 'Canvas')
 		.then(function(assignments){
@@ -144,6 +166,8 @@ function checkpointIDAPICall(courseNum, cohortNum){
 			CONSOLE_WITH_TIME(`Something went wrong with the assignment call to course number ${courseNum}: ${err}`);
 		});
 }
+
+//API call to grade changes that parses relevant info for CSV file (add more parameters if you want more columns for the CSV file)
 function getGradeChangesForAssignmentAPICall(url, cohortNum){
 	return request(url, 'Canvas')
 		.then(function(assignChange){
@@ -166,6 +190,7 @@ function getGradeChangesForAssignmentAPICall(url, cohortNum){
 		});
 }
 
+//request throttler for grade change API call
 function throttledURLCallsForGradeChanges(urls, reqPerSecond){
 	return new Promise(function(resolve,reject){
 		var intervalValue = 1000/reqPerSecond;
@@ -206,10 +231,10 @@ var timeCompare = function(time){
 	thatTime = new Date(time);
 	
 	if ( Object.prototype.toString.call(thisTime) !== "[object Date]" ){
-		throw new Error('First string is not a parsable date.');
+		throw new Error('First time is not a parsable date.');
 	}
 	if ( Object.prototype.toString.call(thatTime) !== "[object Date]" ){
-		throw new Error('Input time is not a parsable date.');
+		throw new Error('Second time is not a parsable date.');
 	}
 	if(isNaN(thisTime.getTime()) || isNaN(thatTime.getTime())){
 		throw new Error('String is not a valid date.');
@@ -220,7 +245,3 @@ var timeCompare = function(time){
 //extends String and Number types with function to compare Date strings and integers
 String.prototype.isBeforeTime = String.prototype.isBeforeTime || timeCompare;
 Number.prototype.isBeforeTime = Number.prototype.isBeforeTime || timeCompare;
-
-function errorHandler(err){
-	console.error('Error: ', err);
-}

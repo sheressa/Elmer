@@ -1,6 +1,5 @@
 'use strict';
 
-const CronJob = require('cron').CronJob;
 const internalRequest = require('request');
 const fetch = require('node-fetch');
 const APICallsPerSecond = 10;
@@ -9,10 +8,6 @@ const moment = require('moment-timezone');
 moment.tz.setDefault("America/New_York");
 
 
-//Posts melted user data to #training channel on Slack every Wednesday at 10AM
-new CronJob(CONFIG.time_interval.melted_users_on_slack_cron_job_string, function () {
-    postMeltedUserDataToSlack();
-  }, null, true);
 
 function errorHandler(err){
 	try{
@@ -318,7 +313,7 @@ function enrollmentLengthAPICall(courseNum){
 
 //goes through Canvas pagination and returns enrollment length for courses
 function recursiveRequestCallerForEnrollmentLength(enrolled, pageNumber, allStudents,courseNum){
-	return request(`courses/${courseNum}/enrollments?per_page=100&page=${pageNumber}&enrollment_type[]=student&state[]=active&state[]=completed&state[]=inactive`, 'Canvas')
+	return request(`courses/${courseNum}/enrollments?per_page=100&page=${pageNumber}&type[]=StudentEnrollment&state[]=active&state[]=completed&state[]=inactive`, 'Canvas')
 		.then(function(enrollment){
 			if(enrollment.length == 0){
 				return {
@@ -332,7 +327,8 @@ function recursiveRequestCallerForEnrollmentLength(enrolled, pageNumber, allStud
 				//change to output more data for CSV dump
 				return {
 					user_id: user.user_id,
-					name: user.user.sortable_name,
+					name: user.user.name,
+					sortable_name: `\"${user.user.sortable_name}\"`,
 					email: user.user.sis_login_id,
 					course_id: courseNum,
 					last_assignment_completed_timestamp: null,
