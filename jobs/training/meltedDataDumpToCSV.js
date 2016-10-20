@@ -4,6 +4,7 @@ const CronJob = require('cron').CronJob;
 const cohortPromise = require('./meltedDataDumpToSlack.js').cohortDataPromise;
 const APICallsPerSecond = 10;
 const fs = require('fs');
+const path = require('path');
 const request = require('./meltedDataDumpToSlack.js').request;
 
 function errorHandler(err){
@@ -37,34 +38,43 @@ function getCheckpointIDsFromClasses(cohorts){
 		CONSOLE_WITH_TIME("Getting checkpoint ID's from classes");
 		var cohortKeys = Object.keys(cohorts);
 		var assignmentPromises = [];
+		var urls =[];
 		cohortKeys.forEach(function(cohortNum){
 			//collect the ID's for each checkpoint
 			cohorts[cohortNum].assignmentNamesAndIDs = [];
 			cohorts[cohortNum].class_ids.forEach(function(classNum){
-				assignmentPromises.push(checkpointIDAPICall(classNum, cohortNum));
+				urls.push({
+					url: `courses/${classNum}/assignments?per_page=1000`,
+					course: classNum,
+					cohort: cohortNum
+				});
 			});
 		});
-		var assignmentPromiseResponses = [];
-		Promise.all(assignmentPromises)
-			.then(function(res){
-				assignmentPromises.forEach(function(assignPromise){
-					var addAssignmentInfoToCohortInfo = assignPromise.then(function(assignmentInfo){
-						assignmentInfo.forEach(function(assignObj){
-							var assignmentIDpair = {};
-							assignmentIDpair.name = assignObj.name;
-							assignmentIDpair.id = assignObj.assignment_id;
-							cohorts[assignObj.cohort].assignmentNamesAndIDs.push(assignmentIDpair);
-						});
-					});
-					assignmentPromiseResponses.push(addAssignmentInfoToCohortInfo);
-				});
-				Promise.all(assignmentPromiseResponses)
+		
+		throttledURLCalls(urls, APICallsPerSecond, checkpointIDAPICall)
+			.then(function(assignmentPromises){
+				var assignmentPromiseResponses = [];
+				Promise.all(assignmentPromises)
 					.then(function(res){
-						var timeTook = (Date.now()-start)/1000;
-						CONSOLE_WITH_TIME(`Done. Took ${timeTook} seconds`);
-						resolve(cohorts);
+						assignmentPromises.forEach(function(assignPromise){
+							var addAssignmentInfoToCohortInfo = assignPromise.then(function(assignmentInfo){
+								assignmentInfo.forEach(function(assignObj){
+									var assignmentIDpair = {};
+									assignmentIDpair.name = assignObj.name;
+									assignmentIDpair.id = assignObj.assignment_id;
+									cohorts[assignObj.cohort].assignmentNamesAndIDs.push(assignmentIDpair);
+								});
+							});
+							assignmentPromiseResponses.push(addAssignmentInfoToCohortInfo);
+						});
+						Promise.all(assignmentPromiseResponses)
+							.then(function(res){
+								var timeTook = (Date.now()-start)/1000;
+								CONSOLE_WITH_TIME(`Done. Took ${timeTook} seconds`);
+								resolve(cohorts);
+							}).catch(errorHandler);
 					}).catch(errorHandler);
-			});
+			}).catch(errorHandler);
 	});
 }
 
@@ -84,7 +94,7 @@ function getLastCompletedCheckpointForEachUser(cohorts){
 			});
 		});
 
-		throttledURLCallsForGradeChanges(urls, APICallsPerSecond)
+		throttledURLCalls(urls, APICallsPerSecond, getGradeChangesForAssignmentAPICall)
 			.then(function(gradeChangeInfoRequests){
 				Promise.all(gradeChangeInfoRequests)
 					.then(function(){
@@ -132,50 +142,57 @@ function putUserCohortInfoInCSVFile(cohorts){
 		csvOutput += '\n';
 		cohorts[cohortNum].users.forEach(function(user){
 			userKeys.forEach(function(key){
-				csvOutput += `${user[key]},`;
+				if(!user[key]){
+					csvOutput += ",";
+				} else if(typeof user[key] === 'string' || user[key] instanceof String){
+					csvOutput += `\"${user[key]}\",`;
+				} else{
+					csvOutput += `${user[key]},`;
+				}
+				
 			});
 			var lastAssignName = cohorts[cohortNum].assignmentNamesAndIDs.filter(function(assignIDpair){
 				return assignIDpair.id === user.last_assignment_completed_id;
 			});
 			if(lastAssignName.length === 0){
-				csvOutput += 'null';
+				csvOutput += '';
 			} else{
 				csvOutput += lastAssignName[0].name;
 			}
 			csvOutput += '\n';
 		});
-		fs.writeFile(`./CSVdump/cohort_${cohortNum}_last_completed_checkpoint_info.csv`, csvOutput, 'utf-8');
+		fs.writeFile(path.join(__dirname, '/CSVdump') + `/cohort_${cohortNum}_last_completed_checkpoint_info.csv`, csvOutput, 'utf-8');
 	});
-	
+	return cohorts;
 }
 
 //helper methods
 //API call to obtain assignment info
-function checkpointIDAPICall(courseNum, cohortNum){
-	return request(	`courses/${courseNum}/assignments?per_page=1000`, 'Canvas')
+function checkpointIDAPICall(urlObj){
+	return request(	`courses/${urlObj.course}/assignments?per_page=1000`, 'Canvas')
 		.then(function(assignments){
 			return assignments.map(function(assignment){
 				return {
 					name: assignment.name,
 					assignment_id: assignment.id,
-					cohort: cohortNum
+					cohort: urlObj.cohort
 				};
 			});
 		}).catch(function(err){
-			CONSOLE_WITH_TIME(`Something went wrong with the assignment call to course number ${courseNum}: ${err}`);
+			CONSOLE_WITH_TIME(`Something went wrong with the assignment call to course number ${urlObj.course}: ${err}`);
 		});
 }
 
 //API call to grade changes that parses relevant info for CSV file (add more parameters if you want more columns for the CSV file)
-function getGradeChangesForAssignmentAPICall(url, cohortNum){
-	return request(url, 'Canvas')
+function getGradeChangesForAssignmentAPICall(urlObj){
+	return request(urlObj.url, 'Canvas')
 		.then(function(assignChange){
 			var assignChanges = [];
 			assignChange.events.forEach(function(change){
 				var changeObj = {};
 				if(change.grade_after !== null && change.event_type === "grade_change"){
 					changeObj.timestamp = change.created_at;
-					changeObj.cohort = cohortNum;
+					changeObj.cohort = urlObj.cohort;
 					changeObj.assignment_id = change.links.assignment;
 					changeObj.user_id = change.links.student;
 					changeObj.course_id = change.links.course;
@@ -185,12 +202,12 @@ function getGradeChangesForAssignmentAPICall(url, cohortNum){
 			});
 			return assignChanges;
 		}).catch(function(err){
-			console.error(`Problem getting grade change info for ${url}: ${err}`);
+			console.error(`Problem getting grade change info for ${urlObj.url}: ${err}`);
 		});
 }
 
-//request throttler for grade change API call
-function throttledURLCallsForGradeChanges(urls, reqPerSecond){
+//request throttler for API calls
+function throttledURLCalls(urls, reqPerSecond, callback){
 	return new Promise(function(resolve,reject){
 		var intervalValue = 1000/reqPerSecond;
 		var requestCollector = [];
@@ -205,7 +222,7 @@ function throttledURLCallsForGradeChanges(urls, reqPerSecond){
 			}else{
 				//create objects with cohort number, request promise, and which checkpoint the request hits
 				var urlObj = urls[count];
-				var requestPromise = getGradeChangesForAssignmentAPICall(urlObj.url, urlObj.cohort);
+				var requestPromise = callback(urlObj);
 				requestCollector.push(requestPromise);
 				count++;
 			}
@@ -244,3 +261,7 @@ var timeCompare = function(time){
 //extends String and Number types with function to compare Date strings and integers
 String.prototype.isBeforeTime = String.prototype.isBeforeTime || timeCompare;
 Number.prototype.isBeforeTime = Number.prototype.isBeforeTime || timeCompare;
+
+module.exports = { 	
+					cohortDataPromise: postMeltedUserDataToSlackAndCSV()			
+				 };

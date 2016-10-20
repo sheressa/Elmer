@@ -7,8 +7,6 @@ const SLACK_CHANNEL = '#training';
 const moment = require('moment-timezone');
 moment.tz.setDefault("America/New_York");
 
-
-
 function errorHandler(err){
 	try{
 		JSON.parse(err);
@@ -323,12 +321,14 @@ function recursiveRequestCallerForEnrollmentLength(enrolled, pageNumber, allStud
 			}
 			enrolled += enrollment.length;
 			pageNumber += 1;
-			allStudents = allStudents.concat(enrollment.map(function(user){
+			allStudents = allStudents.concat(enrollment.filter(function(user){
+				return user.user.sis_login_id != undefined;
+			}).map(function(user){
 				//change to output more data for CSV dump
 				return {
 					user_id: user.user_id,
 					name: user.user.name,
-					sortable_name: `\"${user.user.sortable_name}\"`,
+					sortable_name: user.user.sortable_name,
 					email: user.user.sis_login_id,
 					course_id: courseNum,
 					last_assignment_completed_timestamp: null,
