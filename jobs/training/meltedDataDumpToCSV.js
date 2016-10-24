@@ -2,10 +2,11 @@
 
 const CronJob = require('cron').CronJob;
 const cohortPromise = require('./meltedDataDumpToSlack.js').cohortDataPromise;
-const APICallsPerSecond = 10;
 const fs = require('fs');
 const path = require('path');
 const request = require('./meltedDataDumpToSlack.js').request;
+const BBPromise = require('bluebird');
+const numberOfConcurrentAPICalls = 30;
 
 function errorHandler(err){
 	try{
@@ -24,65 +25,60 @@ new CronJob(CONFIG.time_interval.melted_users_on_slack_and_csv_cron_job_string, 
 //main function
 function postMeltedUserDataToSlackAndCSV(){
 	return cohortPromise
-		.then(getCheckpointIDsFromClasses)
+		.then(constructUrlsForCheckpointIdApiCalls)
+		.then(obtainAssignmentNamesAndIDs)
+		.then(constructUrlsForLastCompletedCheckpointApiCalls)
 		.then(getLastCompletedCheckpointForEachUser)
 		.then(putUserCohortInfoInCSVFile)
 		.catch(function(err){
 			console.error('Error: ', err)
 		});
 }
-//obtains checkpoints from every class
-function getCheckpointIDsFromClasses(cohorts){
+//creates an array of objects containing a url for each checkpoint ID API call, and the corresponding course and cohort number 
+function constructUrlsForCheckpointIdApiCalls(cohorts){
 	return new Promise(function(resolve, reject){
-		var start = Date.now();
-		CONSOLE_WITH_TIME("Getting checkpoint ID's from classes");
 		var cohortKeys = Object.keys(cohorts);
-		var assignmentPromises = [];
 		var urls =[];
 		cohortKeys.forEach(function(cohortNum){
 			//collect the ID's for each checkpoint
 			cohorts[cohortNum].assignmentNamesAndIDs = [];
 			cohorts[cohortNum].class_ids.forEach(function(classNum){
 				urls.push({
-					url: `courses/${classNum}/assignments?per_page=1000`,
+					url: `courses/${classNum}/assignments?per_page=100`,
 					course: classNum,
 					cohort: cohortNum
 				});
 			});
 		});
-		
-		throttledURLCalls(urls, APICallsPerSecond, checkpointIDAPICall)
-			.then(function(assignmentPromises){
-				var assignmentPromiseResponses = [];
-				Promise.all(assignmentPromises)
-					.then(function(res){
-						assignmentPromises.forEach(function(assignPromise){
-							var addAssignmentInfoToCohortInfo = assignPromise.then(function(assignmentInfo){
-								assignmentInfo.forEach(function(assignObj){
-									var assignmentIDpair = {};
-									assignmentIDpair.name = assignObj.name;
-									assignmentIDpair.id = assignObj.assignment_id;
-									cohorts[assignObj.cohort].assignmentNamesAndIDs.push(assignmentIDpair);
-								});
-							});
-							assignmentPromiseResponses.push(addAssignmentInfoToCohortInfo);
-						});
-						Promise.all(assignmentPromiseResponses)
-							.then(function(res){
-								var timeTook = (Date.now()-start)/1000;
-								CONSOLE_WITH_TIME(`Done. Took ${timeTook} seconds`);
-								resolve(cohorts);
-							}).catch(errorHandler);
-					}).catch(errorHandler);
-			}).catch(errorHandler);
+		resolve({cohorts: cohorts, urls: urls});
 	});
 }
-
-//runs through grade changes and finds last completed checkpoint for each user
-function getLastCompletedCheckpointForEachUser(cohorts){
+//obtains checkpoints from every class
+function obtainAssignmentNamesAndIDs(cohortObj){
 	return new Promise(function(resolve, reject){
 		var start = Date.now();
-		CONSOLE_WITH_TIME('Getting last complete checkpoint for each user...');
+		CONSOLE_WITH_TIME("Getting checkpoint ID's from classes");
+		var cohorts = cohortObj.cohorts;
+		var urls = cohortObj.urls;
+		checkpointIDAPICall(urls)
+			.then(function(resolvedAssignmentPromises){
+				resolvedAssignmentPromises.forEach(function(assignPromise){
+					assignPromise.forEach(function(assignObj){
+						var assignmentIDpair = {};
+						assignmentIDpair.name = assignObj.name;
+						assignmentIDpair.id = assignObj.assignment_id;
+						cohorts[assignObj.cohort].assignmentNamesAndIDs.push(assignmentIDpair);
+					});
+				});
+				var timeTook = (Date.now()-start)/1000;
+				CONSOLE_WITH_TIME(`Done. Took ${timeTook} seconds`);
+				resolve(cohorts);
+			}).catch(errorHandler);
+	});
+}		
+//creates an array of objects containing a url for the grade change API call, and the corresponding cohort number 
+function constructUrlsForLastCompletedCheckpointApiCalls(cohorts){
+	return new Promise(function(resolve, reject){
 		var cohortKeys = Object.keys(cohorts);
 		var urls = [];
 		cohortKeys.forEach(function(key){
@@ -93,42 +89,38 @@ function getLastCompletedCheckpointForEachUser(cohorts){
 				});
 			});
 		});
-
-		throttledURLCalls(urls, APICallsPerSecond, getGradeChangesForAssignmentAPICall)
-			.then(function(gradeChangeInfoRequests){
-				Promise.all(gradeChangeInfoRequests)
-					.then(function(){
-						var promisesToAppendAssignmentInfoToUsers = [];
-						gradeChangeInfoRequests.forEach(function(req){
-							promisesToAppendAssignmentInfoToUsers.push(req.then(function(assignChanges){
-								assignChanges.forEach(function(changeObj){
-									cohorts[changeObj.cohort].users.filter(function(user){
-										return changeObj.user_id == user.user_id;
-									}).map(function(user){
-										if(!user.last_assignment_completed_timestamp || user.last_assignment_completed_timestamp.isBeforeTime(changeObj.timestamp)){
-											user.last_assignment_completed_timestamp = changeObj.timestamp;
-											user.last_assignment_completed_id = changeObj.assignment_id;
-											user.grader_id = changeObj.grader_id;
-										}
-									});
-								});
-							}));
-						});
-						Promise.all(promisesToAppendAssignmentInfoToUsers)
-							.then(function(){
-								var timeTook = (Date.now()-start)/1000;
-								CONSOLE_WITH_TIME(`Done. Took ${timeTook} seconds`);
-								var keys = Object.keys(cohorts[18].users[4]);
-								keys.forEach(function(key){
-									CONSOLE_WITH_TIME(key + ': ' + cohorts[18].users[4][key]);
-								});
-								resolve(cohorts);	
-							}).catch(errorHandler);
-					}).catch(errorHandler);
-			}).catch(errorHandler);;
+		resolve({cohorts: cohorts, urls: urls});
 	});
 }
-
+//runs through grade changes and finds last completed checkpoint for each user
+function getLastCompletedCheckpointForEachUser(cohortObj){
+	return new Promise(function(resolve,reject){
+		var start = Date.now();
+		CONSOLE_WITH_TIME('Getting last complete checkpoint for each user...');
+		var cohorts = cohortObj.cohorts;
+		var urls = cohortObj.urls;
+		getGradeChangesForAssignmentAPICall(urls)
+			.then(function(resolvedGradeChangeInfoRequests){
+				resolvedGradeChangeInfoRequests.forEach(function(request){
+					request.forEach(function(changeObj){
+						cohorts[changeObj.cohort].users.filter(function(user){
+							return changeObj.user_id == user.user_id;
+						}).map(function(user){
+							if(!user.last_assignment_completed_timestamp || user.last_assignment_completed_timestamp.isBeforeTime(changeObj.timestamp)){
+								user.last_assignment_completed_timestamp = changeObj.timestamp;
+								user.last_assignment_completed_id = changeObj.assignment_id;
+								user.grader_id = changeObj.grader_id;
+							}
+						});
+					});
+				});
+				var timeTook = (Date.now()-start)/1000;
+				CONSOLE_WITH_TIME(`Done. Took ${timeTook} seconds`);
+				resolve(cohorts);
+			}).catch(errorHandler);
+	});
+}
+		
 //posts last checkpoint info into CSV files
 function putUserCohortInfoInCSVFile(cohorts){
 	var cohortKeys = Object.keys(cohorts);
@@ -168,8 +160,9 @@ function putUserCohortInfoInCSVFile(cohorts){
 
 //helper methods
 //API call to obtain assignment info
-function checkpointIDAPICall(urlObj){
-	return request(	`courses/${urlObj.course}/assignments?per_page=1000`, 'Canvas')
+function checkpointIDAPICall(urls){
+	return BBPromise.map(urls, function(urlObj){
+		return request(urlObj.url, 'Canvas')
 		.then(function(assignments){
 			return assignments.map(function(assignment){
 				return {
@@ -181,53 +174,30 @@ function checkpointIDAPICall(urlObj){
 		}).catch(function(err){
 			CONSOLE_WITH_TIME(`Something went wrong with the assignment call to course number ${urlObj.course}: ${err}`);
 		});
+	}, {concurrency: numberOfConcurrentAPICalls});
 }
 
 //API call to grade changes that parses relevant info for CSV file (add more parameters if you want more columns for the CSV file)
-function getGradeChangesForAssignmentAPICall(urlObj){
-	return request(urlObj.url, 'Canvas')
-		.then(function(assignChange){
-			var assignChanges = [];
-			assignChange.events.forEach(function(change){
-				var changeObj = {};
-				if(change.grade_after !== null && change.event_type === "grade_change"){
-					changeObj.timestamp = change.created_at;
-					changeObj.cohort = urlObj.cohort;
-					changeObj.assignment_id = change.links.assignment;
-					changeObj.user_id = change.links.student;
-					changeObj.course_id = change.links.course;
-					changeObj.grader_id = change.links.grader;
-					assignChanges.push(changeObj);
-				}
+function getGradeChangesForAssignmentAPICall(urls){
+	return BBPromise.map(urls, function(urlObj){
+		return request(urlObj.url, 'Canvas')
+			.then(function(assignChange){
+				var assignChanges = [];
+				assignChange.events.forEach(function(change){
+					var changeObj = {};
+					if(change.grade_after !== null && change.event_type === "grade_change"){
+						changeObj.timestamp = change.created_at;
+						changeObj.cohort = urlObj.cohort;
+						changeObj.assignment_id = change.links.assignment;
+						changeObj.user_id = change.links.student;
+						changeObj.course_id = change.links.course;
+						changeObj.grader_id = change.links.grader;
+						assignChanges.push(changeObj);
+					}
+				});
+				return assignChanges;
 			});
-			return assignChanges;
-		}).catch(function(err){
-			console.error(`Problem getting grade change info for ${urlObj.url}: ${err}`);
-		});
-}
-
-//request throttler for API calls
-function throttledURLCalls(urls, reqPerSecond, callback){
-	return new Promise(function(resolve,reject){
-		var intervalValue = 1000/reqPerSecond;
-		var requestCollector = [];
-		var count = 0;
-		
-		var go = setInterval(function(){
-			if(urls[count] === undefined){
-				//when done, go to next part of code that processes the info from the requests
-				clearInterval(go);
-				resolve(requestCollector);
-				
-			}else{
-				//create objects with cohort number, request promise, and which checkpoint the request hits
-				var urlObj = urls[count];
-				var requestPromise = callback(urlObj);
-				requestCollector.push(requestPromise);
-				count++;
-			}
-		}, intervalValue);
-	});
+	}, {concurrency: numberOfConcurrentAPICalls});
 }
 
 //extends the String and Number types with a method called 'isBeforeTime', which takes a time string or integer
