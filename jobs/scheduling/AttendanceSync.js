@@ -107,7 +107,7 @@ function checkForDupUsersInGTWFilterForThoseWhoAttendedLessThan90Mins(arr){
 function findCanvasUsersByEmail(GTWusers){  
   GTWusers.forEach(function(GTWUser){
     //query canvas for a user using user email
-    canvas.scrapeCanvasUsers(GTWUser.email)
+    canvas.getUsers(GTWUser.email)
     .then(function(canvasUsers){
       if (!canvasUsers.length) { 
         emailTrainer(GTWUser, 0);
@@ -132,7 +132,7 @@ function findCanvasUsersByEmail(GTWusers){
 function findCanvasUserByName(GTWUser){
   var nameQuery = GTWUser.firstName+' '+GTWUser.lastName;
     //query canvas for a user using user email
-  canvas.scrapeCanvasUsers(nameQuery)
+  canvas.getUsers(nameQuery)
   .then(function(canvasUsers){
     if (!canvasUsers.length) { 
       emailTrainer(GTWUser, 2);
@@ -154,7 +154,7 @@ function findCanvasUserByName(GTWUser){
 function queryForCanvasCoursesAndAssignments(userID){
   const ID = userID;
       //scrape for user's enrollments in order to get course ID
-  canvas.scrapeCanvasEnrollment(userID)
+  canvas.getEnrollment(userID)
   .then(function(enrollmentObj){
     if (!enrollmentObj.length) { 
       CONSOLE_WITH_TIME(`This user id ${ID} has no enrollments`);
@@ -165,7 +165,7 @@ function queryForCanvasCoursesAndAssignments(userID){
     }
     var courseID = enrollmentObj[0].course_id;
     //scrape for the id of the relevant assignment within a specific course
-    canvas.scrapeCanvasAssignments(courseID)
+    canvas.getAssignments(courseID)
     .then(function(assignments){
       assignments.forEach(function(assignment){
         //gives canvas user credit for attending or scheduling a GTW observation

@@ -177,7 +177,7 @@ function markCanvasScheduledShiftAssignmentBasedOnWiWEmail(email) {
   var courseID;
   var name;
 
-  canvas.scrapeCanvasUsers(email)
+  canvas.getUsers(email)
   .then(function(users) {
     if (users.length === 0) throw 'That email was not found in Canvas.';
     userID = users[0].id;
@@ -186,7 +186,7 @@ function markCanvasScheduledShiftAssignmentBasedOnWiWEmail(email) {
     return users[0].id;
   })
   .then(function(userID) {
-    return canvas.scrapeCanvasEnrollment(userID);
+    return canvas.getEnrollment(userID);
   })
   .then(function(courses) {
     courses = courses.filter(function(course) {
@@ -197,7 +197,7 @@ function markCanvasScheduledShiftAssignmentBasedOnWiWEmail(email) {
     return courses[0].course_id;
   })
   .then(function(courseID) {
-    return canvas.scrapeCanvasAssignments(courseID, CONFIG.canvas.assignments.scheduledShifts);
+    return canvas.getAssignments(courseID, CONFIG.canvas.assignments.scheduledShifts);
   })
   .then(function(assignment) {
     if (assignment.length === 0) throw "No 'Schedule Your Shifts' assignment for that user was found in Canvas.";

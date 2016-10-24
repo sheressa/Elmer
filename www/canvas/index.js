@@ -98,7 +98,7 @@ function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
   let promiseAssignmentID;
 
   // request canvas user with this email address and find their userId
-  promiseUserID = canvas.scrapeCanvasUsers(userEmail)
+  promiseUserID = canvas.getUsers(userEmail)
     .then((users) => {
       if (users.length === 0) throw 'No user was found in Canvas for that email.';
       return users[0].id;
@@ -112,7 +112,7 @@ function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
   promiseCourseID = promiseUserID
     .then((userID) => {
       userCanvasID = userID;
-      return canvas.scrapeCanvasEnrollment(userID);
+      return canvas.getEnrollment(userID);
     })
     .then((courses) => {
       courses = courses.filter((course) => {
@@ -127,7 +127,7 @@ function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
 
   // request assignments for course and find correct assignment
   promiseAssignmentID = promiseCourseID.then((courseID) => {
-    return canvas.scrapeCanvasAssignments(courseID, assignment);
+    return canvas.getAssignments(courseID, assignment);
     })
     .then(assignments => {
       if (assignments.length === 0) throw `Canvas returned 0 assignments`;

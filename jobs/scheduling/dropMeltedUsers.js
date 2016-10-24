@@ -99,7 +99,7 @@ function findMostRecent(objArr) {
 function meltUsers() {
 
   //First, we get all Canvas users.
-  canvas.scrapeCanvasUsers()
+  canvas.getUsers()
   .then(function(response) {
     var users = response;
     users.forEach(function(user) {
@@ -108,13 +108,13 @@ function meltUsers() {
       let assignmentID;
       let grade;
       //Then we check if the user has 'inactive' enrollments (force melts)
-      canvas.scrapeCanvasEnrollment(user.id, 'inactive')
+      canvas.getEnrollment(user.id, 'inactive')
       .then(function(result) {
         if (result) userEnrollments = result;
       })
       //Then we check if the user has 'completed' enrollments (voluntary melts)
       .then(function() {
-        return canvas.scrapeCanvasEnrollment(user.id, 'completed');
+        return canvas.getEnrollment(user.id, 'completed');
       })
       .then(function(result) {
         if (result) userEnrollments = userEnrollments.concat(result);
@@ -122,7 +122,7 @@ function meltUsers() {
       //Then we look up the user's final exam assignment
       .then(function() {
         numberOfMelts = userEnrollments.length;
-        return canvas.scrapeCanvasAssignments(userEnrollments[userEnrollments.length-1].course_id, CONFIG.canvas.assignments.finalExam);
+        return canvas.getAssignments(userEnrollments[userEnrollments.length-1].course_id, CONFIG.canvas.assignments.finalExam);
       })
       .then(function(assignments) {
         assignmentID = assignments[0].id;
@@ -159,7 +159,7 @@ function meltUsers() {
           //deletes the user from Canvas. This must be done LAST because otherwise we lose the Canvas info we need to run the other functions.
           emailMeltedUser(mostRecentEnrollment.user, numberOfMelts, mostRecentEnrollment.enrollment_state, mostRecentEnrollment.sis_course_id);
           deferOrBlockInCTLOnline(mostRecentEnrollment.user.login_id);
-          canvas.deleteCanvasUser(user.id);
+          canvas.deleteUser(user.id);
         }
       })
       .catch(function(error) {

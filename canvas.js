@@ -9,46 +9,44 @@ const fetch = require('requestretry');
 // tells the requestretry library to retry the canvas call only when we hit the API call rate limit
 function myRetryStrategy(err, response, body){
 	if(!response) {
-		CONSOLE_WITH_TIME('Error from retry stratery! Empty response', err)
+		CONSOLE_WITH_TIME(`Error from retry stratery! Empty response ${err}`);
 		return false;
 	}
 	return response.statusCode===403;
 }
+// consolidates the options object
+function createOptions(reqOptions){
+	reqOptions.json =  true;
+	reqOptions.retryStrategy = myRetryStrategy;
+	reqOptions.headers = {
+		Authorization: KEYS.canvas.api_key,
+	};
+	return reqOptions;
+
+}
 //finds all active canvas courses
 canvas.getAllCourses = function(){
-
-	var url = 'https://crisistextline.instructure.com/api/v1/accounts/1/courses?per_page=100';
-		var options = {
-		url: url,
-		json: true,
-		retryStrategy: myRetryStrategy,
-		headers: {
-			Authorization: KEYS.canvas.api_key,
-		}
-	};
+	const url = 'https://crisistextline.instructure.com/api/v1/accounts/1/courses?per_page=100';
+	const options = createOptions({
+		url: url
+	});
 	return fetch(options)
 	.then(function(response){
 		if(response.statusCode!==200) throw response.message;
 		return response.body;
 	})
 	.catch(function(err){
-		CONSOLE_WITH_TIME('Canvas call to get courses failed: ', err)
+		CONSOLE_WITH_TIME(`Canvas call to get courses failed: ${err}`);
 	})
 }
 
 //finds all assignments in a specific canvas course
-canvas.scrapeCanvasAssignments = function(id, params){
-
-	var url = 'https://crisistextline.instructure.com/api/v1/courses/'+id+'/assignments?per_page=100';
-	if(params) url = url+'&search_term='+params;
-	var options = {
-		url: url,
-		json: true,
-		retryStrategy: myRetryStrategy,
-		headers: {
-			Authorization: KEYS.canvas.api_key,
-		}
-	};
+canvas.getAssignments = function(courseID, searchTerm){
+	var url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/assignments?per_page=100`;
+	if(searchTerm) url = url+'&search_term='+searchTerm;
+	const options = createOptions({
+		url: url
+	});
 
 	return fetch(options)
 	.then(function(response){
@@ -56,23 +54,18 @@ canvas.scrapeCanvasAssignments = function(id, params){
 		return response.body;
 	})
 	.catch(function(err){
-		CONSOLE_WITH_TIME('Canvas call to get assignments failed', err)
+		CONSOLE_WITH_TIME(`Canvas call to get assignments failed ${err}`);
 	})
 
 };
 
 // returns an enrollment object for a user containing all active course id the user is enrolled in
-canvas.scrapeCanvasEnrollment = function(userID, enrollmentState){
+canvas.getEnrollment = function(userID, enrollmentState){
  var url = `https://crisistextline.instructure.com/api/v1/users/${userID}/enrollments?per_page=100`;
  if(enrollmentState) url = url+'&state[]='+params;
-	var options = {
-		url: url,
-		json: true,
-		retryStrategy: myRetryStrategy,
-		headers: {
-			Authorization: KEYS.canvas.api_key,
-		}
-	};
+ const options = createOptions({
+		url: url
+ });
 
 	return fetch(options)
 	.then(function(response){
@@ -80,7 +73,7 @@ canvas.scrapeCanvasEnrollment = function(userID, enrollmentState){
 		return response.body;
 	})
 	.catch(function(err){
-		CONSOLE_WITH_TIME('Canvas call to get user enrollments failed', err)
+		CONSOLE_WITH_TIME(`Canvas call to get user enrollments failed ${err}`);
 	});
 
 };
@@ -88,16 +81,10 @@ canvas.scrapeCanvasEnrollment = function(userID, enrollmentState){
 //finds all enrollments in a given course
 canvas.retrieveCourseEnrollment = function(courseID, enrollmentState) {
 
-  var url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments?state[]=' + enrollmentState;
-
-  var options = {
-		url: url,
-		json: true,
-		retryStrategy: myRetryStrategy,
-		headers: {
-			Authorization: KEYS.canvas.api_key,
-		}
-	};
+  const url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/enrollments?state[]=${enrollmentState}&per_page=100`;
+  const options = createOptions({
+		url: url
+	});
 
   return fetch(options)
   .then(function(response){
@@ -105,23 +92,18 @@ canvas.retrieveCourseEnrollment = function(courseID, enrollmentState) {
 		return response.body;
   })
   .catch(function(err){
-    CONSOLE_WITH_TIME("Finding enrollments for the course with ID " + courseID + " in Canvas failed: ", err);
+    CONSOLE_WITH_TIME(`Finding enrollments for the course with ID ${courseID} in Canvas failed: ${err}`);
   });
 
 };
 
 //finds all users in canvas if no params, if params finds users by name or email
-canvas.scrapeCanvasUsers = function(params){
+canvas.getUsers = function(searchTerm){
 	var url = 'https://crisistextline.instructure.com/api/v1/accounts/1/users?per_page=100';
-	if(params) url = url+'&search_term='+params;
-	var options = {
-		url: url,
-		json: true,
-		retryStrategy: myRetryStrategy,
-		headers: {
-			Authorization: KEYS.canvas.api_key,
-		}
-	};
+	if(searchTerm) url = url+'&search_term='+searchTerm;
+	const options = createOptions({
+		url: url
+	});
 
 	return fetch(options)
 	.then(function(response){
@@ -129,23 +111,18 @@ canvas.scrapeCanvasUsers = function(params){
 		return response.body;
 	})
 	.catch(function(err){
-		CONSOLE_WITH_TIME('Canvas call to get users failed', err);
+		CONSOLE_WITH_TIME(`Canvas call to get users failed ${err}`);
 	})
 };
 
 //updates a grade on canvas
-canvas.updateUserGrade = function(uID, cID, aID, grade){
-var url = 'https://crisistextline.instructure.com/api/v1/courses/'+cID+'/assignments/'+aID+'/submissions/'+uID;
- var options = {
+canvas.updateUserGrade = function(userID, courseID, assignmentID, grade){
+var url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/assignments/${assignmentID}/submissions/${userID}`;
+ const options = createOptions({
    method: 'PUT',
    url: url,
-   json: true,
-   retryStrategy: myRetryStrategy,
-   headers: {
-     Authorization: KEYS.canvas.api_key,
-   }, 
    body: {submission:{posted_grade: grade}}
- };
+ });
 
   return fetch(options)
   .then(function(response){
@@ -153,27 +130,22 @@ var url = 'https://crisistextline.instructure.com/api/v1/courses/'+cID+'/assignm
 		return response.body;
   })
   .catch(function(err){
-    CONSOLE_WITH_TIME('Could not update grade', err);
+    CONSOLE_WITH_TIME(`Could not update grade ${err}`);
   });
 };
-canvas.submitAssignment = function(user, course, assignment, submissionHTML) {
+canvas.submitAssignment = function(userID, courseID, assignmentID, submissionHTML) {
   //Submits assignment on users behalf
- var url = `https://crisistextline.instructure.com/api/v1/courses/${course}/assignments/${assignment}/submissions?as_user_id=${user}`;
- var options = {
+ const url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/assignments/${assignmentID}/submissions?as_user_id=${userID}`;
+ const options = createOptions({
    method: 'PUT',
    url: url,
-   json: true,
-   retryStrategy: myRetryStrategy,
-   headers: {
-     Authorization: KEYS.canvas.api_key,
-   }, 
    body: {
       submission: {
         submission_type: 'online_text_entry',
         body: submissionHTML 
       }
     }
- };
+ });
 
   return fetch(options)
    .then(function(response){
@@ -187,78 +159,59 @@ canvas.submitAssignment = function(user, course, assignment, submissionHTML) {
 
 };
 
-canvas.deleteCanvasUser = function(userID) {
-  var url = 'https://crisistextline.instructure.com//api/v1/accounts/1/users/' + userID;
-
-  var options = {
+canvas.deleteUser = function(userID) {
+  const url = `https://crisistextline.instructure.com//api/v1/accounts/1/users/${userID}`;
+  const options = createOptions({
   	method: 'DELETE',
-		url: url,
-		json: true,
-		retryStrategy: myRetryStrategy,
-		headers: {
-			Authorization: KEYS.canvas.api_key,
-		}
-	};
+		url: url
+	});
   
   return fetch(options)
   .then(function(response) {
     return response.body;
   })
   .catch(function(err){
-    CONSOLE_WITH_TIME("Deletion of Canvas user with ID " + userID + " failed: ", err);
+    CONSOLE_WITH_TIME(`Deletion of Canvas user with ID ${userID} failed: ${err}`);
   });
 };
 
-canvas.getUserGrade = function(user, course, assignment) {
-  var grade;
-  var url = 'https://crisistextline.instructure.com/api/v1/courses/' + course + '/assignments/' + assignment + '/submissions/' + user;
-    var options = {
-		url: url,
-		json: true,
-		retryStrategy: myRetryStrategy,
-		headers: {
-			Authorization: KEYS.canvas.api_key,
-		}
-	};
+canvas.getUserGrade = function(userID, courseID, assignmentID) {
+  const url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/assignments/${assignmentID}/submissions/${userID}`;
+  const options = createOptions({
+		url: url
+	});
 
   return fetch(options)
   .then(function(response) {
     return response.body.grade;
   })
   .catch(function(err){
-    CONSOLE_WITH_TIME("Finding a grade for the user with ID " + user + " for assignment " + assignment + " in course " + course + " in Canvas failed: ", err);
+    CONSOLE_WITH_TIME(`Finding a grade for the user with ID ${user} for assignment ${assignment} in course ${course} in Canvas failed: ${err}`);
   });
 
 };
 
 canvas.activateOrDeactivateEnrollment = function(courseID, enrollmentID, enrollmentType, userID) {
-
-	 var options = {
-		json: true,
-		retryStrategy: myRetryStrategy,
-		headers: {
-			Authorization: KEYS.canvas.api_key,
-		}
-	};
+	const options = createOptions({});
 
   if (enrollmentType === 'reactivate') {
-    options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments?enrollment[user_id]=' + userID + '&enrollment[type]=StudentEnrollment';
+    options.url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/enrollments?enrollment[user_id]=${userID}&enrollment[type]=StudentEnrollment`;
     options.method = 'POST';
   }
 
   else if (enrollmentType === 'completed') {
-    options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments/' + enrollmentID + '?task=conclude';
+    options.url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/enrollments/${enrollmentID}?task=conclude`;
     options.method = 'DELETE';
   }
 
   else if (enrollmentType === 'inactive') {
-    options.url = 'https://crisistextline.instructure.com/api/v1/courses/' + courseID + '/enrollments/' + enrollmentID + '?task=deactivate';
+    options.url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/enrollments/${enrollmentID}?task=deactivate`;
     options.method = 'DELETE';
   }
 
   return fetch(options)
   .catch(function(err){
-    CONSOLE_WITH_TIME("Finding enrollments for the course with ID " + courseID + " in Canvas failed: ", err);
+    CONSOLE_WITH_TIME(`Finding enrollments for the course with ID ${courseID} in Canvas failed: ${err}`);
   });
 
 };
