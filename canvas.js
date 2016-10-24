@@ -156,7 +156,6 @@ var url = 'https://crisistextline.instructure.com/api/v1/courses/'+cID+'/assignm
     CONSOLE_WITH_TIME('Could not update grade', err);
   });
 };
-
 canvas.submitAssignment = function(user, course, assignment, submissionHTML) {
   //Submits assignment on users behalf
  var url = `https://crisistextline.instructure.com/api/v1/courses/${course}/assignments/${assignment}/submissions?as_user_id=${user}`;
@@ -224,8 +223,7 @@ canvas.getUserGrade = function(user, course, assignment) {
 
   return fetch(options)
   .then(function(response) {
-    grade = response.body.grade;
-    return grade;
+    return response.body.grade;
   })
   .catch(function(err){
     CONSOLE_WITH_TIME("Finding a grade for the user with ID " + user + " for assignment " + assignment + " in course " + course + " in Canvas failed: ", err);

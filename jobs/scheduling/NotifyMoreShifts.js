@@ -125,7 +125,7 @@ function shiftNotification(users, usersToNotify) {
           shifts: usersToNotify[user.id]
         };
 
-        findWiWUserInCanvas(email);
+        markCanvasScheduledShiftAssignmentBasedOnWiWEmail(email);
       }
     }
 
@@ -170,7 +170,7 @@ function mandrillEachUser(userWithAllInfo, shiftToSup) {
   // returned for testing;
   return results;
 }
-function findWiWUserInCanvas(email) {
+function markCanvasScheduledShiftAssignmentBasedOnWiWEmail(email) {
   //collects canvas user ID, courseID, and assignment ID based on the WiW
   //user ID, then calls the update grade function, which needs all three.
   var userID;

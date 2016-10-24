@@ -130,17 +130,17 @@ function findCanvasUsersByEmail(GTWusers){
 
 //scrapes canvas for user by name, course and assignment id's
 function findCanvasUserByName(GTWUser){
-  nameQuery = GTWUser.firstName+' '+GTWUser.lastName;
+  var nameQuery = GTWUser.firstName+' '+GTWUser.lastName;
     //query canvas for a user using user email
   canvas.scrapeCanvasUsers(nameQuery)
   .then(function(canvasUsers){
     if (!canvasUsers.length) { 
-      // emailTrainer(GTWUser, 2);
+      emailTrainer(GTWUser, 2);
       CONSOLE_WITH_TIME("COULD NOT FIND USER BY NAME: ", GTWUser);
       return;}
 
     if (canvasUsers.length>1){
-      // emailTrainer(GTWUser, 3);
+      emailTrainer(GTWUser, 3);
       CONSOLE_WITH_TIME("TWO USERS WITH THE SAME NAME FOUND ", canvasUsers);
       return;}
     var userID = canvasUsers[0].id;
@@ -169,12 +169,8 @@ function queryForCanvasCoursesAndAssignments(userID){
     .then(function(assignments){
       assignments.forEach(function(assignment){
         //gives canvas user credit for attending or scheduling a GTW observation
-        if(assignment.name===CONFIG.canvas.assignments.webinarAttended){
-          CONSOLE_WITH_TIME(`Marking GTW attendance of ${enrollmentObj[0].user.name} canvas id ${enrollmentObj[0].user.id}`);
-          markAttendanceInCanvas(assignment.course_id, assignment.id, userID);
-        }
-        if(assignment.name===CONFIG.canvas.assignments.scheduleWebinar){
-          CONSOLE_WITH_TIME(`Marking GTW observation scheduled of ${enrollmentObj[0].user.name} canvas id ${enrollmentObj[0].user.id}`);
+        if(assignment.name===CONFIG.canvas.assignments.webinarAttended|| assignment.name===CONFIG.canvas.assignments.scheduleWebinar){
+          CONSOLE_WITH_TIME(`Marking ${assignment.name} of ${enrollmentObj[0].user.name} canvas id ${enrollmentObj[0].user.id}`);
           markAttendanceInCanvas(assignment.course_id, assignment.id, userID);
         }
       });
