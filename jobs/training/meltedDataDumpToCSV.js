@@ -5,7 +5,7 @@ const cohortPromise = require('./meltedDataDumpToSlack.js').cohortDataPromise;
 const fs = require('fs');
 const path = require('path');
 const request = require('./meltedDataDumpToSlack.js').request;
-const BBPromise = require('bluebird');
+const Bluebird = require('bluebird');
 const numberOfConcurrentAPICalls = 30;
 
 function errorHandler(err){
@@ -50,16 +50,14 @@ function constructUrlsForCheckpointIdApiCalls(cohorts){
 				});
 			});
 		});
-		resolve({cohorts: cohorts, urls: urls});
+		resolve({cohorts, urls});
 	});
 }
 //obtains checkpoints from every class
-function obtainAssignmentNamesAndIDs(cohortObj){
+function obtainAssignmentNamesAndIDs({cohorts, urls}){
 	return new Promise(function(resolve, reject){
 		var start = Date.now();
 		CONSOLE_WITH_TIME("Getting checkpoint ID's from classes");
-		var cohorts = cohortObj.cohorts;
-		var urls = cohortObj.urls;
 		checkpointIDAPICall(urls)
 			.then(function(resolvedAssignmentPromises){
 				resolvedAssignmentPromises.forEach(function(assignPromise){
@@ -89,16 +87,14 @@ function constructUrlsForLastCompletedCheckpointApiCalls(cohorts){
 				});
 			});
 		});
-		resolve({cohorts: cohorts, urls: urls});
+		resolve({cohorts, urls});
 	});
 }
 //runs through grade changes and finds last completed checkpoint for each user
-function getLastCompletedCheckpointForEachUser(cohortObj){
+function getLastCompletedCheckpointForEachUser({cohorts, urls}){
 	return new Promise(function(resolve,reject){
 		var start = Date.now();
 		CONSOLE_WITH_TIME('Getting last complete checkpoint for each user...');
-		var cohorts = cohortObj.cohorts;
-		var urls = cohortObj.urls;
 		getGradeChangesForAssignmentAPICall(urls)
 			.then(function(resolvedGradeChangeInfoRequests){
 				resolvedGradeChangeInfoRequests.forEach(function(request){
@@ -141,7 +137,6 @@ function putUserCohortInfoInCSVFile(cohorts){
 				} else{
 					csvOutput += `${user[key]},`;
 				}
-				
 			});
 			var lastAssignName = cohorts[cohortNum].assignmentNamesAndIDs.filter(function(assignIDpair){
 				return assignIDpair.id === user.last_assignment_completed_id;
@@ -161,7 +156,7 @@ function putUserCohortInfoInCSVFile(cohorts){
 //helper methods
 //API call to obtain assignment info
 function checkpointIDAPICall(urls){
-	return BBPromise.map(urls, function(urlObj){
+	return Bluebird.map(urls, function(urlObj){
 		return request(urlObj.url, 'Canvas')
 		.then(function(assignments){
 			return assignments.map(function(assignment){
@@ -179,7 +174,7 @@ function checkpointIDAPICall(urls){
 
 //API call to grade changes that parses relevant info for CSV file (add more parameters if you want more columns for the CSV file)
 function getGradeChangesForAssignmentAPICall(urls){
-	return BBPromise.map(urls, function(urlObj){
+	return Bluebird.map(urls, function(urlObj){
 		return request(urlObj.url, 'Canvas')
 			.then(function(assignChange){
 				var assignChanges = [];
