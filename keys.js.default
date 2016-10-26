@@ -28,6 +28,8 @@ KEYS.mandrill = {
   api_key: 'TODO'
 };
 
+KEYS.jenkinsRoute = 'TODO';
+
 KEYS.stathat = {
   enabled: false,
   email: 'todo'

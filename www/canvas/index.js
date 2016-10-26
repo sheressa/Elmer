@@ -1,7 +1,9 @@
 'use strict';
+global.KEYS = require('../keys.js')
+global.CONFIG = require('../config.js')
 
 const express = require('express');
-const canvas = require(CONFIG.root_dir + '/jobs/scheduling/helpers/updateCanvas.js').canvas;
+const canvas = require('../canvas.js');
 const stathat = require(CONFIG.root_dir + '/lib/stathat');
 const router = express.Router();
 
@@ -16,7 +18,7 @@ router.put('/firstShift', function (req, res) {
   const logErrEmailHeather = createLogErrEmailHeatherFunc(`platform user:` +
         `${JSON.stringify(user)} was not able to be given credit for ${assignment}`);
 
-  canvas.retrieveUserCourseAssignmentIds(user.email, assignment, logErrEmailHeather)
+  retrieveUserCourseAssignmentIds(user.email, assignment, logErrEmailHeather)
   .then(responses => {
     // responses is [userID, courseID, assignmentID] so we spread it
     return canvas.updateUserGrade(...responses, 'complete');
@@ -39,7 +41,7 @@ router.post('/typeformAssignment/:assignment', function (req, res) {
   const logErrEmailHeather = createLogErrEmailHeatherFunc(`typeform submission for email:` +
         `${emailWithSubmission.email} was not able to be given credit for ${assignment}`);
 
-  canvas.retrieveUserCourseAssignmentIds(emailWithSubmission.email, assignment, logErrEmailHeather)
+  retrieveUserCourseAssignmentIds(emailWithSubmission.email, assignment, logErrEmailHeather)
   .then(responses => {
     // responses is [userID, courseID, assignmentID] so we spread it
     const pSubmitAssign = canvas.submitAssignment(...responses, emailWithSubmission.submissionHTML);
@@ -89,6 +91,54 @@ function createLogErrEmailHeatherFunc (messageText) {
   };
   
 }
+
+function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
+  let promiseUserID;
+  let promiseCourseID;
+  let promiseAssignmentID;
+
+  // request canvas user with this email address and find their userId
+  promiseUserID = canvas.getUsers(userEmail)
+    .then((users) => {
+      if (users.length === 0) throw 'No user was found in Canvas for that email.';
+      return users[0].id;
+    }).catch(err => {
+      const subject = `Error finding user with email ${userEmail} in Canvas`;
+      errFunc(subject, err);
+    });
+
+  let userCanvasID; 
+  // request courses and find correct courseId;
+  promiseCourseID = promiseUserID
+    .then((userID) => {
+      userCanvasID = userID;
+      return canvas.getEnrollment(userID);
+    })
+    .then((courses) => {
+      courses = courses.filter((course) => {
+        return course.enrollment_state === 'active';
+      });
+      if (courses.length === 0) throw 'No active courses for user ${userCanvasID} were found in Canvas.';
+      return courses[0].course_id;
+    }).catch(err => {
+      const subject = `Error finding active course for ${userEmail} in Canvas`;
+      errFunc(subject, err);
+    });
+
+  // request assignments for course and find correct assignment
+  promiseAssignmentID = promiseCourseID.then((courseID) => {
+    return canvas.getAssignments(courseID, assignment);
+    })
+    .then(assignments => {
+      if (assignments.length === 0) throw `Canvas returned 0 assignments`;
+      return assignments[0].id;
+    }).catch(err => {
+      const subject = `Error finding ${assignment} in course found for ${userEmail}`;
+      errFunc(subject, err);
+    });
+
+  return Promise.all([promiseUserID, promiseCourseID, promiseAssignmentID]);
+};
 
 
 module.exports = {router};

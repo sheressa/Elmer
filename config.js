@@ -82,7 +82,8 @@ CONFIG.canvas = {
     attendedFirstShift: 'Attend First Shift',
     scheduledShifts: 'Schedule Your Shifts',
     platformReady: 'Platform Ready!',
-    webinarAttended: 'Attend An Observation',
+    webinarAttended: 'Checkpoint #8: Attend an Observation',
+    scheduleWebinar: 'Schedule Your Observation',
     finalExam: 'Final Exam',
   },
   passingScores: {
