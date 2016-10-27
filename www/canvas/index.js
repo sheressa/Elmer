@@ -1,9 +1,7 @@
 'use strict';
-global.KEYS = require('../keys.js')
-global.CONFIG = require('../config.js')
 
 const express = require('express');
-const canvas = require('../canvas.js');
+const canvas = require('../canvas');
 const stathat = require(CONFIG.root_dir + '/lib/stathat');
 const router = express.Router();
 
@@ -89,7 +87,7 @@ function createLogErrEmailHeatherFunc (messageText) {
         CONSOLE_WITH_TIME(res);
     });
   };
-  
+
 }
 
 function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
@@ -107,7 +105,7 @@ function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
       errFunc(subject, err);
     });
 
-  let userCanvasID; 
+  let userCanvasID;
   // request courses and find correct courseId;
   promiseCourseID = promiseUserID
     .then((userID) => {
