@@ -38,6 +38,7 @@ router.post('/typeformAssignment/:assignment', function (req, res) {
   const assignment = req.params.assignment;
   const logErrEmailHeather = createLogErrEmailHeatherFunc(`typeform submission for email:` +
         `${emailWithSubmission.email} was not able to be given credit for ${assignment}`);
+  const usersThatHaveErrors = {};
 
   retrieveUserCourseAssignmentIds(emailWithSubmission.email, assignment, logErrEmailHeather)
   .then(responses => {
@@ -60,8 +61,15 @@ router.post('/typeformAssignment/:assignment', function (req, res) {
   .then(() => res.send({message: `Successfully submitted ${assignment} with ${JSON.stringify(emailWithSubmission)}`}))
   .catch((err) => {
     const message = `Submitting ${assignment} for ${emailWithSubmission.email} in Canvas failed: ${err}`;
-    CONSOLE_WITH_TIME(message);
-    res.status(500).send({message});
+    // Limit number of emails sent for the same user Erroring. 
+    if (usersThatHaveErrors[emailWithSubmission.email] > 1) {
+      CONSOLE_WITH_TIME(message);
+      res.status(202).send({message});
+    } else {
+      usersThatHaveErrors[emailWithSubmission.email] = 1;
+      CONSOLE_WITH_TIME(message);
+      res.status(500).send({message});
+    }
   });
 });
 
@@ -100,9 +108,6 @@ function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
     .then((users) => {
       if (users.length === 0) throw 'No user was found in Canvas for that email.';
       return users[0].id;
-    }).catch(err => {
-      const subject = `Error finding user with email ${userEmail} in Canvas`;
-      errFunc(subject, err);
     });
 
   let userCanvasID;
@@ -118,9 +123,6 @@ function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
       });
       if (courses.length === 0) throw 'No active courses for user ${userCanvasID} were found in Canvas.';
       return courses[0].course_id;
-    }).catch(err => {
-      const subject = `Error finding active course for ${userEmail} in Canvas`;
-      errFunc(subject, err);
     });
 
   // request assignments for course and find correct assignment
@@ -130,12 +132,12 @@ function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
     .then(assignments => {
       if (assignments.length === 0) throw `Canvas returned 0 assignments`;
       return assignments[0].id;
-    }).catch(err => {
+    });
+
+  return Promise.all([promiseUserID, promiseCourseID, promiseAssignmentID]).catch(err => {
       const subject = `Error finding ${assignment} in course found for ${userEmail}`;
       errFunc(subject, err);
     });
-
-  return Promise.all([promiseUserID, promiseCourseID, promiseAssignmentID]);
 }
 
 
