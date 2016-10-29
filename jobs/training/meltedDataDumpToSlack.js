@@ -4,22 +4,19 @@ const internalRequest = require('request');
 const fetch = require('node-fetch');
 const SLACK_CHANNEL = '#training';
 const Bluebird = require('bluebird');
-const numberOfConcurrentAPICalls = 30;
+const numberOfConcurrentAPICalls = 15;
 const moment = require('moment-timezone');
+const cohortKeys = [];
 moment.tz.setDefault("America/New_York");
-
+ 
 function errorHandler(err){
 	try{
 		JSON.parse(err);
-		var keys = Object.keys(err);
 		console.error(`Error: ${JSON.stringify(err)}`);
-		keys.forEach(function(key){
-			console.error(err[key]);
-		});
+
 	} catch(e){
 		console.error(`Error: ${err}`);
 	}
-	
 }
 //promise chain that gathers information from Canvas and CTLOnline and posts it to Slack
 function postMeltedUserDataToSlack(){
@@ -28,9 +25,8 @@ function postMeltedUserDataToSlack(){
 		.then(getTotalAcceptedIntoTraining)
 		.then(getGradAndFirstShiftCheckpointIDsForEachCohort) 
 		.then(constructURLsForFirstShiftAndGraduatedAPICalls)
-		.then(getTotalUsersWhoTookFirstShiftAndGraduated)	
-		.then(notifySlack)
-		.catch(errorHandler);
+		.then(getTotalUsersWhoTookFirstShiftAndGraduated);	
+		.then(notifySlack);
 }
 
 //MAIN FUNCTIONS
@@ -65,10 +61,11 @@ function getCohortNumbers(){
 					in the case that data needs to be handled differently from open
 					courses. Both lists of courses are concatenated in the end*/
 				});
-				var cohortKeys = Object.keys(cohorts);
-				cohortKeys.forEach(function(key){
+				Object.keys(cohorts).forEach(function(key){
 					if(cohorts[key].class_ids.length == 0) delete cohorts[key];
+					else cohortKeys.push(key);
 				});
+
 				var timeTook = (Date.now()-start)/1000;
 				CONSOLE_WITH_TIME(`Done. Took ${timeTook} seconds`);
 				resolve(cohorts);
@@ -91,6 +88,7 @@ function getEnrollmentsFromCohort(cohorts){
 			.then(function(res){
 				Object.keys(enrollmentLengths.cohortEnrollments).forEach(function(key){
 					enrollmentLengths.cohortEnrollments[key].then(function(tallyData){
+						if(tallyData == undefined) reject();
 						cohorts[key].enrolled_in_canvas = tallyData.enrollment;
 						cohorts[key].users = tallyData.users;
 					});
@@ -109,7 +107,6 @@ function getTotalAcceptedIntoTraining(cohorts){
 	return new Promise(function(resolve, reject){
 		var start = Date.now();
 		CONSOLE_WITH_TIME('Getting total number accepted into training (takes a few seconds)...');
-		var cohortKeys = Object.keys(cohorts);
 		Bluebird.map(cohortKeys, acceptanceAPICall, {concurrency: numberOfConcurrentAPICalls})
 			.then(function(resolvedAcceptanceAPICalls){
 				resolvedAcceptanceAPICalls.forEach(function(tally){
@@ -127,7 +124,6 @@ function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 	return new Promise(function(resolve,reject){
 		var start = Date.now();
 		CONSOLE_WITH_TIME('Obtaining info on grads and people who started first shift...');
-		var cohortKeys = Object.keys(cohorts);
 		var gradClassIDs = buildGradClassIDObject(cohortKeys);
 		var APIcheckpointPromises = gatherGradCheckpointAPICallPromises(cohorts, gradClassIDs);
 		var idPromiseCollector = APIcheckpointPromises.idPromiseCollector;
@@ -163,7 +159,6 @@ function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 //creates urls and releveant data and puts them into objects for processing
 function constructURLsForFirstShiftAndGraduatedAPICalls(cohorts){
 	return new Promise(function(resolve, reject){
-		var cohortKeys = Object.keys(cohorts);
 		//construct array of url objects with info on which cohort they belong to and which checkpoint they're hitting
 		var urls = [];
 		cohortKeys.forEach(function(key){
@@ -192,10 +187,10 @@ function getTotalUsersWhoTookFirstShiftAndGraduated({cohorts, urls}){
 	return new Promise(function(resolve, reject){
 		var start = Date.now();
 		CONSOLE_WITH_TIME('Calculating graduates and people who started first shift...');
-		var cohortKeys = Object.keys(cohorts);
 		Bluebird.map(urls, function(urlObj){
 			return request(urlObj.url, 'Canvas')
 				.then(function(assignment){
+					if(assignment === undefined) reject(`Could not read assignment.`);
 					var numberPassed = assignment.events.filter(function(event){ return event.grade_after === 'complete'; }).length;
 					if(urlObj.checkpoint === 'graduation'){
 						cohorts[urlObj.cohort].graduates.push(numberPassed);
@@ -234,7 +229,6 @@ function notifySlack(cohortInfo) {
 		var year = nowArr[3];
 
 		payload.text = `*Melted user data by Cohort on ${weekday}, ${month} ${date}, ${year}:*\n\n`;
-		var cohortKeys = Object.keys(cohortInfo);
 		cohortKeys.forEach(function(key){
 			payload.text += `_*For Cohort ${key}:*_\n`;
 			payload.text += `    _*${cohortInfo[key].enrolled_in_canvas}* users enrolled in Canvas_\n`;
@@ -259,7 +253,6 @@ function notifySlack(cohortInfo) {
 //HELPER FUNCTIONS
 //for each cohort, call API for enrollment and tally in 'cohortEnrollments' object
 function getEnrollmentLengths(cohortObj){
-	var cohortKeys = Object.keys(cohortObj);
 	var cohortEnrollments = cohortKeys.reduce(function(prev,curr){
 		prev[curr] = {};
 		prev[curr].enrolled_into_canvas = [];
@@ -404,7 +397,6 @@ function buildGradClassIDObject(cohortKeys){
 //accumulates grad ID promises
 function gatherGradCheckpointAPICallPromises(cohorts, gradClassIDs){
 	var idPromiseCollector = [];
-	var cohortKeys = Object.keys(cohorts);
 	cohortKeys.forEach(function(key){
 		var classIDs = cohorts[key].class_ids.concat(cohorts[key].closed_class_ids);
 		var apiCallPromises = classIDs.map(gradCheckPointIDAPICall);
@@ -460,5 +452,6 @@ function request(url, API, method,params) {
 
 module.exports = { 	
 					cohortDataPromise: postMeltedUserDataToSlack(), 
-					request: request			
+					request: request,
+					cohortKeys: cohortKeys			
 				 };

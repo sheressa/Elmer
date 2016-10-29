@@ -1,17 +1,18 @@
 'use strict';
 
 const CronJob = require('cron').CronJob;
-const cohortPromise = require('./meltedDataDumpToSlack.js').cohortDataPromise;
 const fs = require('fs');
 const path = require('path');
-const request = require('./meltedDataDumpToSlack.js').request;
 const Bluebird = require('bluebird');
-const numberOfConcurrentAPICalls = 30;
-
+const cohortPromise = require('./meltedDataDumpToSlack.js').cohortDataPromise;
+const request = require('./meltedDataDumpToSlack.js').request;
+const cohortKeys = require('./meltedDataDumpToSlack.js').cohortKeys;
+const numberOfConcurrentAPICalls = 15;
+ 
 function errorHandler(err){
 	try{
 		JSON.parse(err);
-		console.error(`Error: ${JSON.stringify(err)}`);
+		console.error('Error: ', JSON.stringify(err));
 	} catch(e){
 		console.error(`Error: ${err}`);
 	}
@@ -19,25 +20,23 @@ function errorHandler(err){
 
 //Posts melted user data to #training channel on Slack every Wednesday at 10AM
 new CronJob(CONFIG.time_interval.melted_users_on_slack_and_csv_cron_job_string, function(){
+	const cohortPromise = require('./meltedDataDumpToSlack.js').cohortDataPromise;
     postMeltedUserDataToSlackAndCSV();
   }, null, true);
 
 //main function
-function postMeltedUserDataToSlackAndCSV(){
+(function postMeltedUserDataToSlackAndCSV(){
 	return cohortPromise
 		.then(constructUrlsForCheckpointIdApiCalls)
 		.then(obtainAssignmentNamesAndIDs)
 		.then(constructUrlsForLastCompletedCheckpointApiCalls)
 		.then(getLastCompletedCheckpointForEachUser)
 		.then(putUserCohortInfoInCSVFile)
-		.catch(function(err){
-			console.error('Error: ', err)
-		});
-}
+		.catch(errorHandler);
+})();
 //creates an array of objects containing a url for each checkpoint ID API call, and the corresponding course and cohort number 
 function constructUrlsForCheckpointIdApiCalls(cohorts){
 	return new Promise(function(resolve, reject){
-		var cohortKeys = Object.keys(cohorts);
 		var urls =[];
 		cohortKeys.forEach(function(cohortNum){
 			//collect the ID's for each checkpoint
@@ -77,7 +76,6 @@ function obtainAssignmentNamesAndIDs({cohorts, urls}){
 //creates an array of objects containing a url for the grade change API call, and the corresponding cohort number 
 function constructUrlsForLastCompletedCheckpointApiCalls(cohorts){
 	return new Promise(function(resolve, reject){
-		var cohortKeys = Object.keys(cohorts);
 		var urls = [];
 		cohortKeys.forEach(function(key){
 			cohorts[key].assignmentNamesAndIDs.forEach(function(assignNameID){
@@ -101,7 +99,7 @@ function getLastCompletedCheckpointForEachUser({cohorts, urls}){
 					request.forEach(function(changeObj){
 						cohorts[changeObj.cohort].users.filter(function(user){
 							return changeObj.user_id == user.user_id;
-						}).map(function(user){
+						}).forEach(function(user){
 							if(!user.last_assignment_completed_timestamp || user.last_assignment_completed_timestamp.isBeforeTime(changeObj.timestamp)){
 								user.last_assignment_completed_timestamp = changeObj.timestamp;
 								user.last_assignment_completed_id = changeObj.assignment_id;
@@ -112,6 +110,7 @@ function getLastCompletedCheckpointForEachUser({cohorts, urls}){
 				});
 				var timeTook = (Date.now()-start)/1000;
 				CONSOLE_WITH_TIME(`Done. Took ${timeTook} seconds`);
+				console.log(JSON.stringify(cohorts[18]));
 				resolve(cohorts);
 			}).catch(errorHandler);
 	});
@@ -119,7 +118,6 @@ function getLastCompletedCheckpointForEachUser({cohorts, urls}){
 		
 //posts last checkpoint info into CSV files
 function putUserCohortInfoInCSVFile(cohorts){
-	var cohortKeys = Object.keys(cohorts);
 	cohortKeys.forEach(function(cohortNum){
 		var csvOutput = '';
 		var userKeys = Object.keys(cohorts[cohortNum].users[0]);
@@ -158,40 +156,39 @@ function putUserCohortInfoInCSVFile(cohorts){
 function checkpointIDAPICall(urls){
 	return Bluebird.map(urls, function(urlObj){
 		return request(urlObj.url, 'Canvas')
-		.then(function(assignments){
-			return assignments.map(function(assignment){
-				return {
-					name: assignment.name,
-					assignment_id: assignment.id,
-					cohort: urlObj.cohort
-				};
+			.then(function(assignments){
+				return assignments.map(function(assignment){
+					return {
+						name: assignment.name,
+						assignment_id: assignment.id,
+						cohort: urlObj.cohort
+					};
+				});
+			}).catch(function(err){
+				CONSOLE_WITH_TIME(`Something went wrong with the assignment call to course number ${urlObj.course}: ${err}`);
 			});
-		}).catch(function(err){
-			CONSOLE_WITH_TIME(`Something went wrong with the assignment call to course number ${urlObj.course}: ${err}`);
-		});
 	}, {concurrency: numberOfConcurrentAPICalls});
 }
 
 //API call to grade changes that parses relevant info for CSV file (add more parameters if you want more columns for the CSV file)
 function getGradeChangesForAssignmentAPICall(urls){
 	return Bluebird.map(urls, function(urlObj){
+		console.log(urlObj.url);
 		return request(urlObj.url, 'Canvas')
 			.then(function(assignChange){
-				var assignChanges = [];
-				assignChange.events.forEach(function(change){
-					var changeObj = {};
-					if(change.grade_after !== null && change.event_type === "grade_change"){
-						changeObj.timestamp = change.created_at;
-						changeObj.cohort = urlObj.cohort;
-						changeObj.assignment_id = change.links.assignment;
-						changeObj.user_id = change.links.student;
-						changeObj.course_id = change.links.course;
-						changeObj.grader_id = change.links.grader;
-						assignChanges.push(changeObj);
-					}
+				return assignChange.events.filter(function(change){
+					return change.grade_after !== null && change.event_type === "grade_change";
+				}).map(function(change){
+					return {
+						timestamp: change.created_at,
+						cohort: urlObj.cohort,
+						assignment_id: change.links.assignment,
+						user_id: change.links.student,
+						course_id: change.links.course,
+						grader_id: change.links.grader
+					};						
 				});
-				return assignChanges;
-			});
+			}).catch(errorHandler);
 	}, {concurrency: numberOfConcurrentAPICalls});
 }
 
@@ -226,7 +223,3 @@ var timeCompare = function(time){
 //extends String and Number types with function to compare Date strings and integers
 String.prototype.isBeforeTime = String.prototype.isBeforeTime || timeCompare;
 Number.prototype.isBeforeTime = Number.prototype.isBeforeTime || timeCompare;
-
-module.exports = { 	
-					cohortDataPromise: postMeltedUserDataToSlackAndCSV()			
-				 };
