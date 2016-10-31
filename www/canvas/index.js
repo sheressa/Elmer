@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const canvas = require('../canvas');
+const canvas = require(CONFIG.root_dir + '/canvas.js');
 const stathat = require(CONFIG.root_dir + '/lib/stathat');
 const router = express.Router();
 
@@ -136,7 +136,7 @@ function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
     });
 
   return Promise.all([promiseUserID, promiseCourseID, promiseAssignmentID]);
-};
+}
 
 
 module.exports = {router};
