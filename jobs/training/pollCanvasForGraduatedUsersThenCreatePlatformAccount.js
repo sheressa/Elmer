@@ -15,7 +15,7 @@ throttler.configure({
 });
 new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
     pollCanvasForGraduatedUsersThenCreatePlatformAccount();
-  }, null, true);
+  });
 //invoking the function here runs the job every time the application starts
 pollCanvasForGraduatedUsersThenCreatePlatformAccount();
 // Polls Canvas for people who’ve passed the "Graduation" course
