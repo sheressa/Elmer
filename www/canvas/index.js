@@ -8,7 +8,7 @@ const router = express.Router();
 const helpers = require(`${CONFIG.root_dir}/www/canvas/helpers.js`);
 const mandrill = require('mandrill-api/mandrill');
 const mandrillClient = new mandrill.Mandrill(KEYS.mandrill.api_key);
-const delay = 500;
+const delay = 1000;
 
 router.put('/firstShift', function (req, res) {
   const assignment = CONFIG.canvas.assignments.attendedFirstShift;
