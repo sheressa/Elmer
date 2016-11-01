@@ -11,7 +11,7 @@ moment.tz.setDefault("America/New_York");
 //Posts melted user data to #training channel on Slack every Wednesday at 10AM
 new CronJob(CONFIG.time_interval.melted_users_on_slack_cron_job_string, function () {
     postMeltedUserDataToSlack();
-  }, null, true);
+  });
 
 function errorHandler(err){
 	try{
