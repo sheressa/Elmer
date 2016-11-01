@@ -153,7 +153,7 @@ canvas.submitAssignment = function(userID, courseID, assignmentID, submissionHTM
 		return response.body;
   })
   .catch(function(err){
-     CONSOLE_WITH_TIME(`Canvas submission failed for user ID ${user}`);
+     CONSOLE_WITH_TIME(`Canvas submission failed for user ID ${userID}`);
      CONSOLE_WITH_TIME(`Canvas error message: ${err}`);
   });
 
@@ -186,7 +186,7 @@ canvas.getUserGrade = function(userID, courseID, assignmentID) {
     return response.body.grade;
   })
   .catch(function(err){
-    CONSOLE_WITH_TIME(`Finding a grade for the user with ID ${user} for assignment ${assignment} in course ${course} in Canvas failed: ${err}`);
+    CONSOLE_WITH_TIME(`Finding a grade for the user with ID ${userID} for assignment ${assignment} in course ${courseID} in Canvas failed: ${err}`);
   });
 
 };
