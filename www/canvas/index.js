@@ -8,6 +8,7 @@ const router = express.Router();
 const helpers = require(`${CONFIG.root_dir}/www/canvas/helpers.js`);
 const mandrill = require('mandrill-api/mandrill');
 const mandrillClient = new mandrill.Mandrill(KEYS.mandrill.api_key);
+const delay = 500;
 
 router.put('/firstShift', function (req, res) {
   const assignment = CONFIG.canvas.assignments.attendedFirstShift;
@@ -43,12 +44,12 @@ router.post('/typeformAssignment/:assignment', function (req, res) {
   retrieveUserCourseAssignmentIds(emailWithSubmission.email, assignment, logErrEmailHeather)
   .then(responses => {
     // responses is [userID, courseID, assignmentID] so we spread it
-    const pSubmitAssign = canvas.submitAssignment(...responses, emailWithSubmission.submissionHTML);
+    const pSubmitAssign = canvas.submitAssignment(...responses, emailWithSubmission.submissionHTML, delay);
 
     // If updateUserGrade after submitAssignment then Canvas marks the assignment as graded
     // we need updateUserGrade to run first so that Canvas alerts trainers to grade the submission
     if (formResponse.calculated && formResponse.calculated.score) {
-      return canvas.updateUserGrade(...responses, formResponse.calculated.score)
+      return canvas.updateUserGrade(...responses, formResponse.calculated.score, delay)
         .then(() => pSubmitAssign);
     } else {
       return pSubmitAssign;
@@ -104,7 +105,7 @@ function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
   let promiseAssignmentID;
 
   // request canvas user with this email address and find their userId
-  promiseUserID = canvas.getUsers(userEmail)
+  promiseUserID = canvas.getUsers(userEmail, delay)
     .then((users) => {
       if (users.length === 0) throw 'No user was found in Canvas for that email.';
       return users[0].id;
@@ -115,7 +116,7 @@ function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
   promiseCourseID = promiseUserID
     .then((userID) => {
       userCanvasID = userID;
-      return canvas.getEnrollment(userID);
+      return canvas.getEnrollment(userID, delay);
     })
     .then((courses) => {
       courses = courses.filter((course) => {
@@ -127,7 +128,7 @@ function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
 
   // request assignments for course and find correct assignment
   promiseAssignmentID = promiseCourseID.then((courseID) => {
-    return canvas.getAssignments(courseID, assignment);
+    return canvas.getAssignments(courseID, assignment, delay);
     })
     .then(assignments => {
       if (assignments.length === 0) throw `Canvas returned 0 assignments`;

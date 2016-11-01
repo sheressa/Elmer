@@ -37,17 +37,17 @@ canvas.getAllCourses = function(){
 	})
 	.catch(function(err){
 		CONSOLE_WITH_TIME(`Canvas call to get courses failed: ${err}`);
-	})
-}
+	});
+};
 
 //finds all assignments in a specific canvas course
-canvas.getAssignments = function(courseID, searchTerm){
-	var url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/assignments?per_page=100`;
+canvas.getAssignments = function(courseID, searchTerm, delay){
+	let url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/assignments?per_page=100`;
 	if(searchTerm) url = url+'&search_term='+searchTerm;
 	const options = createOptions({
-		url: url
+		url
 	});
-
+	if (delay) options.retryDelay = delay;
 	return fetch(options)
 	.then(function(response){
 		if(response.statusCode!==200) throw response.message;
@@ -55,17 +55,19 @@ canvas.getAssignments = function(courseID, searchTerm){
 	})
 	.catch(function(err){
 		CONSOLE_WITH_TIME(`Canvas call to get assignments failed ${err}`);
-	})
+	});
 
 };
 
 // returns an enrollment object for a user containing all active course id the user is enrolled in
-canvas.getEnrollment = function(userID, enrollmentState){
- var url = `https://crisistextline.instructure.com/api/v1/users/${userID}/enrollments?per_page=100`;
- if(enrollmentState) url = url+'&state[]='+params;
- const options = createOptions({
-		url: url
- });
+canvas.getEnrollment = function(userID, enrollmentState, delay){
+ 
+  let url = `https://crisistextline.instructure.com/api/v1/users/${userID}/enrollments?per_page=100`;
+  if(enrollmentState) url = url+'&state[]='+params;
+  const options = createOptions({
+  	url
+  });
+  if (delay) options.retryDelay = delay;
 
 	return fetch(options)
 	.then(function(response){
@@ -98,12 +100,13 @@ canvas.retrieveCourseEnrollment = function(courseID, enrollmentState) {
 };
 
 //finds all users in canvas if no params, if params finds users by name or email
-canvas.getUsers = function(searchTerm){
-	var url = 'https://crisistextline.instructure.com/api/v1/accounts/1/users?per_page=100';
+canvas.getUsers = function(searchTerm, delay){
+	let url = 'https://crisistextline.instructure.com/api/v1/accounts/1/users?per_page=100';
 	if(searchTerm) url = url+'&search_term='+searchTerm;
 	const options = createOptions({
-		url: url
+		url
 	});
+	if (delay) options.retryDelay = delay;
 
 	return fetch(options)
 	.then(function(response){
@@ -116,13 +119,15 @@ canvas.getUsers = function(searchTerm){
 };
 
 //updates a grade on canvas
-canvas.updateUserGrade = function(userID, courseID, assignmentID, grade){
-var url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/assignments/${assignmentID}/submissions/${userID}`;
- const options = createOptions({
-   method: 'PUT',
-   url: url,
-   body: {submission:{posted_grade: grade}}
- });
+canvas.updateUserGrade = function(userID, courseID, assignmentID, grade, delay){
+  const url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/assignments/${assignmentID}/submissions/${userID}`;
+  const options = createOptions({
+    method: 'PUT',
+    url,
+    body: {submission:{posted_grade: grade}}
+  });
+
+  if (delay) options.retryDelay = delay;
 
   return fetch(options)
   .then(function(response){
@@ -133,19 +138,20 @@ var url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/ass
     CONSOLE_WITH_TIME(`Could not update grade ${err}`);
   });
 };
-canvas.submitAssignment = function(userID, courseID, assignmentID, submissionHTML) {
+canvas.submitAssignment = function(userID, courseID, assignmentID, submissionHTML, delay) {
   //Submits assignment on users behalf
  const url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/assignments/${assignmentID}/submissions?as_user_id=${userID}`;
  const options = createOptions({
-   method: 'PUT',
-   url: url,
-   body: {
+    method: 'PUT',
+    url,
+    body: {
       submission: {
         submission_type: 'online_text_entry',
         body: submissionHTML 
       }
     }
  });
+ if (delay) options.retryDelay = delay;
 
   return fetch(options)
    .then(function(response){
@@ -186,7 +192,7 @@ canvas.getUserGrade = function(userID, courseID, assignmentID) {
     return response.body.grade;
   })
   .catch(function(err){
-    CONSOLE_WITH_TIME(`Finding a grade for the user with ID ${userID} for assignment ${assignment} in course ${courseID} in Canvas failed: ${err}`);
+    CONSOLE_WITH_TIME(`Finding a grade for the user with ID ${userID} for assignment ${assignmentID} in course ${courseID} in Canvas failed: ${err}`);
   });
 
 };
