@@ -6,6 +6,7 @@ const cohortPromise = require('../jobs/training/meltedDataDumpToSlack.js').cohor
 var cohortData;
 before(function(){
 	this.timeout(60000);
+// TODO Is this going to cause the data to be posted to slack everytime we run tests? 
 	return cohortPromise.then(function(data){
 		cohortData = data;
 	});
