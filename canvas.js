@@ -63,7 +63,7 @@ canvas.getAssignments = function(courseID, searchTerm, delay){
 canvas.getEnrollment = function(userID, enrollmentState, delay){
  
   let url = `https://crisistextline.instructure.com/api/v1/users/${userID}/enrollments?per_page=100`;
-  if(enrollmentState) url = url+'&state[]='+params;
+  if(enrollmentState) url = url+'&state[]='+enrollmentState;
   const options = createOptions({
   	url
   });

@@ -116,7 +116,7 @@ function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
   promiseCourseID = promiseUserID
     .then((userID) => {
       userCanvasID = userID;
-      return canvas.getEnrollment(userID, delay);
+      return canvas.getEnrollment(userID, null, delay);
     })
     .then((courses) => {
       courses = courses.filter((course) => {
