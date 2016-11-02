@@ -131,18 +131,19 @@ canvas.updateUserGrade = function(userID, courseID, assignmentID, grade, delay){
 
   return fetch(options)
   .then(function(response){
-		if(response.statusCode!==200) throw response.message;
 		return response.body;
   })
   .catch(function(err){
     CONSOLE_WITH_TIME(`Could not update grade ${err}`);
   });
 };
+
+
 canvas.submitAssignment = function(userID, courseID, assignmentID, submissionHTML, delay) {
   //Submits assignment on users behalf
- const url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/assignments/${assignmentID}/submissions?as_user_id=${userID}`;
- const options = createOptions({
-    method: 'PUT',
+  const url = `https://crisistextline.instructure.com/api/v1/courses/${courseID}/assignments/${assignmentID}/submissions?as_user_id=${userID}`;
+  const options = createOptions({
+    method: 'POST',
     url,
     body: {
       submission: {
@@ -150,12 +151,11 @@ canvas.submitAssignment = function(userID, courseID, assignmentID, submissionHTM
         body: submissionHTML 
       }
     }
- });
- if (delay) options.retryDelay = delay;
+  });
+  if (delay) options.retryDelay = delay;
 
   return fetch(options)
    .then(function(response){
-		if(response.statusCode!==200) throw response.message;
 		return response.body;
   })
   .catch(function(err){
