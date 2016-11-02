@@ -22,19 +22,23 @@ function extractEmailAndFormatSubmission (formResponse) {
     }
   });
 
-  let qWithBolding = '';
+  // let qWithBolding = '';
 
-  const pairedQtoA = formResponse.definition.fields
-                      .sort((a,b) => a.title.localeCompare(b.title))
-                      .map(formatHTML);
+  // TODO A typeform error is causing formResponse.definition = null;
+  // const pairedQtoA = formResponse.definition.fields
+  //                     .sort((a,b) => a.title.localeCompare(b.title))
+  //                     .map(formatHTML);
 
-  function formatHTML (question, idx) {
-    qWithBolding = question.title.replace('Texter: ', '<b>Texter: </b>');
-    return `<h1>${idx}: ${qWithBolding}</h1>` +
-    `<h2><b>Crisis Counselor: </b>${answers[question.id]}</h2>`;
-  }
+  // function formatHTML (question, idx) {
+  //   qWithBolding = question.title.replace('Texter: ', '<b>Texter: </b>');
+  //   return `<h1>${idx}: ${qWithBolding}</h1>` +
+  //   `<h2><b>Crisis Counselor: </b>${answers[question.id]}</h2>`;
+  // }
   
-  emailWithSubmission.submissionHTML = `<p> ${pairedQtoA.join('</p><br><p>')} </p>`;
+  // emailWithSubmission.submissionHTML = `<p> ${pairedQtoA.join('</p><br><p>')} </p>`;
+
+  // TODO This is a temporary fix for submissions until typeform solves their Webhook issue
+  emailWithSubmission.submissionHTML = `<p>${formResponse.answers.map(elem => JSON.stringify(elem)).join('</p><br><p>')}</p>`;
 
   return emailWithSubmission;
 }
