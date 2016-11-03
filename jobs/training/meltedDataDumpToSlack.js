@@ -2,7 +2,7 @@
 /* 	
 	This is not run independently. It is a dependency of 'meltedDataDumpToCSV'
 	which uses data collected here and dumps it to mySQL, but this is also 
-	is its own job that dumps user data to Slack.
+	its own job that dumps user data to Slack.
 */
 const internalRequest = require('request');
 const fetch = require('node-fetch');

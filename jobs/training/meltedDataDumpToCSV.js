@@ -27,7 +27,7 @@ new CronJob(CONFIG.time_interval.melted_users_on_slack_and_csv_cron_job_string, 
   }, null, true);
 
 //main function
-(function postMeltedUserDataToSlackAndCSV(){
+function postMeltedUserDataToSlackAndCSV(){
 	return cohortPromise
 		.then(constructUrlsForCheckpointIdApiCalls)
 		.then(obtainAssignmentNamesAndIDs)
@@ -35,7 +35,7 @@ new CronJob(CONFIG.time_interval.melted_users_on_slack_and_csv_cron_job_string, 
 		.then(getLastCompletedCheckpointForEachUser)
 		.then(putUserCohortInfoInCSVFile)
 		.catch(errorHandler);
-})();
+}
 //creates an array of objects containing a url for each checkpoint ID API call, and the corresponding course and cohort number 
 function constructUrlsForCheckpointIdApiCalls(cohorts){
 	return new Promise(function(resolve, reject){
