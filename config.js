@@ -43,6 +43,10 @@ global.MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE = function(timestring) {
 
 const CONFIG = {};
 
+CONFIG.emails = {
+  mariya: 'mariya@crisistextline.org'
+}
+
 CONFIG.WhenIWork = process.env.NODE_ENV === 'test' ?
   require('./test/helpers/base') :
   require('./api_wiw/WiWCCApi');
@@ -78,10 +82,17 @@ CONFIG.canvas = {
     attendedFirstShift: 'Attend First Shift',
     scheduledShifts: 'Schedule Your Shifts',
     platformReady: 'Platform Ready!',
-    webinarAttended: 'Attend An Observation',
+    webinarAttended: 'Checkpoint #8: Attend an Observation',
+    scheduleWebinar: 'Schedule Your Observation',
     finalExam: 'Final Exam',
   },
+  passingScores: {
+    final: 60
+  }
 };
+
+//These are the cohorts, starting at 23, that we want to look at for melts.
+CONFIG.cohort23AndLater = 100;
 
 //used in AttendanceSync.js to check whether trainees attended a GTW webinar for a minimum of 90 minutes = 5400 seconds
 CONFIG.GTW_attendance_minimum = 5400;
@@ -94,10 +105,11 @@ CONFIG.WiWUserNotes = {
 
 CONFIG.time_interval = {
   // runs every day at 5am
-  gtw_attendance_sync_with_canvas:'0 0 5 * * *',
+  gtw_attendance_sync_with_canvas:'0 15 23 * * *',
   // runs every 1 min.
   recur_and_publish_shifts_cron_job_string: '0 */1 * * * *',
-
+  // runs every day
+  pending_users: '* * * */1 * *',
   // runs every 20 mins.
   notify_first_shift_cron_job_string: '0 */20 * * * *',
 
@@ -115,6 +127,9 @@ CONFIG.time_interval = {
 
   // How often we check for graduated users in canvas and create platform accounts for them.
   graduate_users_cron_job_string: '0 0 */1 * * *', // Every hour.
+
+  //Outputs data on melted users and posts it to Slack
+  melted_users_on_slack_and_csv_cron_job_string: '0 0 10 * * 3', // Every Wednesday at 10:00 AM
 
   // Each recurrence chain is 1 year long.
   max_shifts_in_chain: 52,
@@ -148,19 +163,19 @@ CONFIG.time_interval = {
 };
 
 CONFIG.numberOfCounselorsPerShift = {
-  'Sun' : { '12am': 75, '2am': 49, '4am': 25, '6am': 9, '8am': 17, '10am': 19, '12pm': 38, '2pm': 35, '4pm': 36, '6pm': 54, '8pm': 64, '10pm': 93},
+  'Sun' : { '12am': 95, '2am': 69, '4am': 45, '6am': 29, '8am': 37, '10am': 39, '12pm': 58, '2pm': 55, '4pm': 56, '6pm': 74, '8pm': 84, '10pm': 113},
 
-  'Mon' : { '12am': 90, '2am': 42, '4am': 23, '6am': 7, '8am': 12, '10am': 28, '12pm': 44, '2pm': 36, '4pm': 50, '6pm': 56, '8pm': 64, '10pm': 82},
+  'Mon' : { '12am': 110, '2am': 62, '4am': 43, '6am': 27, '8am': 32, '10am': 48, '12pm': 64, '2pm': 56, '4pm': 70, '6pm': 76, '8pm': 84, '10pm': 102},
 
-  'Tue' : { '12am': 118, '2am': 41, '4am': 18, '6am': 9, '8am': 16, '10am': 21, '12pm': 31, '2pm': 40, '4pm': 40, '6pm': 40, '8pm': 63, '10pm': 91},
+  'Tue' : { '12am': 138, '2am': 61, '4am': 38, '6am': 29, '8am': 36, '10am': 41, '12pm': 51, '2pm': 60, '4pm': 60, '6pm': 60, '8pm': 83, '10pm': 111},
 
-  'Wed' : { '12am': 96, '2am': 56, '4am': 23, '6am': 15, '8am': 12, '10am': 23, '12pm': 30, '2pm': 40, '4pm': 47, '6pm': 35, '8pm': 63, '10pm': 99},
+  'Wed' : { '12am': 116, '2am': 76, '4am': 43, '6am': 35, '8am': 32, '10am': 43, '12pm': 50, '2pm': 60, '4pm': 67, '6pm': 55, '8pm': 83, '10pm': 119},
 
-  'Thu' : { '12am': 83, '2am': 53, '4am': 21, '6am': 10, '8am': 22, '10am': 30, '12pm': 35, '2pm': 44, '4pm': 38, '6pm': 44, '8pm': 63, '10pm': 87},
+  'Thu' : { '12am': 103, '2am': 73, '4am': 41, '6am': 30, '8am': 42, '10am': 50, '12pm': 55, '2pm': 64, '4pm': 58, '6pm': 64, '8pm': 83, '10pm': 107},
 
-  'Fri' : { '12am': 75, '2am': 38, '4am': 20, '6am': 8, '8am': 9, '10am': 16, '12pm': 33, '2pm': 50, '4pm': 54, '6pm': 51, '8pm': 55, '10pm': 83},
+  'Fri' : { '12am': 95, '2am': 58, '4am': 40, '6am': 28, '8am': 29, '10am': 36, '12pm': 53, '2pm': 70, '4pm': 74, '6pm': 71, '8pm': 75, '10pm': 103},
 
-  'Sat' : { '12am': 66, '2am': 39, '4am': 16, '6am': 10, '8am': 14, '10am': 23, '12pm': 29, '2pm': 35, '4pm': 40, '6pm': 51, '8pm': 66, '10pm': 79}
+  'Sat' : { '12am': 86, '2am': 59, '4am': 36, '6am': 30, '8am': 34, '10am': 43, '12pm': 49, '2pm': 55, '4pm': 60, '6pm': 71, '8pm': 86, '10pm': 99}
 };
 
 CONFIG.shiftColors = {

@@ -14,10 +14,9 @@ throttler.configure({
   milliseconds: 1000
 });
 new CronJob(CONFIG.time_interval.graduate_users_cron_job_string, function () {
-    pollCanvasForGraduatedUsersThenCreatePlatformAccount();
-  }, null, true);
-//invoking the function here runs the job every time the application starts
-pollCanvasForGraduatedUsersThenCreatePlatformAccount();
+  pollCanvasForGraduatedUsersThenCreatePlatformAccount();
+}, null, true);
+
 // Polls Canvas for people who’ve passed the "Graduation" course
 function pollCanvasForGraduatedUsersThenCreatePlatformAccount() {
   notifySlack({message: 'If anyone graduated within the last 6 hours, their names will appear below!'});
@@ -78,7 +77,7 @@ function finalExamChecker(studentObj, finalExamId, courseId, users){
   request('courses/' +courseId+ '/quizzes/' + finalExamId+'/submissions', 'GET')
   .then(function (quizzes) {
     quizzes.quiz_submissions.forEach(function(quiz){
-      if(studentObj[quiz.user_id] && quiz.score<85) {
+      if(studentObj[quiz.user_id] && quiz.score < CONFIG.canvas.passingScores.final) {
           delete studentObj[quiz.user_id];
         }
     });

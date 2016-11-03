@@ -3,7 +3,7 @@
 //REQUIRING KEYS BEFORE CONFIG BECAUSE CONFIG DEPENDS ON KEYS
 global.KEYS = require('../keys.js');
 global.CONFIG = require('../config');
-
+const cache = require('../cache.js');
 if (process.env.NODE_ENV !== 'production') {
   CONFIG.locationID.regular_shifts = CONFIG.locationID.test;
 }
@@ -27,10 +27,27 @@ app.set('view engine', 'jade');
 
 app.use(favicon());
 app.use(logger('dev'));
+
+app.use('/jenkins',require('./jenkins').router); 
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+(function CacheInit(){
+  if (global.USERS_CACHE) return;
+  cache()
+  .then(function(users){
+    global.USERS_CACHE = users;
+    CONSOLE_WITH_TIME(users[0]);
+  })
+  .catch(function(error){
+    CONSOLE_WITH_TIME('error showing up from cache initialization');
+    console.error(error);
+    CacheInit();
+  })
+})();
 
 app.use('/scheduling', require('./scheduling').router);
 app.use('/canvas', require('./canvas').router);

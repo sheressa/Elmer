@@ -1,13 +1,14 @@
 'use strict';
 
 const express = require('express');
-const canvas = require(CONFIG.root_dir + '/jobs/scheduling/helpers/updateCanvas.js').canvas;
+const canvas = require(CONFIG.root_dir + '/canvas.js');
 const stathat = require(CONFIG.root_dir + '/lib/stathat');
 const router = express.Router();
 
 const helpers = require(`${CONFIG.root_dir}/www/canvas/helpers.js`);
 const mandrill = require('mandrill-api/mandrill');
 const mandrillClient = new mandrill.Mandrill(KEYS.mandrill.api_key);
+const delay = 1000;
 
 router.put('/firstShift', function (req, res) {
   const assignment = CONFIG.canvas.assignments.attendedFirstShift;
@@ -16,7 +17,7 @@ router.put('/firstShift', function (req, res) {
   const logErrEmailHeather = createLogErrEmailHeatherFunc(`platform user:` +
         `${JSON.stringify(user)} was not able to be given credit for ${assignment}`);
 
-  canvas.retrieveUserCourseAssignmentIds(user.email, assignment, logErrEmailHeather)
+  retrieveUserCourseAssignmentIds(user.email, assignment, logErrEmailHeather)
   .then(responses => {
     // responses is [userID, courseID, assignmentID] so we spread it
     return canvas.updateUserGrade(...responses, 'complete');
@@ -38,20 +39,38 @@ router.post('/typeformAssignment/:assignment', function (req, res) {
   const assignment = req.params.assignment;
   const logErrEmailHeather = createLogErrEmailHeatherFunc(`typeform submission for email:` +
         `${emailWithSubmission.email} was not able to be given credit for ${assignment}`);
+  const usersThatHaveErrors = {};
 
-  canvas.retrieveUserCourseAssignmentIds(emailWithSubmission.email, assignment, logErrEmailHeather)
+  retrieveUserCourseAssignmentIds(emailWithSubmission.email, assignment, logErrEmailHeather)
   .then(responses => {
     // responses is [userID, courseID, assignmentID] so we spread it
-    const promises = [canvas.submitAssignment(...responses, emailWithSubmission.submissionHTML)];
+    const pSubmitAssign = canvas.submitAssignment(...responses, emailWithSubmission.submissionHTML, delay);
+
+    // If updateUserGrade after submitAssignment then Canvas marks the assignment as graded
+    // we need updateUserGrade to run first so that Canvas alerts trainers to grade the submission
     if (formResponse.calculated && formResponse.calculated.score) {
-      promises.push(canvas.updateUserGrade(...responses, formResponse.calculated.score));
+      return canvas.updateUserGrade(...responses, formResponse.calculated.score, delay)
+        .then(() => pSubmitAssign);
+    } else {
+      return pSubmitAssign;
     }
-    return Promise.all(promises);
-  }).then(() => res.send({message: `Successfully submitted ${assignment} with ${JSON.stringify(emailWithSubmission)}`}))
+  }).then(() => {
+    if (helpers.triggersBasedOnAssignment[assignment]) {
+      return helpers.triggersBasedOnAssignment[assignment](emailWithSubmission.email);
+    }
+  })
+  .then(() => res.send({message: `Successfully submitted ${assignment} with ${JSON.stringify(emailWithSubmission)}`}))
   .catch((err) => {
     const message = `Submitting ${assignment} for ${emailWithSubmission.email} in Canvas failed: ${err}`;
-    CONSOLE_WITH_TIME(message);
-    res.status(500).send({message});
+    // Limit number of emails sent for the same user Erroring. 
+    if (usersThatHaveErrors[emailWithSubmission.email] > 1) {
+      CONSOLE_WITH_TIME(message);
+      res.status(202).send({message});
+    } else {
+      usersThatHaveErrors[emailWithSubmission.email] = 1;
+      CONSOLE_WITH_TIME(message);
+      res.status(500).send({message});
+    }
   });
 });
 
@@ -77,7 +96,49 @@ function createLogErrEmailHeatherFunc (messageText) {
         CONSOLE_WITH_TIME(res);
     });
   };
-  
+
+}
+
+function retrieveUserCourseAssignmentIds(userEmail, assignment, errFunc){
+  let promiseUserID;
+  let promiseCourseID;
+  let promiseAssignmentID;
+
+  // request canvas user with this email address and find their userId
+  promiseUserID = canvas.getUsers(userEmail, delay)
+    .then((users) => {
+      if (users.length === 0) throw 'No user was found in Canvas for that email.';
+      return users[0].id;
+    });
+
+  let userCanvasID;
+  // request courses and find correct courseId;
+  promiseCourseID = promiseUserID
+    .then((userID) => {
+      userCanvasID = userID;
+      return canvas.getEnrollment(userID, null, delay);
+    })
+    .then((courses) => {
+      courses = courses.filter((course) => {
+        return course.enrollment_state === 'active';
+      });
+      if (courses.length === 0) throw 'No active courses for user ${userCanvasID} were found in Canvas.';
+      return courses[0].course_id;
+    });
+
+  // request assignments for course and find correct assignment
+  promiseAssignmentID = promiseCourseID.then((courseID) => {
+    return canvas.getAssignments(courseID, assignment, delay);
+    })
+    .then(assignments => {
+      if (assignments.length === 0) throw `Canvas returned 0 assignments`;
+      return assignments[0].id;
+    });
+
+  return Promise.all([promiseUserID, promiseCourseID, promiseAssignmentID]).catch(err => {
+      const subject = `Error finding ${assignment} in course found for ${userEmail}`;
+      errFunc(subject, err);
+    });
 }
 
 

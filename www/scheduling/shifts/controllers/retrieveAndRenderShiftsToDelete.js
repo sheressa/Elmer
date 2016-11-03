@@ -1,14 +1,18 @@
-var helpers = require(CONFIG.root_dir + '/www/scheduling/helpers')
-  , moment = require('moment')
-  ;
+'use strict';
+const recurShift = require(CONFIG.root_dir + '/jobs/scheduling/RecurShifts');
+const helpers = require(CONFIG.root_dir + '/www/scheduling/helpers');
+const moment = require('moment');
 
-var wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ'
-  , chooseRegShiftToCancelPageStartDateFormat = 'dddd h:mm a' // Wednesday 4:00 p
-  , chooseRegShiftToCancelPageEndDateFormat = 'h:mm a z' // 6:00 pm ES
-  , chooseMakeupShiftToCancelPageStartDateFormat = 'dddd, MMM Do YYYY - h:mm a' // Wednesday, Mar 30th 2016 - 4:00 p
-  , chooseMakeupShiftToCancelPageEndDateFormat = 'h:mm a z' // 6:00 pm ES
-  , scheduleShiftsURL = '/scheduling/login?'
-  ;
+const wiwDateFormat = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
+const chooseRegShiftToCancelPageStartDateFormat = 'dddd h:mm a'; 
+// Wednesday 4:00 p
+const chooseRegShiftToCancelPageEndDateFormat = 'h:mm a z'; 
+// 6:00 pm ES
+const chooseMakeupShiftToCancelPageStartDateFormat = 'dddd, MMM Do YYYY - h:mm a'; 
+// Wednesday, Mar 30th 2016 - 4:00 p
+const chooseMakeupShiftToCancelPageEndDateFormat = 'h:mm a z';
+// 6:00 pm ES
+const scheduleShiftsURL = '/scheduling/login?';
 
 function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
   var email = req.query.email;
@@ -22,10 +26,9 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
   };
 
   whenIWorkAPI.get('users', params, function (dataResponse) {
-    var users = dataResponse.users
-      , user
-      , templateData
-      ;
+    var users = dataResponse.users;
+    var user;
+    var templateData;
 
     for (var i = 0; i < users.length; i++) {
       user = users[i];
@@ -59,14 +62,13 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
             res.render('scheduling/chooseShiftToCancel', templateData);
             return;
           }
-          var shifts = response.shifts
-            , makeupShifts = []
-            , regularShifts = []
-            , targetShift
-            ;
+          var shifts = response.shifts;
+          var makeupShifts = [];
+          var regularShifts = [];
+          var targetShift;
 
           // Filter makeup shifts from regular shifts
-          for (var i = 0 ; i < shifts.length; i++) {
+          for (let i = 0 ; i < shifts.length; i++) {
             targetShift = shifts[i];
             if (targetShift.location_id === CONFIG.locationID.regular_shifts) {
                 regularShifts.push(targetShift);
@@ -83,14 +85,19 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
           **/
           regularShifts.forEach(function(shift) {
             if (!shift.notes) {
-              var error = "Sorry! The page is loading slowly. Please wait 30 seconds, and then refresh and try again. \n" +
-                          "If this problem persists please let us know via email to support@crisistextline.org";
+              const batchPostRequestBody = recurShift.createBatchRequestsForRecurringShift(shift);
+              recurShift.sendShiftsBatchPostRequest(batchPostRequestBody, [shift]);
+
+              var error = 'Sorry! There is an error loading your shifts. ' +
+                          'Please refresh the page in 1 minute. \n' +
+                          'If this problem persists please let us know via ' + 
+                          'email to support@crisistextline.org';
               res.render('scheduling/chooseShiftToCancel', { error: error , url: url});
               return;
             }
           });
           // Removes duplicate reg shifts--those that are in the same recurrence chain.
-          var i = regularShifts.length;
+          let i = regularShifts.length;
           while (i--) {
             if (!regularShifts[i]) {
               continue;
@@ -143,11 +150,11 @@ function retrieveAndRenderShiftsToDelete(req, res, whenIWorkAPI) {
           // Then, display them in the jade template.
           res.render('scheduling/chooseShiftToCancel', templateData);
           return;
-        })
+        });
         break;
       }
     }
-  })
+  });
 }
 
 module.exports = retrieveAndRenderShiftsToDelete;

@@ -31,7 +31,7 @@ describe('recurOpenShifts', function() {
   describe('returnMaxOpenShiftCountForTime', function() {
 
     it('should return max open shift count for a time', function () {
-      assert.equal(recurOpenShifts.returnMaxOpenShiftCountForTime(targetTime), 9);
+      assert.equal(recurOpenShifts.returnMaxOpenShiftCountForTime(targetTime), 19);
     });
 
   });
