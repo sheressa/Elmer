@@ -12,12 +12,6 @@ before(function(){
 });
 
 describe('data valid', function(){
-	it('should have 6 data metrics', function(){
-		var cohortNumber = '15';
-		var result = Object.keys(cohortData[cohortNumber]).length === 6;
-		assert(result);
-	});
-
 	it('should show that the amount of people enrolled in Canvas is at least the amount accepted into training', function(){
 		var cohortNumber = '19';
 		var result = cohortData[cohortNumber].enrolled_in_canvas >= cohortData[cohortNumber].accepted_into_training;
