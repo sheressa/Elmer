@@ -4,7 +4,7 @@ var CronJob = require('cron').CronJob;
 var wIWUserAPI = CONFIG.WhenIWork;
 var wIWSupervisorsAPI = CONFIG.WhenIWorkSuper;
 
-var updateCanvas = require('./helpers/updateCanvas.js');
+var canvas = require('../../canvas.js');
 var stathat = require(CONFIG.root_dir + '/lib/stathat');
 var moment = require('moment');
 var retrieveAndSortSupervisorsByShift = require('./helpers/sortUsersByShift');
@@ -125,7 +125,7 @@ function shiftNotification(users, usersToNotify) {
           shifts: usersToNotify[user.id]
         };
 
-        updateCanvas.findWiWUserInCanvas(email);
+        markCanvasScheduledShiftAssignmentBasedOnWiWEmail(email);
       }
     }
 
@@ -170,6 +170,44 @@ function mandrillEachUser(userWithAllInfo, shiftToSup) {
   // returned for testing;
   return results;
 }
+function markCanvasScheduledShiftAssignmentBasedOnWiWEmail(email) {
+  //collects canvas user ID, courseID, and assignment ID based on the WiW
+  //user ID, then calls the update grade function, which needs all three.
+  var userID;
+  var courseID;
+  var name;
+
+  canvas.getUsers(email)
+  .then(function(users) {
+    if (users.length === 0) throw 'That email was not found in Canvas.';
+    userID = users[0].id;
+    name = users[0].name;
+    email = users[0].login_id;
+    return users[0].id;
+  })
+  .then(function(userID) {
+    return canvas.getEnrollment(userID);
+  })
+  .then(function(courses) {
+    courses = courses.filter(function(course) {
+      return course.enrollment_state == 'active';
+    });
+    if (courses.length === 0) throw 'No active courses for that user were found in Canvas.';
+    courseID = courses[0].course_id;
+    return courses[0].course_id;
+  })
+  .then(function(courseID) {
+    return canvas.getAssignments(courseID, CONFIG.canvas.assignments.scheduledShifts);
+  })
+  .then(function(assignment) {
+    if (assignment.length === 0) throw "No 'Schedule Your Shifts' assignment for that user was found in Canvas.";
+    return canvas.updateUserGrade(userID, courseID, assignment[0].id, 'pass');
+  })
+  .catch(function(err) {
+    CONSOLE_WITH_TIME(`Finding the user with the email ${email} in Canvas failed: ${err}`);
+  });
+
+};
 
 module.exports = {
   notifyMoreShifts: notifyMoreShifts,
