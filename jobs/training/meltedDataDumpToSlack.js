@@ -1,21 +1,24 @@
 'use strict';
-
+/* 	
+	This is not run independently. It is a dependency of 'meltedDataDumpToCSV'
+	which uses data collected here and dumps it to mySQL, but this is also 
+	is its own job that dumps user data to Slack.
+*/
 const internalRequest = require('request');
 const fetch = require('node-fetch');
 const SLACK_CHANNEL = '#training';
 const Bluebird = require('bluebird');
-const numberOfConcurrentAPICalls = 15;
+const numberOfConcurrentAPICalls = 5;
 const moment = require('moment-timezone');
 const cohortKeys = [];
 moment.tz.setDefault("America/New_York");
- 
+
 function errorHandler(err){
 	try{
 		JSON.parse(err);
-		console.error(`Error: ${JSON.stringify(err)}`);
-
+		CONSOLE_WITH_TIME(`Error: ${err}`);
 	} catch(e){
-		console.error(`Error: ${err}`);
+		CONSOLE_WITH_TIME(`Error: ${JSON.stringify(err)}`);
 	}
 }
 //promise chain that gathers information from Canvas and CTLOnline and posts it to Slack
@@ -25,7 +28,7 @@ function postMeltedUserDataToSlack(){
 		.then(getTotalAcceptedIntoTraining)
 		.then(getGradAndFirstShiftCheckpointIDsForEachCohort) 
 		.then(constructURLsForFirstShiftAndGraduatedAPICalls)
-		.then(getTotalUsersWhoTookFirstShiftAndGraduated);	
+		.then(getTotalUsersWhoTookFirstShiftAndGraduated)
 		.then(notifySlack);
 }
 
@@ -70,7 +73,7 @@ function getCohortNumbers(){
 				CONSOLE_WITH_TIME(`Done. Took ${timeTook} seconds`);
 				resolve(cohorts);
 			}).catch(function(err){
-				console.error(`Error processing data from course list: ${err}`);
+				CONSOLE_WITH_TIME(`Error processing data from course list: ${err}`);
 			});
 	}).catch(errorHandler);
 }
@@ -151,7 +154,7 @@ function getGradAndFirstShiftCheckpointIDsForEachCohort(cohorts){
 			CONSOLE_WITH_TIME(`Done. Took ${timeTook} seconds`);
 			resolve(cohorts);
 		}).catch(function(err){
-			console.error(`Something went wrong retrieving and adding graduate and first shift checkpoint ids to cohort data: ${err}`);
+			CONSOLE_WITH_TIME(`Something went wrong retrieving and adding graduate and first shift checkpoint ids to cohort data: ${err}`);
 		});
 	});
 }
@@ -216,7 +219,7 @@ function getTotalUsersWhoTookFirstShiftAndGraduated({cohorts, urls}){
 
 // posts cohortInfo on slack
 function notifySlack(cohortInfo) {
-	return new Promise(function(reject,resolve){
+	return new Promise(function(resolve,reject){
 		var start = Date.now();
 		CONSOLE_WITH_TIME('Posting data to Slack channel...');
 		var payload = {
@@ -245,7 +248,7 @@ function notifySlack(cohortInfo) {
 			CONSOLE_WITH_TIME(`Done. Took ${timeTook} seconds`);
 			resolve(cohortInfo);
 		}).catch(function(err){
-			console.error(`Failed to post to channel ${SLACK_CHANNEL}: ${err}`);
+			CONSOLE_WITH_TIME(`Failed to post to channel ${SLACK_CHANNEL}: ${err}`);
 		});
 	});
 }
@@ -285,7 +288,7 @@ function getEnrollmentLengths(cohortObj){
 				};
 			})
 			.catch(function(err){
-				console.error(`Something went wrong while tallying enrollment: ${err}`);
+				CONSOLE_WITH_TIME(`Something went wrong while tallying enrollment: ${err}`);
 			});
 			
 		cohortEnrollments[key] = sumTallyPromise;
@@ -331,7 +334,7 @@ function recursiveRequestCallerForEnrollmentLength(enrolled, pageNumber, allStud
 			}));
 			return recursiveRequestCallerForEnrollmentLength(enrolled, pageNumber, allStudents,courseNum);
 		}).catch(function(err){
-			console.error(`Something went wrong while obtaining enrollment info for course ${courseNum}: ${err}`);
+			CONSOLE_WITH_TIME(`Something went wrong while obtaining enrollment info for course ${courseNum}: ${err}`);
 		});
 }
 
@@ -354,7 +357,7 @@ function recursiveRequestCallerForAcceptance(accepted, pageNumber,cohortNum){
 			pageNumber += 1;
 			return recursiveRequestCallerForAcceptance(accepted, pageNumber,cohortNum);
 		}).catch(function(err){
-			console.error(`Something went wrong obtaining data from users in cohort ${cohortNum} from CTLOnline: ${err}`);
+			CONSOLE_WITH_TIME(`Something went wrong obtaining data from users in cohort ${cohortNum} from CTLOnline: ${err}`);
 		});
 }
 
@@ -379,7 +382,7 @@ function gradCheckPointIDAPICall(classID){
 					};
 		})
 		.catch(function(err){
-			console.error(`Something went wrong retriving and processing assignment info for course ${classID} on Canvas: ${err}`);
+			CONSOLE_WITH_TIME(`Something went wrong retriving and processing assignment info for course ${classID} on Canvas: ${err}`);
 		});
 }
 

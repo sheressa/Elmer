@@ -1,5 +1,8 @@
 'use strict';
-
+/*	
+	This job depends on 'meltedDataDumpToSlack.js' to collect
+	data to dump to CSV/mySQL
+*/
 const CronJob = require('cron').CronJob;
 const fs = require('fs');
 const path = require('path');
@@ -7,20 +10,19 @@ const Bluebird = require('bluebird');
 const cohortPromise = require('./meltedDataDumpToSlack.js').cohortDataPromise;
 const request = require('./meltedDataDumpToSlack.js').request;
 const cohortKeys = require('./meltedDataDumpToSlack.js').cohortKeys;
-const numberOfConcurrentAPICalls = 15;
- 
+const numberOfConcurrentAPICalls = 5;
+
 function errorHandler(err){
 	try{
 		JSON.parse(err);
-		console.error('Error: ', JSON.stringify(err));
+		CONSOLE_WITH_TIME('Error: ', err);
 	} catch(e){
-		console.error(`Error: ${err}`);
+		CONSOLE_WITH_TIME(`Error: ${JSON.stringify(err)}`);
 	}
 }
 
 //Posts melted user data to #training channel on Slack every Wednesday at 10AM
 new CronJob(CONFIG.time_interval.melted_users_on_slack_and_csv_cron_job_string, function(){
-	const cohortPromise = require('./meltedDataDumpToSlack.js').cohortDataPromise;
     postMeltedUserDataToSlackAndCSV();
   }, null, true);
 
@@ -110,7 +112,6 @@ function getLastCompletedCheckpointForEachUser({cohorts, urls}){
 				});
 				var timeTook = (Date.now()-start)/1000;
 				CONSOLE_WITH_TIME(`Done. Took ${timeTook} seconds`);
-				console.log(JSON.stringify(cohorts[18]));
 				resolve(cohorts);
 			}).catch(errorHandler);
 	});
@@ -173,7 +174,6 @@ function checkpointIDAPICall(urls){
 //API call to grade changes that parses relevant info for CSV file (add more parameters if you want more columns for the CSV file)
 function getGradeChangesForAssignmentAPICall(urls){
 	return Bluebird.map(urls, function(urlObj){
-		console.log(urlObj.url);
 		return request(urlObj.url, 'Canvas')
 			.then(function(assignChange){
 				return assignChange.events.filter(function(change){
