@@ -82,7 +82,8 @@ CONFIG.canvas = {
     attendedFirstShift: 'Attend First Shift',
     scheduledShifts: 'Schedule Your Shifts',
     platformReady: 'Platform Ready!',
-    webinarAttended: 'Attend An Observation',
+    webinarAttended: 'Checkpoint #8: Attend an Observation',
+    scheduleWebinar: 'Schedule Your Observation',
     finalExam: 'Final Exam',
   },
   passingScores: {
@@ -162,19 +163,19 @@ CONFIG.time_interval = {
 };
 
 CONFIG.numberOfCounselorsPerShift = {
-  'Sun' : { '12am': 85, '2am': 59, '4am': 35, '6am': 19, '8am': 27, '10am': 29, '12pm': 48, '2pm': 45, '4pm': 46, '6pm': 64, '8pm': 74, '10pm': 103},
+  'Sun' : { '12am': 95, '2am': 69, '4am': 45, '6am': 29, '8am': 37, '10am': 39, '12pm': 58, '2pm': 55, '4pm': 56, '6pm': 74, '8pm': 84, '10pm': 113},
 
-  'Mon' : { '12am': 100, '2am': 52, '4am': 33, '6am': 17, '8am': 22, '10am': 38, '12pm': 54, '2pm': 46, '4pm': 60, '6pm': 66, '8pm': 74, '10pm': 92},
+  'Mon' : { '12am': 110, '2am': 62, '4am': 43, '6am': 27, '8am': 32, '10am': 48, '12pm': 64, '2pm': 56, '4pm': 70, '6pm': 76, '8pm': 84, '10pm': 102},
 
-  'Tue' : { '12am': 128, '2am': 51, '4am': 28, '6am': 19, '8am': 26, '10am': 31, '12pm': 41, '2pm': 50, '4pm': 50, '6pm': 50, '8pm': 73, '10pm': 101},
+  'Tue' : { '12am': 138, '2am': 61, '4am': 38, '6am': 29, '8am': 36, '10am': 41, '12pm': 51, '2pm': 60, '4pm': 60, '6pm': 60, '8pm': 83, '10pm': 111},
 
-  'Wed' : { '12am': 106, '2am': 66, '4am': 33, '6am': 25, '8am': 22, '10am': 33, '12pm': 40, '2pm': 50, '4pm': 57, '6pm': 45, '8pm': 73, '10pm': 109},
+  'Wed' : { '12am': 116, '2am': 76, '4am': 43, '6am': 35, '8am': 32, '10am': 43, '12pm': 50, '2pm': 60, '4pm': 67, '6pm': 55, '8pm': 83, '10pm': 119},
 
-  'Thu' : { '12am': 93, '2am': 63, '4am': 31, '6am': 20, '8am': 32, '10am': 40, '12pm': 45, '2pm': 54, '4pm': 48, '6pm': 54, '8pm': 73, '10pm': 97},
+  'Thu' : { '12am': 103, '2am': 73, '4am': 41, '6am': 30, '8am': 42, '10am': 50, '12pm': 55, '2pm': 64, '4pm': 58, '6pm': 64, '8pm': 83, '10pm': 107},
 
-  'Fri' : { '12am': 85, '2am': 48, '4am': 30, '6am': 18, '8am': 19, '10am': 26, '12pm': 43, '2pm': 60, '4pm': 64, '6pm': 61, '8pm': 65, '10pm': 93},
+  'Fri' : { '12am': 95, '2am': 58, '4am': 40, '6am': 28, '8am': 29, '10am': 36, '12pm': 53, '2pm': 70, '4pm': 74, '6pm': 71, '8pm': 75, '10pm': 103},
 
-  'Sat' : { '12am': 76, '2am': 49, '4am': 26, '6am': 20, '8am': 24, '10am': 33, '12pm': 39, '2pm': 45, '4pm': 50, '6pm': 61, '8pm': 76, '10pm': 89}
+  'Sat' : { '12am': 86, '2am': 59, '4am': 36, '6am': 30, '8am': 34, '10am': 43, '12pm': 49, '2pm': 55, '4pm': 60, '6pm': 71, '8pm': 86, '10pm': 99}
 };
 
 CONFIG.shiftColors = {

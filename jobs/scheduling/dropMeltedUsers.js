@@ -1,16 +1,15 @@
 'use strict';
-
-var request = require('request-promise');
 var CronJob = require('cron').CronJob;
 var WhenIWork = CONFIG.WhenIWork;
-var updateCanvas = require('./helpers/updateCanvas.js');
+var canvas = require('../../canvas.js');
+var ctlOnline = require('../../ctlOnline.js');
 var firstMeltInvoluntary = require('../../email_templates/firstMeltInvoluntary.js');
 var firstMeltVoluntary = require('../../email_templates/firstMeltVoluntary.js');
 var secondMeltInvoluntary = require('../../email_templates/secondMeltInvoluntary.js');
 var secondMeltVoluntary = require('../../email_templates/secondMeltVoluntary.js');
-var fs = require('fs');
 var mandrill = require('mandrill-api/mandrill');
 var mandrillClient = new mandrill.Mandrill(KEYS.mandrill.api_key);
+
 
 new CronJob(CONFIG.time_interval.cron_twice_per_day, meltUsers, null, true);
 
@@ -33,17 +32,8 @@ function deleteWiWUserAndShifts(canvasUser) {
 }
 
 function deferOrBlockInCTLOnline(userEmail) {
-  var uid;
-  var options = {
-    'User-Agent': 'Request-Promise',
-    url: 'https://online.crisistextline.org/api/v1/user?parameters[mail]=' + userEmail + '&api-key=g3otwVINxVbyeAbeYNaEBy8r4ozNuyHM'
-  };
-
-  //finds user ID in CTL Online
-  return request(options)
-  .then(function(response) {
-    response = JSON.parse(response);
-    uid = response[0].uid;
+  return ctlOnline.uidFromEmail(userEmail)
+  .then(function(uid) {
     //Adds 'Deferred' role to user's account in CTL Online if they are a first-time melt,
     //or marks them as dropout and blocks their CTL Online account if they are a second-time melt.
     request.post('https://online.crisistextline.org/api/v1/rules/rules_user_drop_out?api-key=' + KEYS.CTLOnline.api_key, {form:{uid: uid}});
@@ -109,7 +99,7 @@ function findMostRecent(objArr) {
 function meltUsers() {
 
   //First, we get all Canvas users.
-  updateCanvas.canvas.scrapeAllCanvasUsers()
+  canvas.getUsers()
   .then(function(response) {
     var users = response;
     users.forEach(function(user) {
@@ -118,13 +108,13 @@ function meltUsers() {
       let assignmentID;
       let grade;
       //Then we check if the user has 'inactive' enrollments (force melts)
-      updateCanvas.canvas.scrapeCanvasEnrollment(user.id, 'inactive')
+      canvas.getEnrollment(user.id, 'inactive')
       .then(function(result) {
         if (result) userEnrollments = result;
       })
       //Then we check if the user has 'completed' enrollments (voluntary melts)
       .then(function() {
-        return updateCanvas.canvas.scrapeCanvasEnrollment(user.id, 'completed');
+        return canvas.getEnrollment(user.id, 'completed');
       })
       .then(function(result) {
         if (result) userEnrollments = userEnrollments.concat(result);
@@ -132,11 +122,11 @@ function meltUsers() {
       //Then we look up the user's final exam assignment
       .then(function() {
         numberOfMelts = userEnrollments.length;
-        return updateCanvas.canvas.scrapeCanvasAssignments(userEnrollments[userEnrollments.length-1].course_id, CONFIG.canvas.assignments.finalExam);
+        return canvas.getAssignments(userEnrollments[userEnrollments.length-1].course_id, CONFIG.canvas.assignments.finalExam);
       })
       .then(function(assignments) {
         assignmentID = assignments[0].id;
-        return updateCanvas.canvas.getUserGrade(userEnrollments[userEnrollments.length-1].user_id, userEnrollments[userEnrollments.length-1].course_id, assignmentID);
+        return canvas.getUserGrade(userEnrollments[userEnrollments.length-1].user_id, userEnrollments[userEnrollments.length-1].course_id, assignmentID);
       })
       /*
       If the final exam grade is 0, we know we have already performed melt-related actions for the user.
@@ -150,13 +140,13 @@ function meltUsers() {
         if (numberOfMelts === 1 && grade !== '0' && mostRecentEnrollment.course_id >= CONFIG.cohort23AndLater) {
           //have to reactivate user to grade them, then deactivate; need to save enrollment type
           let enrollmentStatus = userEnrollments[userEnrollments.length-1].enrollment_state;
-          updateCanvas.canvas.activateOrDeactivateEnrollment(userEnrollments[userEnrollments.length-1].course_id, userEnrollments[userEnrollments.length-1].id, 'reactivate', user.id)
+          canvas.activateOrDeactivateEnrollment(userEnrollments[userEnrollments.length-1].course_id, userEnrollments[userEnrollments.length-1].id, 'reactivate', user.id)
           .then(function() {
             setTimeout(function(){}, 1000);
-            updateCanvas.canvas.updateUserGrade(user.id, userEnrollments[userEnrollments.length-1].course_id, assignmentID, 0);
+            canvas.updateUserGrade(user.id, userEnrollments[userEnrollments.length-1].course_id, assignmentID, 0);
           })
           .then(function() {
-            updateCanvas.canvas.activateOrDeactivateEnrollment(userEnrollments[userEnrollments.length-1].course_id, userEnrollments[userEnrollments.length-1].id, enrollmentStatus);
+            canvas.activateOrDeactivateEnrollment(userEnrollments[userEnrollments.length-1].course_id, userEnrollments[userEnrollments.length-1].id, enrollmentStatus);
           })
           .catch(function(error) {
             CONSOLE_WITH_TIME('Error in the melt process for user ' + user.id + 'at line 162 in the update grade code: ', error);
@@ -169,7 +159,7 @@ function meltUsers() {
           //deletes the user from Canvas. This must be done LAST because otherwise we lose the Canvas info we need to run the other functions.
           emailMeltedUser(mostRecentEnrollment.user, numberOfMelts, mostRecentEnrollment.enrollment_state, mostRecentEnrollment.sis_course_id);
           deferOrBlockInCTLOnline(mostRecentEnrollment.user.login_id);
-          updateCanvas.canvas.deleteCanvasUser(user.id);
+          canvas.deleteUser(user.id);
         }
       })
       .catch(function(error) {
