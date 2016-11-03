@@ -43,6 +43,10 @@ global.MAKE_WIW_TIME_STRING_MOMENT_PARSEABLE = function(timestring) {
 
 const CONFIG = {};
 
+CONFIG.emails = {
+  mariya: 'mariya@crisistextline.org'
+}
+
 CONFIG.WhenIWork = process.env.NODE_ENV === 'test' ?
   require('./test/helpers/base') :
   require('./api_wiw/WiWCCApi');
@@ -124,7 +128,7 @@ CONFIG.time_interval = {
   graduate_users_cron_job_string: '0 0 */1 * * *', // Every hour.
 
   //Outputs data on melted users and posts it to Slack
-  melted_users_on_slack_cron_job_string: '0 0 10 * * 3', // Every Wednesday at 10:00 AM
+  melted_users_on_slack_and_csv_cron_job_string: '0 0 10 * * 3', // Every Wednesday at 10:00 AM
 
   // Each recurrence chain is 1 year long.
   max_shifts_in_chain: 52,
