@@ -459,12 +459,7 @@ function request(url, API, method,params) {
 }
 
 module.exports = { 	
-<<<<<<< HEAD
-					cohortDataPromise: postMeltedUserDataToSlack(), 
-					request: request,
-					cohortKeys: cohortKeys			
-=======
-					cohortDataPromise: postMeltedUserDataToSlack, 
-					request: request			
->>>>>>> origin/master
-				 };
+	cohortDataPromise: postMeltedUserDataToSlack, 
+	request: request,
+	cohortKeys: cohortKeys			
+};
