@@ -1,12 +1,11 @@
 'use strict';
 
 const assert = require('assert');
-const cohortPromise = require('../jobs/training/meltedDataDumpToSlack.js').cohortDataPromise;
+const cohortPromise = require('../jobs/training/meltedDataDumpToCSV.js').cohortDataPromise;
 
 var cohortData;
 before(function(){
-	this.timeout(60000);
-// TODO Is this going to cause the data to be posted to slack everytime we run tests? 
+	this.timeout(150000);
 	return cohortPromise.then(function(data){
 		cohortData = data;
 	});
@@ -25,9 +24,29 @@ describe('data valid', function(){
 		assert(result);
 	});
 
-	it('should show that the amount of people who graduated is at least the amount who started their first shift', function(	){
+	it('should show that the amount of people who graduated is at least the amount who started their first shift', function(){
 		var cohortNumber = '18';
 		var result = cohortData[cohortNumber].graduates >= cohortData[cohortNumber].started_first_shift;
 		assert(result);
 	});
+
+	it('should show that each cohort should have an array of user objects', function(){
+		var cohortNums = Object.keys(cohortData);
+		var result = cohortNums.every(cohortHasUserObjects);
+		assert(result);
+	});
+
+	it('should show that each cohort should have an array of assignment names and IDs', function(){
+		var cohortNums = Object.keys(cohortData);
+		var result = cohortNums.every(cohortHasAssignmentNamesAndIDs);
+		assert(result);
+	});
 });
+
+function cohortHasUserObjects(cohort){
+	return cohortData[cohort].users.length > 0;
+}
+
+function cohortHasAssignmentNamesAndIDs(cohort){
+	return cohortData[cohort].assignmentNamesAndIDs.length > 0;
+}
